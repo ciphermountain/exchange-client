@@ -1,0 +1,742 @@
+openapi: 3.0.3
+info:
+  title: Cloud Exchange REST API
+  version: 0.0.1
+paths:
+  /api/accounts:
+    get:
+      description: Retrieve all account information
+      responses:
+        200:
+          description: OK
+          content:
+            'application/json':
+              schema:
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Account'
+                  error:
+                    $ref: '#/components/schemas/ResponseError'
+  /api/accounts/{accountID}:
+    parameters:
+      - $ref: '#/components/parameters/AccountPathParam'
+    get:
+      description: Retrieve account information
+      responses:
+        200:
+          description: OK
+          content:
+            'application/json':
+              schema:
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Account'
+                  error:
+                    $ref: '#/components/schemas/ResponseError'
+  /api/accounts/{accountID}/code:
+    parameters:
+      - $ref: '#/components/parameters/AccountPathParam'
+    get:
+      description: Get a QRCode generated with the public id for receiving funds
+      responses:
+        200:
+          description: OK
+          content:
+            'image/png':
+              schema:
+                type: string
+                format: binary
+  /api/accounts/{accountID}/addresses/{symbolName}:
+    parameters:
+      - $ref: '#/components/parameters/AccountPathParam'
+      - $ref: '#/components/parameters/SymbolPathParam'
+    get:
+      description: Desc
+      responses:
+        200:
+          description: OK
+          content:
+            'application/json':
+              schema:
+                properties:
+                  data:
+                    $ref: '#/components/schemas/AddressItem'
+                  error:
+                    $ref: '#/components/schemas/ResponseError'
+  /api/accounts/{accountID}/transactions:
+    parameters:
+      - $ref: '#/components/parameters/AccountPathParam'
+    post:
+      description: Publishes a transfer request.
+      requestBody: 
+        description: >
+          Transfer request initiates a transfer either to another local Xifer
+          account or to an external account as a withdrawal.
+        required: true
+        content: 
+          'application/json': 
+            schema: 
+              $ref: '#/components/schemas/TransactionRequest'
+      responses: 
+        200: 
+          description: OK
+          content: 
+            'application/json': 
+              schema: 
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Transaction'
+        400:
+          description: Invalid request
+          content:
+            'application/json':
+              schema:
+                properties:
+                  error:
+                    $ref: '#/components/schemas/ResponseError'
+        409:
+          description: Insufficient account balance
+          content:
+            'application/json':
+              schema:
+                properties:
+                  error:
+                    $ref: '#/components/schemas/ResponseError'
+        500:
+          description: Internal server error
+          content:
+            'application/json':
+              schema:
+                properties:
+                  error:
+                    $ref: '#/components/schemas/ResponseError'
+    get:
+      description: Retrieve account transactions
+      responses:
+        200:
+          description: OK
+          content:
+            'application/json':
+              schema:
+                properties:
+                  data:
+                    $ref: '#/components/schemas/TransactionList'
+                  error:
+                    $ref: '#/components/schemas/ResponseError'
+        500:
+          description: Internal server error
+          content:
+            'application/json':
+              schema:
+                properties:
+                  error:
+                    $ref: '#/components/schemas/ResponseError'
+  /api/accounts/{accountID}/orders:
+    parameters:
+      - $ref: '#/components/parameters/AccountPathParam'
+    post:
+      description: Publishes a new order to the order book
+      security:
+        - OAuth2: [write]
+      requestBody: 
+        description: >
+          Order request
+          Valid order pairs include BTC-ETH
+        required: true
+        content: 
+          'application/json': 
+            schema: 
+              $ref: '#/components/schemas/OrderRequest'
+      responses: 
+        200: 
+          description: OK
+          content: 
+            'application/json': 
+              schema: 
+                properties:
+                  data:
+                    $ref: '#/components/schemas/BookOrder'
+        409:
+          description: Insufficient account balance
+          content:
+            'application/json':
+              schema:
+                properties:
+                  error:
+                    $ref: '#/components/schemas/ResponseError'
+        500:
+          description: Internal server error
+          content:
+            'application/json':
+              schema:
+                properties:
+                  error:
+                    $ref: '#/components/schemas/ResponseError'
+    get:
+      description: Retrieve order list
+      parameters:
+        - $ref: '#/components/parameters/OrderStatusParam'
+      responses:
+        200:
+          description: OK
+          content:
+            'application/json':
+              schema:
+                properties:
+                  data:
+                    $ref: '#/components/schemas/BookOrderList'
+                  error:
+                    $ref: '#/components/schemas/ResponseError'
+        500:
+          description: Internal server error
+          content:
+            'application/json':
+              schema:
+                properties:
+                  error:
+                    $ref: '#/components/schemas/ResponseError'
+  /api/accounts/{accountID}/orders/{orderID}:
+    parameters:
+      - $ref: '#/components/parameters/AccountPathParam'
+      - $ref: '#/components/parameters/OrderPathParam'
+    get:
+      description: Get details on an order item
+      security:
+        - OAuth2: [write]
+      responses:
+        200:
+          description: OK
+          content:
+            'application/json':
+              schema:
+                properties:
+                  data:
+                    $ref: '#/components/schemas/BookOrder'
+                  error:
+                    $ref: '#/components/schemas/ResponseError'
+    patch:
+      description: Cancel an order
+      security:
+        - OAuth2: [write]
+      requestBody: 
+        description: >
+          Adheres to JSON-PATCH RFC-6902
+          Accepted patch commands on order records:
+            op: replace; path: /status; value: CANCELLED
+        required: true
+        content: 
+          'application/json': 
+            schema: 
+              $ref: '#/components/schemas/PatchCommandList'
+      responses: 
+        200: 
+          description: Cancel request completed successfully
+          content: 
+            'application/json': 
+              schema: 
+                properties:
+                  data:
+                    $ref: '#/components/schemas/BookOrder'
+        400:
+          description: Invalid input
+          content:
+            'application/json':
+              schema:
+                properties:
+                  error:
+                    $ref: '#/components/schemas/ResponseError'
+        404:
+          description: Order not found
+          content:
+            'application/json':
+              schema:
+                properties:
+                  error:
+                    $ref: '#/components/schemas/ResponseError'
+        500:
+          description: Server error
+          content:
+            'application/json':
+              schema:
+                properties:
+                  error:
+                    $ref: '#/components/schemas/ResponseError'
+  /api/markets/{market}/history:
+    parameters:
+      - $ref: '#/components/parameters/MarketParam'
+    get:
+      description: Get market history
+      parameters:
+        - $ref: '#/components/parameters/TimeSpanParam'
+        - name: start
+          in: query
+          description: Start time for history items
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Limit for how many history items to retreive (no more than the default 100)
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            'application/json':
+              schema:
+                properties:
+                  data:
+                    $ref: '#/components/schemas/PriceHistoryList'
+        default:
+          description: error
+          content:
+            'application/json':
+              schema:
+                properties:
+                  error:
+                    $ref: '#/components/schemas/ResponseError'
+  /api/markets/{market}/snapshot:
+    parameters:
+      - $ref: '#/components/parameters/MarketParam'
+    get:
+      description: Get order book snapshot for market
+      responses:
+        200:
+          description: OK
+          content:
+            'application/json':
+              schema:
+                properties:
+                  data:
+                    $ref: '#/components/schemas/SnapshotItemList'
+        default:
+          description: error
+          content:
+            'application/json':
+              schema:
+                properties:
+                  error:
+                    $ref: '#/components/schemas/ResponseError'
+components:
+  parameters:
+    AccountPathParam:
+      in: path
+      name: accountID
+      required: true
+      schema:
+        type: string
+      description: The uuid account identifier
+    SymbolPathParam:
+      in: path
+      name: symbolName
+      required: true
+      schema:
+        type: string
+      description: Currency trade symbol
+    OrderPathParam:
+      in: path
+      name: orderID
+      required: true
+      schema:
+        type: string
+        $ref: '#/components/schemas/SymbolType'
+      description: The uuid order identifier
+    MarketParam:
+      in: path
+      name: market
+      required: true
+      schema:
+        type: string
+      description: The market identifier
+    OrderStatusParam:
+      in: query
+      name: status
+      required: false
+      schema:
+        $ref: '#/components/schemas/OrderStatus'
+    TimeSpanParam:
+      in: query
+      name: increment
+      required: false
+      schema:
+        $ref: '#/components/schemas/TimeSpanType'
+  schemas:
+    ResponseError:
+      type: object
+      required:
+      - detail
+      properties:
+        detail:
+          type: string
+    QueryTime:
+      type: integer
+      format: int64
+      description: Time in seconds for query to complete
+    ActionType:
+      type: string
+      enum:
+      - BUY
+      - SELL
+      description: >
+        Action type:
+        * `BUY` - use base currency to buy target currency
+        * `SELL` - sell target currency for base currency
+    SymbolType:
+      type: string
+      enum:
+      - BTC
+      - ETH
+      - BCH
+      - DOGE
+      - UNI
+      - CMTN
+      description: >
+        Symbol Type:
+        * `BTC` - bitcoin currency identifier
+        * `ETH` - ethereum currency identifier
+        * `BCH` - bitcoin cash currency identifier
+        * `DOGE` - dogecoin currency identifier
+        * `UNI` - uniswap currency identifer
+        * `CMTN` - cipher mountain currency identifer
+    TransactionType:
+      type: string
+      enum:
+      - ORDER
+      - DEPOSIT
+      - TRANSFER
+      description: >
+        Transaction Type:
+        * `ORDER` - transaction resulting from a match on the order book
+        * `DEPOSIT` - transaction resulting from a funding deposit
+        * `TRANSFER` - transaction resulting from a funding withdrawal
+    RecipientType:
+      type: string
+      enum:
+      - LOCAL
+      - REMOTE
+      description: >
+        Recipient Type:
+        * `LOCAL` - recipient public id within Xifer system
+        * `REMOTE` - recipient value is an address defined by the provided symbol
+    TransactionStatus:
+      type: string
+      enum:
+      - INITIATED
+      - COMPLETED
+      - FAILED
+      description: >
+        Transaction Status:
+        * `INITIATED` - the transaction has been started
+        * `COMPLETED` - the transaction was successful
+        * `FAILED` - the transaction request failed
+    TimeSpanType:
+      type: string
+      enum:
+      - 5m
+      - 10m
+      - 15m
+      - 30m
+      - 1h
+      - 2h
+      - 4h
+      - 8h
+      - 12h
+      - 1d
+      - 2d
+      - 7d
+      - 2w
+      - 30d
+      - 90d
+      - 180d
+      - 1y
+      description: >
+        Time Span:
+        * `5m` - 5 minutes
+    OrderStatus:
+      type: string
+      enum:
+      - OPEN
+      - PARTIAL
+      - FILLED
+      - CANCELLED
+      description: >
+        Symbol Type:
+        * `OPEN` - incomplete order
+        * `PARTIAL` - partial order
+        * `FILLED` - filled order
+        * `CANCELLED` - cancelled order
+    CurrencyValue:
+      type: string
+    Account:
+      type: object
+      description: Balances account
+      required:
+      - id
+      - public_id
+      properties:
+        id:
+          type: string
+        public_id:
+          type: string
+        balances:
+          $ref: '#/components/schemas/BalanceList'
+    TransactionRequest:
+      type: object
+      description: >
+        Transfer funds locally between Xifer accounts or to an external account as
+        a withdrawal.
+      required:
+      - type
+      - recipient
+      - symbol
+      - quantity
+      properties:
+        type:
+          $ref: '#/components/schemas/RecipientType'
+        recipient:
+          type: string
+          description: >
+            Recipient represents a target identifier for which to send
+            the defined funds. The format for the provided value is determined
+            by the recipient type and symbol.
+        symbol:
+          $ref: '#/components/schemas/SymbolType'
+        quantity:
+          $ref: '#/components/schemas/CurrencyValue'
+    TransactionList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Transaction'
+    Transaction:
+      type: object
+      description: Account balance change
+      required:
+      - type
+      - status
+      - where
+      - recipient
+      - symbol
+      - quantity
+      - fee
+      - orderid
+      - initiated
+      - completed
+      - receipt
+      properties:
+        type:
+          $ref: '#/components/schemas/TransactionType'
+        status:
+          $ref: '#/components/schemas/TransactionStatus'
+        where:
+          $ref: '#/components/schemas/RecipientType'
+        recipient:
+          type: string
+        symbol:
+          $ref: '#/components/schemas/SymbolType'
+        quantity:
+          $ref: '#/components/schemas/CurrencyValue'
+        fee:
+          $ref: '#/components/schemas/CurrencyValue'
+        orderid:
+          type: string
+        initiated:
+          type: string
+          description: time at which the transaction was requested
+        completed:
+          type: string
+          description: >
+            Time at which the transaction was processed. Refer to status
+            for success or failure.
+        receipt:
+          type: string
+    PriceHistoryList:
+      type: array
+      items:
+        $ref: '#/components/schemas/PriceHistoryItem'
+    PriceHistoryItem:
+      type: object
+      description: Price history item
+      required:
+      - start
+      - span
+      - maximum
+      - minimum
+      - median
+      - average
+      - upperQuartile
+      - lowerQuartile
+      - volume
+      - open
+      - close
+      properties:
+        start:
+          type: string
+        span:
+          $ref: '#/components/schemas/TimeSpanType'
+        maximum:
+          type: string
+        minimum:
+          type: string
+        median:
+          type: string
+        average:
+          type: string
+        upperQuartile:
+          type: string
+        lowerQuartile:
+          type: string
+        volume:
+          type: string
+          description: Total volume during time span
+        open:
+          type: string
+          description: First price in time span
+        close:
+          type: string
+          description: Last price in time span
+    SnapshotItemList:
+      type: array
+      items:
+        $ref: '#/components/schemas/SnapshotItem'
+    SnapshotItem:
+      type: object
+      description: Order book snapshot item
+      required:
+      - side
+      - price
+      - depth
+      properties:
+        side:
+          type: string
+        price:
+          type: string
+        depth:
+          type: string
+    BalanceList:
+      type: array
+      items:
+        $ref: '#/components/schemas/BalanceItem'
+    BalanceItem:
+      type: object
+      required:
+      - symbol
+      - quantity
+      - available
+      properties:
+        symbol:
+          $ref: '#/components/schemas/SymbolType'
+        quantity:
+          $ref: '#/components/schemas/CurrencyValue'
+        available:
+          $ref: '#/components/schemas/CurrencyValue'
+    AddressItem:
+      type: object
+      required:
+      - address
+      - symbol
+      properties:
+        symbol:
+          $ref: '#/components/schemas/SymbolType'
+        address:
+          type: string
+          description: Address hash for funding this balance
+    OrderRequest:
+      type: object
+      description: Request to create a new order on the order book
+      required:
+      - base
+      - quote
+      - action
+      - type
+      properties:
+        base:
+          $ref: '#/components/schemas/SymbolType'
+        quote:
+          $ref: '#/components/schemas/SymbolType'
+        action:
+          $ref: '#/components/schemas/ActionType'
+        type:
+          $ref: '#/components/schemas/OrderRequestType'
+    OrderRequestType:
+      oneOf:
+        - $ref: '#/components/schemas/MarketOrderRequest'
+        - $ref: '#/components/schemas/LimitOrderRequest'
+      discriminator:
+        propertyName: name
+    OrderType:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          enum:
+          - MARKET
+          - LIMIT
+          description: >
+            Order type:
+            * `MARKET` - order type used to buy or sell at market value
+            * `LIMIT` - used to set buy or sell limit
+    MarketOrderRequest:
+      allOf:
+        - $ref: '#/components/schemas/OrderType'
+        - type: object
+          required:
+          - base
+          - quantity
+          properties:
+            base:
+              $ref: '#/components/schemas/SymbolType'
+            quantity:
+              $ref: '#/components/schemas/CurrencyValue'
+    LimitOrderRequest:
+      allOf:
+        - $ref: '#/components/schemas/OrderType'
+        - type: object
+          required:
+          - base
+          - price
+          - quantity
+          properties:
+            base:
+              $ref: '#/components/schemas/SymbolType'
+            price:
+              $ref: '#/components/schemas/CurrencyValue'
+            quantity:
+              $ref: '#/components/schemas/CurrencyValue'
+    BookOrder:
+      type: object
+      required:
+      - status
+      - guid
+      - order
+      properties:
+        guid:
+          type: string
+        status:
+          $ref: '#/components/schemas/OrderStatus'
+        order:
+          $ref: '#/components/schemas/OrderRequest'
+    BookOrderList:
+      type: array
+      items:
+        $ref: '#/components/schemas/BookOrder'
+    PatchCommandList:
+      type: array
+      items:
+        $ref: '#/components/schemas/PatchCommand'
+    PatchCommand:
+      type: object
+      required:
+      - op
+      - path
+      - value
+      properties:
+        op:
+          type: string
+        path:
+          type: string
+        value:
+          type: string
