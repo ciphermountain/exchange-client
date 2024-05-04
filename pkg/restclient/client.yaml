@@ -133,6 +133,25 @@ paths:
                 properties:
                   error:
                     $ref: '#/components/schemas/ResponseError'
+  /api/accounts/{accountID}/transactions/{transactionID}:
+    parameters:
+      - $ref: '#/components/parameters/AccountPathParam'
+      - $ref: '#/components/parameters/TransactionPathParam'
+    get:
+      description: Get details on a transaction item
+      security:
+        - OAuth2: [write]
+      responses:
+        200:
+          description: OK
+          content:
+            'application/json':
+              schema:
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Transaction'
+                  error:
+                    $ref: '#/components/schemas/ResponseError'
   /api/accounts/{accountID}/orders:
     parameters:
       - $ref: '#/components/parameters/AccountPathParam'
@@ -333,7 +352,7 @@ components:
       name: symbolName
       required: true
       schema:
-        type: string
+        $ref: '#/components/schemas/SymbolType'
       description: Currency trade symbol
     OrderPathParam:
       in: path
@@ -341,8 +360,14 @@ components:
       required: true
       schema:
         type: string
-        $ref: '#/components/schemas/SymbolType'
       description: The uuid order identifier
+    TransactionPathParam:
+      in: path
+      name: transactionID
+      required: true
+      schema:
+        type: string
+      description: The uuid transaction identifier
     MarketParam:
       in: path
       name: market

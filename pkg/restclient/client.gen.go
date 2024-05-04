@@ -322,17 +322,20 @@ type AccountPathParam = string
 // MarketParam defines model for MarketParam.
 type MarketParam = string
 
-// Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `BCH` - bitcoin cash currency identifier * `DOGE` - dogecoin currency identifier * `UNI` - uniswap currency identifer * `CMTN` - cipher mountain currency identifer
-type OrderPathParam = SymbolType
+// OrderPathParam defines model for OrderPathParam.
+type OrderPathParam = string
 
 // Symbol Type: * `OPEN` - incomplete order * `PARTIAL` - partial order * `FILLED` - filled order * `CANCELLED` - cancelled order
 type OrderStatusParam = OrderStatus
 
-// SymbolPathParam defines model for SymbolPathParam.
-type SymbolPathParam = string
+// Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `BCH` - bitcoin cash currency identifier * `DOGE` - dogecoin currency identifier * `UNI` - uniswap currency identifer * `CMTN` - cipher mountain currency identifer
+type SymbolPathParam = SymbolType
 
 // Time Span: * `5m` - 5 minutes
 type TimeSpanParam = TimeSpanType
+
+// TransactionPathParam defines model for TransactionPathParam.
+type TransactionPathParam = string
 
 // GetApiAccountsAccountIDOrdersParams defines parameters for GetApiAccountsAccountIDOrders.
 type GetApiAccountsAccountIDOrdersParams struct {
@@ -476,6 +479,9 @@ type ClientInterface interface {
 	PostApiAccountsAccountIDTransactionsWithBody(ctx context.Context, accountID AccountPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	PostApiAccountsAccountIDTransactions(ctx context.Context, accountID AccountPathParam, body PostApiAccountsAccountIDTransactionsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetApiAccountsAccountIDTransactionsTransactionID request
+	GetApiAccountsAccountIDTransactionsTransactionID(ctx context.Context, accountID AccountPathParam, transactionID TransactionPathParam, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetApiMarketsMarketHistory request
 	GetApiMarketsMarketHistory(ctx context.Context, market MarketParam, params *GetApiMarketsMarketHistoryParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -630,6 +636,18 @@ func (c *Client) PostApiAccountsAccountIDTransactionsWithBody(ctx context.Contex
 
 func (c *Client) PostApiAccountsAccountIDTransactions(ctx context.Context, accountID AccountPathParam, body PostApiAccountsAccountIDTransactionsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewPostApiAccountsAccountIDTransactionsRequest(c.Server, accountID, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetApiAccountsAccountIDTransactionsTransactionID(ctx context.Context, accountID AccountPathParam, transactionID TransactionPathParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetApiAccountsAccountIDTransactionsTransactionIDRequest(c.Server, accountID, transactionID)
 	if err != nil {
 		return nil, err
 	}
@@ -1077,6 +1095,47 @@ func NewPostApiAccountsAccountIDTransactionsRequestWithBody(server string, accou
 	return req, nil
 }
 
+// NewGetApiAccountsAccountIDTransactionsTransactionIDRequest generates requests for GetApiAccountsAccountIDTransactionsTransactionID
+func NewGetApiAccountsAccountIDTransactionsTransactionIDRequest(server string, accountID AccountPathParam, transactionID TransactionPathParam) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "accountID", runtime.ParamLocationPath, accountID)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "transactionID", runtime.ParamLocationPath, transactionID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/accounts/%s/transactions/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewGetApiMarketsMarketHistoryRequest generates requests for GetApiMarketsMarketHistory
 func NewGetApiMarketsMarketHistoryRequest(server string, market MarketParam, params *GetApiMarketsMarketHistoryParams) (*http.Request, error) {
 	var err error
@@ -1275,6 +1334,9 @@ type ClientWithResponsesInterface interface {
 	PostApiAccountsAccountIDTransactionsWithBodyWithResponse(ctx context.Context, accountID AccountPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostApiAccountsAccountIDTransactionsResponse, error)
 
 	PostApiAccountsAccountIDTransactionsWithResponse(ctx context.Context, accountID AccountPathParam, body PostApiAccountsAccountIDTransactionsJSONRequestBody, reqEditors ...RequestEditorFn) (*PostApiAccountsAccountIDTransactionsResponse, error)
+
+	// GetApiAccountsAccountIDTransactionsTransactionID request
+	GetApiAccountsAccountIDTransactionsTransactionIDWithResponse(ctx context.Context, accountID AccountPathParam, transactionID TransactionPathParam, reqEditors ...RequestEditorFn) (*GetApiAccountsAccountIDTransactionsTransactionIDResponse, error)
 
 	// GetApiMarketsMarketHistory request
 	GetApiMarketsMarketHistoryWithResponse(ctx context.Context, market MarketParam, params *GetApiMarketsMarketHistoryParams, reqEditors ...RequestEditorFn) (*GetApiMarketsMarketHistoryResponse, error)
@@ -1558,6 +1620,32 @@ func (r PostApiAccountsAccountIDTransactionsResponse) StatusCode() int {
 	return 0
 }
 
+type GetApiAccountsAccountIDTransactionsTransactionIDResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		// Account balance change
+		Data  *Transaction   `json:"data,omitempty"`
+		Error *ResponseError `json:"error,omitempty"`
+	}
+}
+
+// Status returns HTTPResponse.Status
+func (r GetApiAccountsAccountIDTransactionsTransactionIDResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetApiAccountsAccountIDTransactionsTransactionIDResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 type GetApiMarketsMarketHistoryResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -1724,6 +1812,15 @@ func (c *ClientWithResponses) PostApiAccountsAccountIDTransactionsWithResponse(c
 		return nil, err
 	}
 	return ParsePostApiAccountsAccountIDTransactionsResponse(rsp)
+}
+
+// GetApiAccountsAccountIDTransactionsTransactionIDWithResponse request returning *GetApiAccountsAccountIDTransactionsTransactionIDResponse
+func (c *ClientWithResponses) GetApiAccountsAccountIDTransactionsTransactionIDWithResponse(ctx context.Context, accountID AccountPathParam, transactionID TransactionPathParam, reqEditors ...RequestEditorFn) (*GetApiAccountsAccountIDTransactionsTransactionIDResponse, error) {
+	rsp, err := c.GetApiAccountsAccountIDTransactionsTransactionID(ctx, accountID, transactionID, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetApiAccountsAccountIDTransactionsTransactionIDResponse(rsp)
 }
 
 // GetApiMarketsMarketHistoryWithResponse request returning *GetApiMarketsMarketHistoryResponse
@@ -2104,6 +2201,36 @@ func ParsePostApiAccountsAccountIDTransactionsResponse(rsp *http.Response) (*Pos
 			return nil, err
 		}
 		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetApiAccountsAccountIDTransactionsTransactionIDResponse parses an HTTP response from a GetApiAccountsAccountIDTransactionsTransactionIDWithResponse call
+func ParseGetApiAccountsAccountIDTransactionsTransactionIDResponse(rsp *http.Response) (*GetApiAccountsAccountIDTransactionsTransactionIDResponse, error) {
+	bodyBytes, err := ioutil.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetApiAccountsAccountIDTransactionsTransactionIDResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			// Account balance change
+			Data  *Transaction   `json:"data,omitempty"`
+			Error *ResponseError `json:"error,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
 
 	}
 
