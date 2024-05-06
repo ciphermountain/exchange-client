@@ -538,6 +538,7 @@ components:
       type: object
       description: Account balance change
       required:
+      - id
       - type
       - status
       - where
@@ -550,6 +551,8 @@ components:
       - completed
       - receipt
       properties:
+        id:
+          type: string
         type:
           $ref: '#/components/schemas/TransactionType'
         status:

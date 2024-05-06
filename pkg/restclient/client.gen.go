@@ -272,6 +272,7 @@ type Transaction struct {
 	// Time at which the transaction was processed. Refer to status for success or failure.
 	Completed string        `json:"completed"`
 	Fee       CurrencyValue `json:"fee"`
+	Id        string        `json:"id"`
 
 	// time at which the transaction was requested
 	Initiated string        `json:"initiated"`

@@ -3,6 +3,7 @@ package golog
 import (
 	"fmt"
 	"io"
+	"log/slog"
 	"os"
 	"strings"
 	"sync"
@@ -121,7 +122,7 @@ var logHijacker = func(ctx *pio.Ctx) {
 	defer logger.mu.Unlock()
 
 	w := logger.getOutput(l.Level)
-	if f := logger.getFormatter(l.Level); f != nil {
+	if f := logger.getFormatter(); f != nil {
 		if f.Format(w, l) {
 			ctx.Store(nil, pio.ErrHandled)
 			return
@@ -266,8 +267,8 @@ func (l *Logger) SetLevelFormat(levelName string, formatter string, opts ...inte
 	return l
 }
 
-func (l *Logger) getFormatter(level Level) Formatter {
-	f, ok := l.LevelFormatter[level]
+func (l *Logger) getFormatter() Formatter {
+	f, ok := l.LevelFormatter[l.Level]
 	if !ok {
 		f = l.formatter
 	}
@@ -371,6 +372,10 @@ func (l *Logger) Println(v ...interface{}) {
 	l.print(DisableLevel, fmt.Sprint(v...), true, nil)
 }
 
+// splitArgsFields splits the given values to arguments and fields.
+// It returns the arguments and the fields.
+// It's used to separate the arguments from the fields
+// when a `Fields` or `[]slog.Attr` is passed as a value.
 func splitArgsFields(values []interface{}) ([]interface{}, Fields) {
 	var (
 		args   = values[:0]
@@ -378,7 +383,8 @@ func splitArgsFields(values []interface{}) ([]interface{}, Fields) {
 	)
 
 	for _, value := range values {
-		if f, ok := value.(Fields); ok {
+		switch f := value.(type) {
+		case Fields:
 			if fields == nil {
 				fields = make(Fields)
 			}
@@ -386,11 +392,23 @@ func splitArgsFields(values []interface{}) ([]interface{}, Fields) {
 			for k, v := range f {
 				fields[k] = v
 			}
+		case []slog.Attr:
+			if fields == nil {
+				fields = make(Fields)
+			}
 
-			continue
+			for _, attr := range f {
+				fields[attr.Key] = attr.Value.Any()
+			}
+		case slog.Attr: // a single slog attr.
+			if fields == nil {
+				fields = make(Fields)
+			}
+
+			fields[f.Key] = f.Value.Any()
+		default:
+			args = append(args, value) // use it as fmt argument.
 		}
-
-		args = append(args, value) // use it as fmt argument.
 	}
 
 	return args, fields
@@ -489,28 +507,24 @@ func (l *Logger) Debugf(format string, args ...interface{}) {
 //
 // For example, if you want to print using a logrus
 // logger you can do the following:
-// `Install(logrus.StandardLogger())`
 //
-// Look `golog#Logger.Handle` for more.
-func (l *Logger) Install(logger ExternalLogger) {
-	l.Handle(integrateExternalLogger(logger))
-}
-
-// InstallStd receives  a standard logger
-// and automatically adapts its print functions.
+//	Install(logrus.StandardLogger())
 //
-// Install adds a golog handler to support third-party integrations,
-// it can be used only once per `golog#Logger` instance.
-//
-// Example Code:
+// Or the standard log's Logger:
 //
 //	import "log"
 //	myLogger := log.New(os.Stdout, "", 0)
-//	InstallStd(myLogger)
+//	Install(myLogger)
+//
+// Or even the slog/log's Logger:
+//
+//	import "log/slog"
+//	myLogger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+//	Install(myLogger) OR Install(slog.Default())
 //
 // Look `golog#Logger.Handle` for more.
-func (l *Logger) InstallStd(logger StdLogger) {
-	l.Handle(integrateStdLogger(logger))
+func (l *Logger) Install(logger any) {
+	l.Handle(integrade(logger))
 }
 
 // Handle adds a log handler.
