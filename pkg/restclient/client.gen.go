@@ -363,6 +363,15 @@ type GetApiMarketsMarketHistoryParams struct {
 	Limit *string `form:"limit,omitempty" json:"limit,omitempty"`
 }
 
+// GetApiMarketsMarketSnapshotParams defines parameters for GetApiMarketsMarketSnapshot.
+type GetApiMarketsMarketSnapshotParams struct {
+	// include asks in snapshot
+	Asks *bool `form:"asks,omitempty" json:"asks,omitempty"`
+
+	// include bids in snapshot
+	Bids *bool `form:"bids,omitempty" json:"bids,omitempty"`
+}
+
 // PostApiAccountsAccountIDOrdersJSONRequestBody defines body for PostApiAccountsAccountIDOrders for application/json ContentType.
 type PostApiAccountsAccountIDOrdersJSONRequestBody = PostApiAccountsAccountIDOrdersJSONBody
 
@@ -488,7 +497,7 @@ type ClientInterface interface {
 	GetApiMarketsMarketHistory(ctx context.Context, market MarketParam, params *GetApiMarketsMarketHistoryParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetApiMarketsMarketSnapshot request
-	GetApiMarketsMarketSnapshot(ctx context.Context, market MarketParam, reqEditors ...RequestEditorFn) (*http.Response, error)
+	GetApiMarketsMarketSnapshot(ctx context.Context, market MarketParam, params *GetApiMarketsMarketSnapshotParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
 func (c *Client) GetApiAccounts(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -671,8 +680,8 @@ func (c *Client) GetApiMarketsMarketHistory(ctx context.Context, market MarketPa
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetApiMarketsMarketSnapshot(ctx context.Context, market MarketParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetApiMarketsMarketSnapshotRequest(c.Server, market)
+func (c *Client) GetApiMarketsMarketSnapshot(ctx context.Context, market MarketParam, params *GetApiMarketsMarketSnapshotParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetApiMarketsMarketSnapshotRequest(c.Server, market, params)
 	if err != nil {
 		return nil, err
 	}
@@ -1224,7 +1233,7 @@ func NewGetApiMarketsMarketHistoryRequest(server string, market MarketParam, par
 }
 
 // NewGetApiMarketsMarketSnapshotRequest generates requests for GetApiMarketsMarketSnapshot
-func NewGetApiMarketsMarketSnapshotRequest(server string, market MarketParam) (*http.Request, error) {
+func NewGetApiMarketsMarketSnapshotRequest(server string, market MarketParam, params *GetApiMarketsMarketSnapshotParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1248,6 +1257,42 @@ func NewGetApiMarketsMarketSnapshotRequest(server string, market MarketParam) (*
 	if err != nil {
 		return nil, err
 	}
+
+	queryValues := queryURL.Query()
+
+	if params.Asks != nil {
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "asks", runtime.ParamLocationQuery, *params.Asks); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+	}
+
+	if params.Bids != nil {
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "bids", runtime.ParamLocationQuery, *params.Bids); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+	}
+
+	queryURL.RawQuery = queryValues.Encode()
 
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
 	if err != nil {
@@ -1343,7 +1388,7 @@ type ClientWithResponsesInterface interface {
 	GetApiMarketsMarketHistoryWithResponse(ctx context.Context, market MarketParam, params *GetApiMarketsMarketHistoryParams, reqEditors ...RequestEditorFn) (*GetApiMarketsMarketHistoryResponse, error)
 
 	// GetApiMarketsMarketSnapshot request
-	GetApiMarketsMarketSnapshotWithResponse(ctx context.Context, market MarketParam, reqEditors ...RequestEditorFn) (*GetApiMarketsMarketSnapshotResponse, error)
+	GetApiMarketsMarketSnapshotWithResponse(ctx context.Context, market MarketParam, params *GetApiMarketsMarketSnapshotParams, reqEditors ...RequestEditorFn) (*GetApiMarketsMarketSnapshotResponse, error)
 }
 
 type GetApiAccountsResponse struct {
@@ -1834,8 +1879,8 @@ func (c *ClientWithResponses) GetApiMarketsMarketHistoryWithResponse(ctx context
 }
 
 // GetApiMarketsMarketSnapshotWithResponse request returning *GetApiMarketsMarketSnapshotResponse
-func (c *ClientWithResponses) GetApiMarketsMarketSnapshotWithResponse(ctx context.Context, market MarketParam, reqEditors ...RequestEditorFn) (*GetApiMarketsMarketSnapshotResponse, error) {
-	rsp, err := c.GetApiMarketsMarketSnapshot(ctx, market, reqEditors...)
+func (c *ClientWithResponses) GetApiMarketsMarketSnapshotWithResponse(ctx context.Context, market MarketParam, params *GetApiMarketsMarketSnapshotParams, reqEditors ...RequestEditorFn) (*GetApiMarketsMarketSnapshotResponse, error) {
+	rsp, err := c.GetApiMarketsMarketSnapshot(ctx, market, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}

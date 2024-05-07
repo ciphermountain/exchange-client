@@ -320,7 +320,18 @@ paths:
     parameters:
       - $ref: '#/components/parameters/MarketParam'
     get:
-      description: Get order book snapshot for market
+      description: Get order book snapshot for market. Default to asks and bids combined if no parameters provided.
+      parameters:
+        - name: asks
+          in: query
+          description: include asks in snapshot
+          schema:
+            type: boolean
+        - name: bids
+          in: query
+          description: include bids in snapshot
+          schema:
+            type: boolean
       responses:
         200:
           description: OK
