@@ -338,22 +338,22 @@ type TimeSpanParam = TimeSpanType
 // TransactionPathParam defines model for TransactionPathParam.
 type TransactionPathParam = string
 
-// GetApiAccountsAccountIDOrdersParams defines parameters for GetApiAccountsAccountIDOrders.
-type GetApiAccountsAccountIDOrdersParams struct {
+// GetV1AccountsAccountIDOrdersParams defines parameters for GetV1AccountsAccountIDOrders.
+type GetV1AccountsAccountIDOrdersParams struct {
 	Status *OrderStatusParam `form:"status,omitempty" json:"status,omitempty"`
 }
 
-// PostApiAccountsAccountIDOrdersJSONBody defines parameters for PostApiAccountsAccountIDOrders.
-type PostApiAccountsAccountIDOrdersJSONBody = OrderRequest
+// PostV1AccountsAccountIDOrdersJSONBody defines parameters for PostV1AccountsAccountIDOrders.
+type PostV1AccountsAccountIDOrdersJSONBody = OrderRequest
 
-// PatchApiAccountsAccountIDOrdersOrderIDJSONBody defines parameters for PatchApiAccountsAccountIDOrdersOrderID.
-type PatchApiAccountsAccountIDOrdersOrderIDJSONBody = PatchCommandList
+// PatchV1AccountsAccountIDOrdersOrderIDJSONBody defines parameters for PatchV1AccountsAccountIDOrdersOrderID.
+type PatchV1AccountsAccountIDOrdersOrderIDJSONBody = PatchCommandList
 
-// PostApiAccountsAccountIDTransactionsJSONBody defines parameters for PostApiAccountsAccountIDTransactions.
-type PostApiAccountsAccountIDTransactionsJSONBody = TransactionRequest
+// PostV1AccountsAccountIDTransactionsJSONBody defines parameters for PostV1AccountsAccountIDTransactions.
+type PostV1AccountsAccountIDTransactionsJSONBody = TransactionRequest
 
-// GetApiMarketsMarketHistoryParams defines parameters for GetApiMarketsMarketHistory.
-type GetApiMarketsMarketHistoryParams struct {
+// GetV1MarketsMarketHistoryParams defines parameters for GetV1MarketsMarketHistory.
+type GetV1MarketsMarketHistoryParams struct {
 	Increment *TimeSpanParam `form:"increment,omitempty" json:"increment,omitempty"`
 
 	// Start time for history items
@@ -363,8 +363,8 @@ type GetApiMarketsMarketHistoryParams struct {
 	Limit *string `form:"limit,omitempty" json:"limit,omitempty"`
 }
 
-// GetApiMarketsMarketSnapshotParams defines parameters for GetApiMarketsMarketSnapshot.
-type GetApiMarketsMarketSnapshotParams struct {
+// GetV1MarketsMarketSnapshotParams defines parameters for GetV1MarketsMarketSnapshot.
+type GetV1MarketsMarketSnapshotParams struct {
 	// include asks in snapshot
 	Asks *bool `form:"asks,omitempty" json:"asks,omitempty"`
 
@@ -372,14 +372,14 @@ type GetApiMarketsMarketSnapshotParams struct {
 	Bids *bool `form:"bids,omitempty" json:"bids,omitempty"`
 }
 
-// PostApiAccountsAccountIDOrdersJSONRequestBody defines body for PostApiAccountsAccountIDOrders for application/json ContentType.
-type PostApiAccountsAccountIDOrdersJSONRequestBody = PostApiAccountsAccountIDOrdersJSONBody
+// PostV1AccountsAccountIDOrdersJSONRequestBody defines body for PostV1AccountsAccountIDOrders for application/json ContentType.
+type PostV1AccountsAccountIDOrdersJSONRequestBody = PostV1AccountsAccountIDOrdersJSONBody
 
-// PatchApiAccountsAccountIDOrdersOrderIDJSONRequestBody defines body for PatchApiAccountsAccountIDOrdersOrderID for application/json ContentType.
-type PatchApiAccountsAccountIDOrdersOrderIDJSONRequestBody = PatchApiAccountsAccountIDOrdersOrderIDJSONBody
+// PatchV1AccountsAccountIDOrdersOrderIDJSONRequestBody defines body for PatchV1AccountsAccountIDOrdersOrderID for application/json ContentType.
+type PatchV1AccountsAccountIDOrdersOrderIDJSONRequestBody = PatchV1AccountsAccountIDOrdersOrderIDJSONBody
 
-// PostApiAccountsAccountIDTransactionsJSONRequestBody defines body for PostApiAccountsAccountIDTransactions for application/json ContentType.
-type PostApiAccountsAccountIDTransactionsJSONRequestBody = PostApiAccountsAccountIDTransactionsJSONBody
+// PostV1AccountsAccountIDTransactionsJSONRequestBody defines body for PostV1AccountsAccountIDTransactions for application/json ContentType.
+type PostV1AccountsAccountIDTransactionsJSONRequestBody = PostV1AccountsAccountIDTransactionsJSONBody
 
 // RequestEditorFn  is the function signature for the RequestEditor callback function
 type RequestEditorFn func(ctx context.Context, req *http.Request) error
@@ -454,54 +454,54 @@ func WithRequestEditorFn(fn RequestEditorFn) ClientOption {
 
 // The interface specification for the client above.
 type ClientInterface interface {
-	// GetApiAccounts request
-	GetApiAccounts(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// GetV1Accounts request
+	GetV1Accounts(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// GetApiAccountsAccountID request
-	GetApiAccountsAccountID(ctx context.Context, accountID AccountPathParam, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// GetV1AccountsAccountID request
+	GetV1AccountsAccountID(ctx context.Context, accountID AccountPathParam, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// GetApiAccountsAccountIDAddressesSymbolName request
-	GetApiAccountsAccountIDAddressesSymbolName(ctx context.Context, accountID AccountPathParam, symbolName SymbolPathParam, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// GetV1AccountsAccountIDAddressesSymbolName request
+	GetV1AccountsAccountIDAddressesSymbolName(ctx context.Context, accountID AccountPathParam, symbolName SymbolPathParam, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// GetApiAccountsAccountIDCode request
-	GetApiAccountsAccountIDCode(ctx context.Context, accountID AccountPathParam, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// GetV1AccountsAccountIDCode request
+	GetV1AccountsAccountIDCode(ctx context.Context, accountID AccountPathParam, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// GetApiAccountsAccountIDOrders request
-	GetApiAccountsAccountIDOrders(ctx context.Context, accountID AccountPathParam, params *GetApiAccountsAccountIDOrdersParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// GetV1AccountsAccountIDOrders request
+	GetV1AccountsAccountIDOrders(ctx context.Context, accountID AccountPathParam, params *GetV1AccountsAccountIDOrdersParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// PostApiAccountsAccountIDOrders request with any body
-	PostApiAccountsAccountIDOrdersWithBody(ctx context.Context, accountID AccountPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// PostV1AccountsAccountIDOrders request with any body
+	PostV1AccountsAccountIDOrdersWithBody(ctx context.Context, accountID AccountPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	PostApiAccountsAccountIDOrders(ctx context.Context, accountID AccountPathParam, body PostApiAccountsAccountIDOrdersJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	PostV1AccountsAccountIDOrders(ctx context.Context, accountID AccountPathParam, body PostV1AccountsAccountIDOrdersJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// GetApiAccountsAccountIDOrdersOrderID request
-	GetApiAccountsAccountIDOrdersOrderID(ctx context.Context, accountID AccountPathParam, orderID OrderPathParam, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// GetV1AccountsAccountIDOrdersOrderID request
+	GetV1AccountsAccountIDOrdersOrderID(ctx context.Context, accountID AccountPathParam, orderID OrderPathParam, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// PatchApiAccountsAccountIDOrdersOrderID request with any body
-	PatchApiAccountsAccountIDOrdersOrderIDWithBody(ctx context.Context, accountID AccountPathParam, orderID OrderPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// PatchV1AccountsAccountIDOrdersOrderID request with any body
+	PatchV1AccountsAccountIDOrdersOrderIDWithBody(ctx context.Context, accountID AccountPathParam, orderID OrderPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	PatchApiAccountsAccountIDOrdersOrderID(ctx context.Context, accountID AccountPathParam, orderID OrderPathParam, body PatchApiAccountsAccountIDOrdersOrderIDJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	PatchV1AccountsAccountIDOrdersOrderID(ctx context.Context, accountID AccountPathParam, orderID OrderPathParam, body PatchV1AccountsAccountIDOrdersOrderIDJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// GetApiAccountsAccountIDTransactions request
-	GetApiAccountsAccountIDTransactions(ctx context.Context, accountID AccountPathParam, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// GetV1AccountsAccountIDTransactions request
+	GetV1AccountsAccountIDTransactions(ctx context.Context, accountID AccountPathParam, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// PostApiAccountsAccountIDTransactions request with any body
-	PostApiAccountsAccountIDTransactionsWithBody(ctx context.Context, accountID AccountPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// PostV1AccountsAccountIDTransactions request with any body
+	PostV1AccountsAccountIDTransactionsWithBody(ctx context.Context, accountID AccountPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	PostApiAccountsAccountIDTransactions(ctx context.Context, accountID AccountPathParam, body PostApiAccountsAccountIDTransactionsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	PostV1AccountsAccountIDTransactions(ctx context.Context, accountID AccountPathParam, body PostV1AccountsAccountIDTransactionsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// GetApiAccountsAccountIDTransactionsTransactionID request
-	GetApiAccountsAccountIDTransactionsTransactionID(ctx context.Context, accountID AccountPathParam, transactionID TransactionPathParam, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// GetV1AccountsAccountIDTransactionsTransactionID request
+	GetV1AccountsAccountIDTransactionsTransactionID(ctx context.Context, accountID AccountPathParam, transactionID TransactionPathParam, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// GetApiMarketsMarketHistory request
-	GetApiMarketsMarketHistory(ctx context.Context, market MarketParam, params *GetApiMarketsMarketHistoryParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// GetV1MarketsMarketHistory request
+	GetV1MarketsMarketHistory(ctx context.Context, market MarketParam, params *GetV1MarketsMarketHistoryParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// GetApiMarketsMarketSnapshot request
-	GetApiMarketsMarketSnapshot(ctx context.Context, market MarketParam, params *GetApiMarketsMarketSnapshotParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// GetV1MarketsMarketSnapshot request
+	GetV1MarketsMarketSnapshot(ctx context.Context, market MarketParam, params *GetV1MarketsMarketSnapshotParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
-func (c *Client) GetApiAccounts(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetApiAccountsRequest(c.Server)
+func (c *Client) GetV1Accounts(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetV1AccountsRequest(c.Server)
 	if err != nil {
 		return nil, err
 	}
@@ -512,8 +512,8 @@ func (c *Client) GetApiAccounts(ctx context.Context, reqEditors ...RequestEditor
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetApiAccountsAccountID(ctx context.Context, accountID AccountPathParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetApiAccountsAccountIDRequest(c.Server, accountID)
+func (c *Client) GetV1AccountsAccountID(ctx context.Context, accountID AccountPathParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetV1AccountsAccountIDRequest(c.Server, accountID)
 	if err != nil {
 		return nil, err
 	}
@@ -524,8 +524,8 @@ func (c *Client) GetApiAccountsAccountID(ctx context.Context, accountID AccountP
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetApiAccountsAccountIDAddressesSymbolName(ctx context.Context, accountID AccountPathParam, symbolName SymbolPathParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetApiAccountsAccountIDAddressesSymbolNameRequest(c.Server, accountID, symbolName)
+func (c *Client) GetV1AccountsAccountIDAddressesSymbolName(ctx context.Context, accountID AccountPathParam, symbolName SymbolPathParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetV1AccountsAccountIDAddressesSymbolNameRequest(c.Server, accountID, symbolName)
 	if err != nil {
 		return nil, err
 	}
@@ -536,8 +536,8 @@ func (c *Client) GetApiAccountsAccountIDAddressesSymbolName(ctx context.Context,
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetApiAccountsAccountIDCode(ctx context.Context, accountID AccountPathParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetApiAccountsAccountIDCodeRequest(c.Server, accountID)
+func (c *Client) GetV1AccountsAccountIDCode(ctx context.Context, accountID AccountPathParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetV1AccountsAccountIDCodeRequest(c.Server, accountID)
 	if err != nil {
 		return nil, err
 	}
@@ -548,8 +548,8 @@ func (c *Client) GetApiAccountsAccountIDCode(ctx context.Context, accountID Acco
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetApiAccountsAccountIDOrders(ctx context.Context, accountID AccountPathParam, params *GetApiAccountsAccountIDOrdersParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetApiAccountsAccountIDOrdersRequest(c.Server, accountID, params)
+func (c *Client) GetV1AccountsAccountIDOrders(ctx context.Context, accountID AccountPathParam, params *GetV1AccountsAccountIDOrdersParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetV1AccountsAccountIDOrdersRequest(c.Server, accountID, params)
 	if err != nil {
 		return nil, err
 	}
@@ -560,8 +560,8 @@ func (c *Client) GetApiAccountsAccountIDOrders(ctx context.Context, accountID Ac
 	return c.Client.Do(req)
 }
 
-func (c *Client) PostApiAccountsAccountIDOrdersWithBody(ctx context.Context, accountID AccountPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewPostApiAccountsAccountIDOrdersRequestWithBody(c.Server, accountID, contentType, body)
+func (c *Client) PostV1AccountsAccountIDOrdersWithBody(ctx context.Context, accountID AccountPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostV1AccountsAccountIDOrdersRequestWithBody(c.Server, accountID, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -572,8 +572,8 @@ func (c *Client) PostApiAccountsAccountIDOrdersWithBody(ctx context.Context, acc
 	return c.Client.Do(req)
 }
 
-func (c *Client) PostApiAccountsAccountIDOrders(ctx context.Context, accountID AccountPathParam, body PostApiAccountsAccountIDOrdersJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewPostApiAccountsAccountIDOrdersRequest(c.Server, accountID, body)
+func (c *Client) PostV1AccountsAccountIDOrders(ctx context.Context, accountID AccountPathParam, body PostV1AccountsAccountIDOrdersJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostV1AccountsAccountIDOrdersRequest(c.Server, accountID, body)
 	if err != nil {
 		return nil, err
 	}
@@ -584,8 +584,8 @@ func (c *Client) PostApiAccountsAccountIDOrders(ctx context.Context, accountID A
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetApiAccountsAccountIDOrdersOrderID(ctx context.Context, accountID AccountPathParam, orderID OrderPathParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetApiAccountsAccountIDOrdersOrderIDRequest(c.Server, accountID, orderID)
+func (c *Client) GetV1AccountsAccountIDOrdersOrderID(ctx context.Context, accountID AccountPathParam, orderID OrderPathParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetV1AccountsAccountIDOrdersOrderIDRequest(c.Server, accountID, orderID)
 	if err != nil {
 		return nil, err
 	}
@@ -596,8 +596,8 @@ func (c *Client) GetApiAccountsAccountIDOrdersOrderID(ctx context.Context, accou
 	return c.Client.Do(req)
 }
 
-func (c *Client) PatchApiAccountsAccountIDOrdersOrderIDWithBody(ctx context.Context, accountID AccountPathParam, orderID OrderPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewPatchApiAccountsAccountIDOrdersOrderIDRequestWithBody(c.Server, accountID, orderID, contentType, body)
+func (c *Client) PatchV1AccountsAccountIDOrdersOrderIDWithBody(ctx context.Context, accountID AccountPathParam, orderID OrderPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPatchV1AccountsAccountIDOrdersOrderIDRequestWithBody(c.Server, accountID, orderID, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -608,8 +608,8 @@ func (c *Client) PatchApiAccountsAccountIDOrdersOrderIDWithBody(ctx context.Cont
 	return c.Client.Do(req)
 }
 
-func (c *Client) PatchApiAccountsAccountIDOrdersOrderID(ctx context.Context, accountID AccountPathParam, orderID OrderPathParam, body PatchApiAccountsAccountIDOrdersOrderIDJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewPatchApiAccountsAccountIDOrdersOrderIDRequest(c.Server, accountID, orderID, body)
+func (c *Client) PatchV1AccountsAccountIDOrdersOrderID(ctx context.Context, accountID AccountPathParam, orderID OrderPathParam, body PatchV1AccountsAccountIDOrdersOrderIDJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPatchV1AccountsAccountIDOrdersOrderIDRequest(c.Server, accountID, orderID, body)
 	if err != nil {
 		return nil, err
 	}
@@ -620,8 +620,8 @@ func (c *Client) PatchApiAccountsAccountIDOrdersOrderID(ctx context.Context, acc
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetApiAccountsAccountIDTransactions(ctx context.Context, accountID AccountPathParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetApiAccountsAccountIDTransactionsRequest(c.Server, accountID)
+func (c *Client) GetV1AccountsAccountIDTransactions(ctx context.Context, accountID AccountPathParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetV1AccountsAccountIDTransactionsRequest(c.Server, accountID)
 	if err != nil {
 		return nil, err
 	}
@@ -632,8 +632,8 @@ func (c *Client) GetApiAccountsAccountIDTransactions(ctx context.Context, accoun
 	return c.Client.Do(req)
 }
 
-func (c *Client) PostApiAccountsAccountIDTransactionsWithBody(ctx context.Context, accountID AccountPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewPostApiAccountsAccountIDTransactionsRequestWithBody(c.Server, accountID, contentType, body)
+func (c *Client) PostV1AccountsAccountIDTransactionsWithBody(ctx context.Context, accountID AccountPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostV1AccountsAccountIDTransactionsRequestWithBody(c.Server, accountID, contentType, body)
 	if err != nil {
 		return nil, err
 	}
@@ -644,8 +644,8 @@ func (c *Client) PostApiAccountsAccountIDTransactionsWithBody(ctx context.Contex
 	return c.Client.Do(req)
 }
 
-func (c *Client) PostApiAccountsAccountIDTransactions(ctx context.Context, accountID AccountPathParam, body PostApiAccountsAccountIDTransactionsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewPostApiAccountsAccountIDTransactionsRequest(c.Server, accountID, body)
+func (c *Client) PostV1AccountsAccountIDTransactions(ctx context.Context, accountID AccountPathParam, body PostV1AccountsAccountIDTransactionsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostV1AccountsAccountIDTransactionsRequest(c.Server, accountID, body)
 	if err != nil {
 		return nil, err
 	}
@@ -656,8 +656,8 @@ func (c *Client) PostApiAccountsAccountIDTransactions(ctx context.Context, accou
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetApiAccountsAccountIDTransactionsTransactionID(ctx context.Context, accountID AccountPathParam, transactionID TransactionPathParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetApiAccountsAccountIDTransactionsTransactionIDRequest(c.Server, accountID, transactionID)
+func (c *Client) GetV1AccountsAccountIDTransactionsTransactionID(ctx context.Context, accountID AccountPathParam, transactionID TransactionPathParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetV1AccountsAccountIDTransactionsTransactionIDRequest(c.Server, accountID, transactionID)
 	if err != nil {
 		return nil, err
 	}
@@ -668,8 +668,8 @@ func (c *Client) GetApiAccountsAccountIDTransactionsTransactionID(ctx context.Co
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetApiMarketsMarketHistory(ctx context.Context, market MarketParam, params *GetApiMarketsMarketHistoryParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetApiMarketsMarketHistoryRequest(c.Server, market, params)
+func (c *Client) GetV1MarketsMarketHistory(ctx context.Context, market MarketParam, params *GetV1MarketsMarketHistoryParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetV1MarketsMarketHistoryRequest(c.Server, market, params)
 	if err != nil {
 		return nil, err
 	}
@@ -680,8 +680,8 @@ func (c *Client) GetApiMarketsMarketHistory(ctx context.Context, market MarketPa
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetApiMarketsMarketSnapshot(ctx context.Context, market MarketParam, params *GetApiMarketsMarketSnapshotParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetApiMarketsMarketSnapshotRequest(c.Server, market, params)
+func (c *Client) GetV1MarketsMarketSnapshot(ctx context.Context, market MarketParam, params *GetV1MarketsMarketSnapshotParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetV1MarketsMarketSnapshotRequest(c.Server, market, params)
 	if err != nil {
 		return nil, err
 	}
@@ -692,8 +692,8 @@ func (c *Client) GetApiMarketsMarketSnapshot(ctx context.Context, market MarketP
 	return c.Client.Do(req)
 }
 
-// NewGetApiAccountsRequest generates requests for GetApiAccounts
-func NewGetApiAccountsRequest(server string) (*http.Request, error) {
+// NewGetV1AccountsRequest generates requests for GetV1Accounts
+func NewGetV1AccountsRequest(server string) (*http.Request, error) {
 	var err error
 
 	serverURL, err := url.Parse(server)
@@ -701,7 +701,7 @@ func NewGetApiAccountsRequest(server string) (*http.Request, error) {
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/api/accounts")
+	operationPath := fmt.Sprintf("/v1/accounts")
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -719,8 +719,8 @@ func NewGetApiAccountsRequest(server string) (*http.Request, error) {
 	return req, nil
 }
 
-// NewGetApiAccountsAccountIDRequest generates requests for GetApiAccountsAccountID
-func NewGetApiAccountsAccountIDRequest(server string, accountID AccountPathParam) (*http.Request, error) {
+// NewGetV1AccountsAccountIDRequest generates requests for GetV1AccountsAccountID
+func NewGetV1AccountsAccountIDRequest(server string, accountID AccountPathParam) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -735,7 +735,7 @@ func NewGetApiAccountsAccountIDRequest(server string, accountID AccountPathParam
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/api/accounts/%s", pathParam0)
+	operationPath := fmt.Sprintf("/v1/accounts/%s", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -753,8 +753,8 @@ func NewGetApiAccountsAccountIDRequest(server string, accountID AccountPathParam
 	return req, nil
 }
 
-// NewGetApiAccountsAccountIDAddressesSymbolNameRequest generates requests for GetApiAccountsAccountIDAddressesSymbolName
-func NewGetApiAccountsAccountIDAddressesSymbolNameRequest(server string, accountID AccountPathParam, symbolName SymbolPathParam) (*http.Request, error) {
+// NewGetV1AccountsAccountIDAddressesSymbolNameRequest generates requests for GetV1AccountsAccountIDAddressesSymbolName
+func NewGetV1AccountsAccountIDAddressesSymbolNameRequest(server string, accountID AccountPathParam, symbolName SymbolPathParam) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -776,7 +776,7 @@ func NewGetApiAccountsAccountIDAddressesSymbolNameRequest(server string, account
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/api/accounts/%s/addresses/%s", pathParam0, pathParam1)
+	operationPath := fmt.Sprintf("/v1/accounts/%s/addresses/%s", pathParam0, pathParam1)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -794,8 +794,8 @@ func NewGetApiAccountsAccountIDAddressesSymbolNameRequest(server string, account
 	return req, nil
 }
 
-// NewGetApiAccountsAccountIDCodeRequest generates requests for GetApiAccountsAccountIDCode
-func NewGetApiAccountsAccountIDCodeRequest(server string, accountID AccountPathParam) (*http.Request, error) {
+// NewGetV1AccountsAccountIDCodeRequest generates requests for GetV1AccountsAccountIDCode
+func NewGetV1AccountsAccountIDCodeRequest(server string, accountID AccountPathParam) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -810,7 +810,7 @@ func NewGetApiAccountsAccountIDCodeRequest(server string, accountID AccountPathP
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/api/accounts/%s/code", pathParam0)
+	operationPath := fmt.Sprintf("/v1/accounts/%s/code", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -828,8 +828,8 @@ func NewGetApiAccountsAccountIDCodeRequest(server string, accountID AccountPathP
 	return req, nil
 }
 
-// NewGetApiAccountsAccountIDOrdersRequest generates requests for GetApiAccountsAccountIDOrders
-func NewGetApiAccountsAccountIDOrdersRequest(server string, accountID AccountPathParam, params *GetApiAccountsAccountIDOrdersParams) (*http.Request, error) {
+// NewGetV1AccountsAccountIDOrdersRequest generates requests for GetV1AccountsAccountIDOrders
+func NewGetV1AccountsAccountIDOrdersRequest(server string, accountID AccountPathParam, params *GetV1AccountsAccountIDOrdersParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -844,7 +844,7 @@ func NewGetApiAccountsAccountIDOrdersRequest(server string, accountID AccountPat
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/api/accounts/%s/orders", pathParam0)
+	operationPath := fmt.Sprintf("/v1/accounts/%s/orders", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -882,19 +882,19 @@ func NewGetApiAccountsAccountIDOrdersRequest(server string, accountID AccountPat
 	return req, nil
 }
 
-// NewPostApiAccountsAccountIDOrdersRequest calls the generic PostApiAccountsAccountIDOrders builder with application/json body
-func NewPostApiAccountsAccountIDOrdersRequest(server string, accountID AccountPathParam, body PostApiAccountsAccountIDOrdersJSONRequestBody) (*http.Request, error) {
+// NewPostV1AccountsAccountIDOrdersRequest calls the generic PostV1AccountsAccountIDOrders builder with application/json body
+func NewPostV1AccountsAccountIDOrdersRequest(server string, accountID AccountPathParam, body PostV1AccountsAccountIDOrdersJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewPostApiAccountsAccountIDOrdersRequestWithBody(server, accountID, "application/json", bodyReader)
+	return NewPostV1AccountsAccountIDOrdersRequestWithBody(server, accountID, "application/json", bodyReader)
 }
 
-// NewPostApiAccountsAccountIDOrdersRequestWithBody generates requests for PostApiAccountsAccountIDOrders with any type of body
-func NewPostApiAccountsAccountIDOrdersRequestWithBody(server string, accountID AccountPathParam, contentType string, body io.Reader) (*http.Request, error) {
+// NewPostV1AccountsAccountIDOrdersRequestWithBody generates requests for PostV1AccountsAccountIDOrders with any type of body
+func NewPostV1AccountsAccountIDOrdersRequestWithBody(server string, accountID AccountPathParam, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -909,7 +909,7 @@ func NewPostApiAccountsAccountIDOrdersRequestWithBody(server string, accountID A
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/api/accounts/%s/orders", pathParam0)
+	operationPath := fmt.Sprintf("/v1/accounts/%s/orders", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -929,8 +929,8 @@ func NewPostApiAccountsAccountIDOrdersRequestWithBody(server string, accountID A
 	return req, nil
 }
 
-// NewGetApiAccountsAccountIDOrdersOrderIDRequest generates requests for GetApiAccountsAccountIDOrdersOrderID
-func NewGetApiAccountsAccountIDOrdersOrderIDRequest(server string, accountID AccountPathParam, orderID OrderPathParam) (*http.Request, error) {
+// NewGetV1AccountsAccountIDOrdersOrderIDRequest generates requests for GetV1AccountsAccountIDOrdersOrderID
+func NewGetV1AccountsAccountIDOrdersOrderIDRequest(server string, accountID AccountPathParam, orderID OrderPathParam) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -952,7 +952,7 @@ func NewGetApiAccountsAccountIDOrdersOrderIDRequest(server string, accountID Acc
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/api/accounts/%s/orders/%s", pathParam0, pathParam1)
+	operationPath := fmt.Sprintf("/v1/accounts/%s/orders/%s", pathParam0, pathParam1)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -970,19 +970,19 @@ func NewGetApiAccountsAccountIDOrdersOrderIDRequest(server string, accountID Acc
 	return req, nil
 }
 
-// NewPatchApiAccountsAccountIDOrdersOrderIDRequest calls the generic PatchApiAccountsAccountIDOrdersOrderID builder with application/json body
-func NewPatchApiAccountsAccountIDOrdersOrderIDRequest(server string, accountID AccountPathParam, orderID OrderPathParam, body PatchApiAccountsAccountIDOrdersOrderIDJSONRequestBody) (*http.Request, error) {
+// NewPatchV1AccountsAccountIDOrdersOrderIDRequest calls the generic PatchV1AccountsAccountIDOrdersOrderID builder with application/json body
+func NewPatchV1AccountsAccountIDOrdersOrderIDRequest(server string, accountID AccountPathParam, orderID OrderPathParam, body PatchV1AccountsAccountIDOrdersOrderIDJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewPatchApiAccountsAccountIDOrdersOrderIDRequestWithBody(server, accountID, orderID, "application/json", bodyReader)
+	return NewPatchV1AccountsAccountIDOrdersOrderIDRequestWithBody(server, accountID, orderID, "application/json", bodyReader)
 }
 
-// NewPatchApiAccountsAccountIDOrdersOrderIDRequestWithBody generates requests for PatchApiAccountsAccountIDOrdersOrderID with any type of body
-func NewPatchApiAccountsAccountIDOrdersOrderIDRequestWithBody(server string, accountID AccountPathParam, orderID OrderPathParam, contentType string, body io.Reader) (*http.Request, error) {
+// NewPatchV1AccountsAccountIDOrdersOrderIDRequestWithBody generates requests for PatchV1AccountsAccountIDOrdersOrderID with any type of body
+func NewPatchV1AccountsAccountIDOrdersOrderIDRequestWithBody(server string, accountID AccountPathParam, orderID OrderPathParam, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1004,7 +1004,7 @@ func NewPatchApiAccountsAccountIDOrdersOrderIDRequestWithBody(server string, acc
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/api/accounts/%s/orders/%s", pathParam0, pathParam1)
+	operationPath := fmt.Sprintf("/v1/accounts/%s/orders/%s", pathParam0, pathParam1)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1024,8 +1024,8 @@ func NewPatchApiAccountsAccountIDOrdersOrderIDRequestWithBody(server string, acc
 	return req, nil
 }
 
-// NewGetApiAccountsAccountIDTransactionsRequest generates requests for GetApiAccountsAccountIDTransactions
-func NewGetApiAccountsAccountIDTransactionsRequest(server string, accountID AccountPathParam) (*http.Request, error) {
+// NewGetV1AccountsAccountIDTransactionsRequest generates requests for GetV1AccountsAccountIDTransactions
+func NewGetV1AccountsAccountIDTransactionsRequest(server string, accountID AccountPathParam) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1040,7 +1040,7 @@ func NewGetApiAccountsAccountIDTransactionsRequest(server string, accountID Acco
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/api/accounts/%s/transactions", pathParam0)
+	operationPath := fmt.Sprintf("/v1/accounts/%s/transactions", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1058,19 +1058,19 @@ func NewGetApiAccountsAccountIDTransactionsRequest(server string, accountID Acco
 	return req, nil
 }
 
-// NewPostApiAccountsAccountIDTransactionsRequest calls the generic PostApiAccountsAccountIDTransactions builder with application/json body
-func NewPostApiAccountsAccountIDTransactionsRequest(server string, accountID AccountPathParam, body PostApiAccountsAccountIDTransactionsJSONRequestBody) (*http.Request, error) {
+// NewPostV1AccountsAccountIDTransactionsRequest calls the generic PostV1AccountsAccountIDTransactions builder with application/json body
+func NewPostV1AccountsAccountIDTransactionsRequest(server string, accountID AccountPathParam, body PostV1AccountsAccountIDTransactionsJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
 		return nil, err
 	}
 	bodyReader = bytes.NewReader(buf)
-	return NewPostApiAccountsAccountIDTransactionsRequestWithBody(server, accountID, "application/json", bodyReader)
+	return NewPostV1AccountsAccountIDTransactionsRequestWithBody(server, accountID, "application/json", bodyReader)
 }
 
-// NewPostApiAccountsAccountIDTransactionsRequestWithBody generates requests for PostApiAccountsAccountIDTransactions with any type of body
-func NewPostApiAccountsAccountIDTransactionsRequestWithBody(server string, accountID AccountPathParam, contentType string, body io.Reader) (*http.Request, error) {
+// NewPostV1AccountsAccountIDTransactionsRequestWithBody generates requests for PostV1AccountsAccountIDTransactions with any type of body
+func NewPostV1AccountsAccountIDTransactionsRequestWithBody(server string, accountID AccountPathParam, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1085,7 +1085,7 @@ func NewPostApiAccountsAccountIDTransactionsRequestWithBody(server string, accou
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/api/accounts/%s/transactions", pathParam0)
+	operationPath := fmt.Sprintf("/v1/accounts/%s/transactions", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1105,8 +1105,8 @@ func NewPostApiAccountsAccountIDTransactionsRequestWithBody(server string, accou
 	return req, nil
 }
 
-// NewGetApiAccountsAccountIDTransactionsTransactionIDRequest generates requests for GetApiAccountsAccountIDTransactionsTransactionID
-func NewGetApiAccountsAccountIDTransactionsTransactionIDRequest(server string, accountID AccountPathParam, transactionID TransactionPathParam) (*http.Request, error) {
+// NewGetV1AccountsAccountIDTransactionsTransactionIDRequest generates requests for GetV1AccountsAccountIDTransactionsTransactionID
+func NewGetV1AccountsAccountIDTransactionsTransactionIDRequest(server string, accountID AccountPathParam, transactionID TransactionPathParam) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1128,7 +1128,7 @@ func NewGetApiAccountsAccountIDTransactionsTransactionIDRequest(server string, a
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/api/accounts/%s/transactions/%s", pathParam0, pathParam1)
+	operationPath := fmt.Sprintf("/v1/accounts/%s/transactions/%s", pathParam0, pathParam1)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1146,8 +1146,8 @@ func NewGetApiAccountsAccountIDTransactionsTransactionIDRequest(server string, a
 	return req, nil
 }
 
-// NewGetApiMarketsMarketHistoryRequest generates requests for GetApiMarketsMarketHistory
-func NewGetApiMarketsMarketHistoryRequest(server string, market MarketParam, params *GetApiMarketsMarketHistoryParams) (*http.Request, error) {
+// NewGetV1MarketsMarketHistoryRequest generates requests for GetV1MarketsMarketHistory
+func NewGetV1MarketsMarketHistoryRequest(server string, market MarketParam, params *GetV1MarketsMarketHistoryParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1162,7 +1162,7 @@ func NewGetApiMarketsMarketHistoryRequest(server string, market MarketParam, par
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/api/markets/%s/history", pathParam0)
+	operationPath := fmt.Sprintf("/v1/markets/%s/history", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1232,8 +1232,8 @@ func NewGetApiMarketsMarketHistoryRequest(server string, market MarketParam, par
 	return req, nil
 }
 
-// NewGetApiMarketsMarketSnapshotRequest generates requests for GetApiMarketsMarketSnapshot
-func NewGetApiMarketsMarketSnapshotRequest(server string, market MarketParam, params *GetApiMarketsMarketSnapshotParams) (*http.Request, error) {
+// NewGetV1MarketsMarketSnapshotRequest generates requests for GetV1MarketsMarketSnapshot
+func NewGetV1MarketsMarketSnapshotRequest(server string, market MarketParam, params *GetV1MarketsMarketSnapshotParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -1248,7 +1248,7 @@ func NewGetApiMarketsMarketSnapshotRequest(server string, market MarketParam, pa
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/api/markets/%s/snapshot", pathParam0)
+	operationPath := fmt.Sprintf("/v1/markets/%s/snapshot", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -1345,53 +1345,53 @@ func WithBaseURL(baseURL string) ClientOption {
 
 // ClientWithResponsesInterface is the interface specification for the client with responses above.
 type ClientWithResponsesInterface interface {
-	// GetApiAccounts request
-	GetApiAccountsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetApiAccountsResponse, error)
+	// GetV1Accounts request
+	GetV1AccountsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetV1AccountsResponse, error)
 
-	// GetApiAccountsAccountID request
-	GetApiAccountsAccountIDWithResponse(ctx context.Context, accountID AccountPathParam, reqEditors ...RequestEditorFn) (*GetApiAccountsAccountIDResponse, error)
+	// GetV1AccountsAccountID request
+	GetV1AccountsAccountIDWithResponse(ctx context.Context, accountID AccountPathParam, reqEditors ...RequestEditorFn) (*GetV1AccountsAccountIDResponse, error)
 
-	// GetApiAccountsAccountIDAddressesSymbolName request
-	GetApiAccountsAccountIDAddressesSymbolNameWithResponse(ctx context.Context, accountID AccountPathParam, symbolName SymbolPathParam, reqEditors ...RequestEditorFn) (*GetApiAccountsAccountIDAddressesSymbolNameResponse, error)
+	// GetV1AccountsAccountIDAddressesSymbolName request
+	GetV1AccountsAccountIDAddressesSymbolNameWithResponse(ctx context.Context, accountID AccountPathParam, symbolName SymbolPathParam, reqEditors ...RequestEditorFn) (*GetV1AccountsAccountIDAddressesSymbolNameResponse, error)
 
-	// GetApiAccountsAccountIDCode request
-	GetApiAccountsAccountIDCodeWithResponse(ctx context.Context, accountID AccountPathParam, reqEditors ...RequestEditorFn) (*GetApiAccountsAccountIDCodeResponse, error)
+	// GetV1AccountsAccountIDCode request
+	GetV1AccountsAccountIDCodeWithResponse(ctx context.Context, accountID AccountPathParam, reqEditors ...RequestEditorFn) (*GetV1AccountsAccountIDCodeResponse, error)
 
-	// GetApiAccountsAccountIDOrders request
-	GetApiAccountsAccountIDOrdersWithResponse(ctx context.Context, accountID AccountPathParam, params *GetApiAccountsAccountIDOrdersParams, reqEditors ...RequestEditorFn) (*GetApiAccountsAccountIDOrdersResponse, error)
+	// GetV1AccountsAccountIDOrders request
+	GetV1AccountsAccountIDOrdersWithResponse(ctx context.Context, accountID AccountPathParam, params *GetV1AccountsAccountIDOrdersParams, reqEditors ...RequestEditorFn) (*GetV1AccountsAccountIDOrdersResponse, error)
 
-	// PostApiAccountsAccountIDOrders request with any body
-	PostApiAccountsAccountIDOrdersWithBodyWithResponse(ctx context.Context, accountID AccountPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostApiAccountsAccountIDOrdersResponse, error)
+	// PostV1AccountsAccountIDOrders request with any body
+	PostV1AccountsAccountIDOrdersWithBodyWithResponse(ctx context.Context, accountID AccountPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostV1AccountsAccountIDOrdersResponse, error)
 
-	PostApiAccountsAccountIDOrdersWithResponse(ctx context.Context, accountID AccountPathParam, body PostApiAccountsAccountIDOrdersJSONRequestBody, reqEditors ...RequestEditorFn) (*PostApiAccountsAccountIDOrdersResponse, error)
+	PostV1AccountsAccountIDOrdersWithResponse(ctx context.Context, accountID AccountPathParam, body PostV1AccountsAccountIDOrdersJSONRequestBody, reqEditors ...RequestEditorFn) (*PostV1AccountsAccountIDOrdersResponse, error)
 
-	// GetApiAccountsAccountIDOrdersOrderID request
-	GetApiAccountsAccountIDOrdersOrderIDWithResponse(ctx context.Context, accountID AccountPathParam, orderID OrderPathParam, reqEditors ...RequestEditorFn) (*GetApiAccountsAccountIDOrdersOrderIDResponse, error)
+	// GetV1AccountsAccountIDOrdersOrderID request
+	GetV1AccountsAccountIDOrdersOrderIDWithResponse(ctx context.Context, accountID AccountPathParam, orderID OrderPathParam, reqEditors ...RequestEditorFn) (*GetV1AccountsAccountIDOrdersOrderIDResponse, error)
 
-	// PatchApiAccountsAccountIDOrdersOrderID request with any body
-	PatchApiAccountsAccountIDOrdersOrderIDWithBodyWithResponse(ctx context.Context, accountID AccountPathParam, orderID OrderPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PatchApiAccountsAccountIDOrdersOrderIDResponse, error)
+	// PatchV1AccountsAccountIDOrdersOrderID request with any body
+	PatchV1AccountsAccountIDOrdersOrderIDWithBodyWithResponse(ctx context.Context, accountID AccountPathParam, orderID OrderPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PatchV1AccountsAccountIDOrdersOrderIDResponse, error)
 
-	PatchApiAccountsAccountIDOrdersOrderIDWithResponse(ctx context.Context, accountID AccountPathParam, orderID OrderPathParam, body PatchApiAccountsAccountIDOrdersOrderIDJSONRequestBody, reqEditors ...RequestEditorFn) (*PatchApiAccountsAccountIDOrdersOrderIDResponse, error)
+	PatchV1AccountsAccountIDOrdersOrderIDWithResponse(ctx context.Context, accountID AccountPathParam, orderID OrderPathParam, body PatchV1AccountsAccountIDOrdersOrderIDJSONRequestBody, reqEditors ...RequestEditorFn) (*PatchV1AccountsAccountIDOrdersOrderIDResponse, error)
 
-	// GetApiAccountsAccountIDTransactions request
-	GetApiAccountsAccountIDTransactionsWithResponse(ctx context.Context, accountID AccountPathParam, reqEditors ...RequestEditorFn) (*GetApiAccountsAccountIDTransactionsResponse, error)
+	// GetV1AccountsAccountIDTransactions request
+	GetV1AccountsAccountIDTransactionsWithResponse(ctx context.Context, accountID AccountPathParam, reqEditors ...RequestEditorFn) (*GetV1AccountsAccountIDTransactionsResponse, error)
 
-	// PostApiAccountsAccountIDTransactions request with any body
-	PostApiAccountsAccountIDTransactionsWithBodyWithResponse(ctx context.Context, accountID AccountPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostApiAccountsAccountIDTransactionsResponse, error)
+	// PostV1AccountsAccountIDTransactions request with any body
+	PostV1AccountsAccountIDTransactionsWithBodyWithResponse(ctx context.Context, accountID AccountPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostV1AccountsAccountIDTransactionsResponse, error)
 
-	PostApiAccountsAccountIDTransactionsWithResponse(ctx context.Context, accountID AccountPathParam, body PostApiAccountsAccountIDTransactionsJSONRequestBody, reqEditors ...RequestEditorFn) (*PostApiAccountsAccountIDTransactionsResponse, error)
+	PostV1AccountsAccountIDTransactionsWithResponse(ctx context.Context, accountID AccountPathParam, body PostV1AccountsAccountIDTransactionsJSONRequestBody, reqEditors ...RequestEditorFn) (*PostV1AccountsAccountIDTransactionsResponse, error)
 
-	// GetApiAccountsAccountIDTransactionsTransactionID request
-	GetApiAccountsAccountIDTransactionsTransactionIDWithResponse(ctx context.Context, accountID AccountPathParam, transactionID TransactionPathParam, reqEditors ...RequestEditorFn) (*GetApiAccountsAccountIDTransactionsTransactionIDResponse, error)
+	// GetV1AccountsAccountIDTransactionsTransactionID request
+	GetV1AccountsAccountIDTransactionsTransactionIDWithResponse(ctx context.Context, accountID AccountPathParam, transactionID TransactionPathParam, reqEditors ...RequestEditorFn) (*GetV1AccountsAccountIDTransactionsTransactionIDResponse, error)
 
-	// GetApiMarketsMarketHistory request
-	GetApiMarketsMarketHistoryWithResponse(ctx context.Context, market MarketParam, params *GetApiMarketsMarketHistoryParams, reqEditors ...RequestEditorFn) (*GetApiMarketsMarketHistoryResponse, error)
+	// GetV1MarketsMarketHistory request
+	GetV1MarketsMarketHistoryWithResponse(ctx context.Context, market MarketParam, params *GetV1MarketsMarketHistoryParams, reqEditors ...RequestEditorFn) (*GetV1MarketsMarketHistoryResponse, error)
 
-	// GetApiMarketsMarketSnapshot request
-	GetApiMarketsMarketSnapshotWithResponse(ctx context.Context, market MarketParam, params *GetApiMarketsMarketSnapshotParams, reqEditors ...RequestEditorFn) (*GetApiMarketsMarketSnapshotResponse, error)
+	// GetV1MarketsMarketSnapshot request
+	GetV1MarketsMarketSnapshotWithResponse(ctx context.Context, market MarketParam, params *GetV1MarketsMarketSnapshotParams, reqEditors ...RequestEditorFn) (*GetV1MarketsMarketSnapshotResponse, error)
 }
 
-type GetApiAccountsResponse struct {
+type GetV1AccountsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
@@ -1401,7 +1401,7 @@ type GetApiAccountsResponse struct {
 }
 
 // Status returns HTTPResponse.Status
-func (r GetApiAccountsResponse) Status() string {
+func (r GetV1AccountsResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -1409,14 +1409,14 @@ func (r GetApiAccountsResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r GetApiAccountsResponse) StatusCode() int {
+func (r GetV1AccountsResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
 	return 0
 }
 
-type GetApiAccountsAccountIDResponse struct {
+type GetV1AccountsAccountIDResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
@@ -1427,7 +1427,7 @@ type GetApiAccountsAccountIDResponse struct {
 }
 
 // Status returns HTTPResponse.Status
-func (r GetApiAccountsAccountIDResponse) Status() string {
+func (r GetV1AccountsAccountIDResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -1435,14 +1435,14 @@ func (r GetApiAccountsAccountIDResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r GetApiAccountsAccountIDResponse) StatusCode() int {
+func (r GetV1AccountsAccountIDResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
 	return 0
 }
 
-type GetApiAccountsAccountIDAddressesSymbolNameResponse struct {
+type GetV1AccountsAccountIDAddressesSymbolNameResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
@@ -1452,7 +1452,7 @@ type GetApiAccountsAccountIDAddressesSymbolNameResponse struct {
 }
 
 // Status returns HTTPResponse.Status
-func (r GetApiAccountsAccountIDAddressesSymbolNameResponse) Status() string {
+func (r GetV1AccountsAccountIDAddressesSymbolNameResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -1460,20 +1460,20 @@ func (r GetApiAccountsAccountIDAddressesSymbolNameResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r GetApiAccountsAccountIDAddressesSymbolNameResponse) StatusCode() int {
+func (r GetV1AccountsAccountIDAddressesSymbolNameResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
 	return 0
 }
 
-type GetApiAccountsAccountIDCodeResponse struct {
+type GetV1AccountsAccountIDCodeResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 }
 
 // Status returns HTTPResponse.Status
-func (r GetApiAccountsAccountIDCodeResponse) Status() string {
+func (r GetV1AccountsAccountIDCodeResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -1481,14 +1481,14 @@ func (r GetApiAccountsAccountIDCodeResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r GetApiAccountsAccountIDCodeResponse) StatusCode() int {
+func (r GetV1AccountsAccountIDCodeResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
 	return 0
 }
 
-type GetApiAccountsAccountIDOrdersResponse struct {
+type GetV1AccountsAccountIDOrdersResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
@@ -1501,7 +1501,7 @@ type GetApiAccountsAccountIDOrdersResponse struct {
 }
 
 // Status returns HTTPResponse.Status
-func (r GetApiAccountsAccountIDOrdersResponse) Status() string {
+func (r GetV1AccountsAccountIDOrdersResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -1509,14 +1509,14 @@ func (r GetApiAccountsAccountIDOrdersResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r GetApiAccountsAccountIDOrdersResponse) StatusCode() int {
+func (r GetV1AccountsAccountIDOrdersResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
 	return 0
 }
 
-type PostApiAccountsAccountIDOrdersResponse struct {
+type PostV1AccountsAccountIDOrdersResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
@@ -1531,7 +1531,7 @@ type PostApiAccountsAccountIDOrdersResponse struct {
 }
 
 // Status returns HTTPResponse.Status
-func (r PostApiAccountsAccountIDOrdersResponse) Status() string {
+func (r PostV1AccountsAccountIDOrdersResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -1539,14 +1539,14 @@ func (r PostApiAccountsAccountIDOrdersResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r PostApiAccountsAccountIDOrdersResponse) StatusCode() int {
+func (r PostV1AccountsAccountIDOrdersResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
 	return 0
 }
 
-type GetApiAccountsAccountIDOrdersOrderIDResponse struct {
+type GetV1AccountsAccountIDOrdersOrderIDResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
@@ -1556,7 +1556,7 @@ type GetApiAccountsAccountIDOrdersOrderIDResponse struct {
 }
 
 // Status returns HTTPResponse.Status
-func (r GetApiAccountsAccountIDOrdersOrderIDResponse) Status() string {
+func (r GetV1AccountsAccountIDOrdersOrderIDResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -1564,14 +1564,14 @@ func (r GetApiAccountsAccountIDOrdersOrderIDResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r GetApiAccountsAccountIDOrdersOrderIDResponse) StatusCode() int {
+func (r GetV1AccountsAccountIDOrdersOrderIDResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
 	return 0
 }
 
-type PatchApiAccountsAccountIDOrdersOrderIDResponse struct {
+type PatchV1AccountsAccountIDOrdersOrderIDResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
@@ -1589,7 +1589,7 @@ type PatchApiAccountsAccountIDOrdersOrderIDResponse struct {
 }
 
 // Status returns HTTPResponse.Status
-func (r PatchApiAccountsAccountIDOrdersOrderIDResponse) Status() string {
+func (r PatchV1AccountsAccountIDOrdersOrderIDResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -1597,14 +1597,14 @@ func (r PatchApiAccountsAccountIDOrdersOrderIDResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r PatchApiAccountsAccountIDOrdersOrderIDResponse) StatusCode() int {
+func (r PatchV1AccountsAccountIDOrdersOrderIDResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
 	return 0
 }
 
-type GetApiAccountsAccountIDTransactionsResponse struct {
+type GetV1AccountsAccountIDTransactionsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
@@ -1617,7 +1617,7 @@ type GetApiAccountsAccountIDTransactionsResponse struct {
 }
 
 // Status returns HTTPResponse.Status
-func (r GetApiAccountsAccountIDTransactionsResponse) Status() string {
+func (r GetV1AccountsAccountIDTransactionsResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -1625,14 +1625,14 @@ func (r GetApiAccountsAccountIDTransactionsResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r GetApiAccountsAccountIDTransactionsResponse) StatusCode() int {
+func (r GetV1AccountsAccountIDTransactionsResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
 	return 0
 }
 
-type PostApiAccountsAccountIDTransactionsResponse struct {
+type PostV1AccountsAccountIDTransactionsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
@@ -1651,7 +1651,7 @@ type PostApiAccountsAccountIDTransactionsResponse struct {
 }
 
 // Status returns HTTPResponse.Status
-func (r PostApiAccountsAccountIDTransactionsResponse) Status() string {
+func (r PostV1AccountsAccountIDTransactionsResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -1659,14 +1659,14 @@ func (r PostApiAccountsAccountIDTransactionsResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r PostApiAccountsAccountIDTransactionsResponse) StatusCode() int {
+func (r PostV1AccountsAccountIDTransactionsResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
 	return 0
 }
 
-type GetApiAccountsAccountIDTransactionsTransactionIDResponse struct {
+type GetV1AccountsAccountIDTransactionsTransactionIDResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
@@ -1677,7 +1677,7 @@ type GetApiAccountsAccountIDTransactionsTransactionIDResponse struct {
 }
 
 // Status returns HTTPResponse.Status
-func (r GetApiAccountsAccountIDTransactionsTransactionIDResponse) Status() string {
+func (r GetV1AccountsAccountIDTransactionsTransactionIDResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -1685,14 +1685,14 @@ func (r GetApiAccountsAccountIDTransactionsTransactionIDResponse) Status() strin
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r GetApiAccountsAccountIDTransactionsTransactionIDResponse) StatusCode() int {
+func (r GetV1AccountsAccountIDTransactionsTransactionIDResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
 	return 0
 }
 
-type GetApiMarketsMarketHistoryResponse struct {
+type GetV1MarketsMarketHistoryResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
@@ -1704,7 +1704,7 @@ type GetApiMarketsMarketHistoryResponse struct {
 }
 
 // Status returns HTTPResponse.Status
-func (r GetApiMarketsMarketHistoryResponse) Status() string {
+func (r GetV1MarketsMarketHistoryResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -1712,14 +1712,14 @@ func (r GetApiMarketsMarketHistoryResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r GetApiMarketsMarketHistoryResponse) StatusCode() int {
+func (r GetV1MarketsMarketHistoryResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
 	return 0
 }
 
-type GetApiMarketsMarketSnapshotResponse struct {
+type GetV1MarketsMarketSnapshotResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
@@ -1731,7 +1731,7 @@ type GetApiMarketsMarketSnapshotResponse struct {
 }
 
 // Status returns HTTPResponse.Status
-func (r GetApiMarketsMarketSnapshotResponse) Status() string {
+func (r GetV1MarketsMarketSnapshotResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -1739,163 +1739,163 @@ func (r GetApiMarketsMarketSnapshotResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r GetApiMarketsMarketSnapshotResponse) StatusCode() int {
+func (r GetV1MarketsMarketSnapshotResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
 	return 0
 }
 
-// GetApiAccountsWithResponse request returning *GetApiAccountsResponse
-func (c *ClientWithResponses) GetApiAccountsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetApiAccountsResponse, error) {
-	rsp, err := c.GetApiAccounts(ctx, reqEditors...)
+// GetV1AccountsWithResponse request returning *GetV1AccountsResponse
+func (c *ClientWithResponses) GetV1AccountsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetV1AccountsResponse, error) {
+	rsp, err := c.GetV1Accounts(ctx, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseGetApiAccountsResponse(rsp)
+	return ParseGetV1AccountsResponse(rsp)
 }
 
-// GetApiAccountsAccountIDWithResponse request returning *GetApiAccountsAccountIDResponse
-func (c *ClientWithResponses) GetApiAccountsAccountIDWithResponse(ctx context.Context, accountID AccountPathParam, reqEditors ...RequestEditorFn) (*GetApiAccountsAccountIDResponse, error) {
-	rsp, err := c.GetApiAccountsAccountID(ctx, accountID, reqEditors...)
+// GetV1AccountsAccountIDWithResponse request returning *GetV1AccountsAccountIDResponse
+func (c *ClientWithResponses) GetV1AccountsAccountIDWithResponse(ctx context.Context, accountID AccountPathParam, reqEditors ...RequestEditorFn) (*GetV1AccountsAccountIDResponse, error) {
+	rsp, err := c.GetV1AccountsAccountID(ctx, accountID, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseGetApiAccountsAccountIDResponse(rsp)
+	return ParseGetV1AccountsAccountIDResponse(rsp)
 }
 
-// GetApiAccountsAccountIDAddressesSymbolNameWithResponse request returning *GetApiAccountsAccountIDAddressesSymbolNameResponse
-func (c *ClientWithResponses) GetApiAccountsAccountIDAddressesSymbolNameWithResponse(ctx context.Context, accountID AccountPathParam, symbolName SymbolPathParam, reqEditors ...RequestEditorFn) (*GetApiAccountsAccountIDAddressesSymbolNameResponse, error) {
-	rsp, err := c.GetApiAccountsAccountIDAddressesSymbolName(ctx, accountID, symbolName, reqEditors...)
+// GetV1AccountsAccountIDAddressesSymbolNameWithResponse request returning *GetV1AccountsAccountIDAddressesSymbolNameResponse
+func (c *ClientWithResponses) GetV1AccountsAccountIDAddressesSymbolNameWithResponse(ctx context.Context, accountID AccountPathParam, symbolName SymbolPathParam, reqEditors ...RequestEditorFn) (*GetV1AccountsAccountIDAddressesSymbolNameResponse, error) {
+	rsp, err := c.GetV1AccountsAccountIDAddressesSymbolName(ctx, accountID, symbolName, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseGetApiAccountsAccountIDAddressesSymbolNameResponse(rsp)
+	return ParseGetV1AccountsAccountIDAddressesSymbolNameResponse(rsp)
 }
 
-// GetApiAccountsAccountIDCodeWithResponse request returning *GetApiAccountsAccountIDCodeResponse
-func (c *ClientWithResponses) GetApiAccountsAccountIDCodeWithResponse(ctx context.Context, accountID AccountPathParam, reqEditors ...RequestEditorFn) (*GetApiAccountsAccountIDCodeResponse, error) {
-	rsp, err := c.GetApiAccountsAccountIDCode(ctx, accountID, reqEditors...)
+// GetV1AccountsAccountIDCodeWithResponse request returning *GetV1AccountsAccountIDCodeResponse
+func (c *ClientWithResponses) GetV1AccountsAccountIDCodeWithResponse(ctx context.Context, accountID AccountPathParam, reqEditors ...RequestEditorFn) (*GetV1AccountsAccountIDCodeResponse, error) {
+	rsp, err := c.GetV1AccountsAccountIDCode(ctx, accountID, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseGetApiAccountsAccountIDCodeResponse(rsp)
+	return ParseGetV1AccountsAccountIDCodeResponse(rsp)
 }
 
-// GetApiAccountsAccountIDOrdersWithResponse request returning *GetApiAccountsAccountIDOrdersResponse
-func (c *ClientWithResponses) GetApiAccountsAccountIDOrdersWithResponse(ctx context.Context, accountID AccountPathParam, params *GetApiAccountsAccountIDOrdersParams, reqEditors ...RequestEditorFn) (*GetApiAccountsAccountIDOrdersResponse, error) {
-	rsp, err := c.GetApiAccountsAccountIDOrders(ctx, accountID, params, reqEditors...)
+// GetV1AccountsAccountIDOrdersWithResponse request returning *GetV1AccountsAccountIDOrdersResponse
+func (c *ClientWithResponses) GetV1AccountsAccountIDOrdersWithResponse(ctx context.Context, accountID AccountPathParam, params *GetV1AccountsAccountIDOrdersParams, reqEditors ...RequestEditorFn) (*GetV1AccountsAccountIDOrdersResponse, error) {
+	rsp, err := c.GetV1AccountsAccountIDOrders(ctx, accountID, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseGetApiAccountsAccountIDOrdersResponse(rsp)
+	return ParseGetV1AccountsAccountIDOrdersResponse(rsp)
 }
 
-// PostApiAccountsAccountIDOrdersWithBodyWithResponse request with arbitrary body returning *PostApiAccountsAccountIDOrdersResponse
-func (c *ClientWithResponses) PostApiAccountsAccountIDOrdersWithBodyWithResponse(ctx context.Context, accountID AccountPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostApiAccountsAccountIDOrdersResponse, error) {
-	rsp, err := c.PostApiAccountsAccountIDOrdersWithBody(ctx, accountID, contentType, body, reqEditors...)
+// PostV1AccountsAccountIDOrdersWithBodyWithResponse request with arbitrary body returning *PostV1AccountsAccountIDOrdersResponse
+func (c *ClientWithResponses) PostV1AccountsAccountIDOrdersWithBodyWithResponse(ctx context.Context, accountID AccountPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostV1AccountsAccountIDOrdersResponse, error) {
+	rsp, err := c.PostV1AccountsAccountIDOrdersWithBody(ctx, accountID, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParsePostApiAccountsAccountIDOrdersResponse(rsp)
+	return ParsePostV1AccountsAccountIDOrdersResponse(rsp)
 }
 
-func (c *ClientWithResponses) PostApiAccountsAccountIDOrdersWithResponse(ctx context.Context, accountID AccountPathParam, body PostApiAccountsAccountIDOrdersJSONRequestBody, reqEditors ...RequestEditorFn) (*PostApiAccountsAccountIDOrdersResponse, error) {
-	rsp, err := c.PostApiAccountsAccountIDOrders(ctx, accountID, body, reqEditors...)
+func (c *ClientWithResponses) PostV1AccountsAccountIDOrdersWithResponse(ctx context.Context, accountID AccountPathParam, body PostV1AccountsAccountIDOrdersJSONRequestBody, reqEditors ...RequestEditorFn) (*PostV1AccountsAccountIDOrdersResponse, error) {
+	rsp, err := c.PostV1AccountsAccountIDOrders(ctx, accountID, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParsePostApiAccountsAccountIDOrdersResponse(rsp)
+	return ParsePostV1AccountsAccountIDOrdersResponse(rsp)
 }
 
-// GetApiAccountsAccountIDOrdersOrderIDWithResponse request returning *GetApiAccountsAccountIDOrdersOrderIDResponse
-func (c *ClientWithResponses) GetApiAccountsAccountIDOrdersOrderIDWithResponse(ctx context.Context, accountID AccountPathParam, orderID OrderPathParam, reqEditors ...RequestEditorFn) (*GetApiAccountsAccountIDOrdersOrderIDResponse, error) {
-	rsp, err := c.GetApiAccountsAccountIDOrdersOrderID(ctx, accountID, orderID, reqEditors...)
+// GetV1AccountsAccountIDOrdersOrderIDWithResponse request returning *GetV1AccountsAccountIDOrdersOrderIDResponse
+func (c *ClientWithResponses) GetV1AccountsAccountIDOrdersOrderIDWithResponse(ctx context.Context, accountID AccountPathParam, orderID OrderPathParam, reqEditors ...RequestEditorFn) (*GetV1AccountsAccountIDOrdersOrderIDResponse, error) {
+	rsp, err := c.GetV1AccountsAccountIDOrdersOrderID(ctx, accountID, orderID, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseGetApiAccountsAccountIDOrdersOrderIDResponse(rsp)
+	return ParseGetV1AccountsAccountIDOrdersOrderIDResponse(rsp)
 }
 
-// PatchApiAccountsAccountIDOrdersOrderIDWithBodyWithResponse request with arbitrary body returning *PatchApiAccountsAccountIDOrdersOrderIDResponse
-func (c *ClientWithResponses) PatchApiAccountsAccountIDOrdersOrderIDWithBodyWithResponse(ctx context.Context, accountID AccountPathParam, orderID OrderPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PatchApiAccountsAccountIDOrdersOrderIDResponse, error) {
-	rsp, err := c.PatchApiAccountsAccountIDOrdersOrderIDWithBody(ctx, accountID, orderID, contentType, body, reqEditors...)
+// PatchV1AccountsAccountIDOrdersOrderIDWithBodyWithResponse request with arbitrary body returning *PatchV1AccountsAccountIDOrdersOrderIDResponse
+func (c *ClientWithResponses) PatchV1AccountsAccountIDOrdersOrderIDWithBodyWithResponse(ctx context.Context, accountID AccountPathParam, orderID OrderPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PatchV1AccountsAccountIDOrdersOrderIDResponse, error) {
+	rsp, err := c.PatchV1AccountsAccountIDOrdersOrderIDWithBody(ctx, accountID, orderID, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParsePatchApiAccountsAccountIDOrdersOrderIDResponse(rsp)
+	return ParsePatchV1AccountsAccountIDOrdersOrderIDResponse(rsp)
 }
 
-func (c *ClientWithResponses) PatchApiAccountsAccountIDOrdersOrderIDWithResponse(ctx context.Context, accountID AccountPathParam, orderID OrderPathParam, body PatchApiAccountsAccountIDOrdersOrderIDJSONRequestBody, reqEditors ...RequestEditorFn) (*PatchApiAccountsAccountIDOrdersOrderIDResponse, error) {
-	rsp, err := c.PatchApiAccountsAccountIDOrdersOrderID(ctx, accountID, orderID, body, reqEditors...)
+func (c *ClientWithResponses) PatchV1AccountsAccountIDOrdersOrderIDWithResponse(ctx context.Context, accountID AccountPathParam, orderID OrderPathParam, body PatchV1AccountsAccountIDOrdersOrderIDJSONRequestBody, reqEditors ...RequestEditorFn) (*PatchV1AccountsAccountIDOrdersOrderIDResponse, error) {
+	rsp, err := c.PatchV1AccountsAccountIDOrdersOrderID(ctx, accountID, orderID, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParsePatchApiAccountsAccountIDOrdersOrderIDResponse(rsp)
+	return ParsePatchV1AccountsAccountIDOrdersOrderIDResponse(rsp)
 }
 
-// GetApiAccountsAccountIDTransactionsWithResponse request returning *GetApiAccountsAccountIDTransactionsResponse
-func (c *ClientWithResponses) GetApiAccountsAccountIDTransactionsWithResponse(ctx context.Context, accountID AccountPathParam, reqEditors ...RequestEditorFn) (*GetApiAccountsAccountIDTransactionsResponse, error) {
-	rsp, err := c.GetApiAccountsAccountIDTransactions(ctx, accountID, reqEditors...)
+// GetV1AccountsAccountIDTransactionsWithResponse request returning *GetV1AccountsAccountIDTransactionsResponse
+func (c *ClientWithResponses) GetV1AccountsAccountIDTransactionsWithResponse(ctx context.Context, accountID AccountPathParam, reqEditors ...RequestEditorFn) (*GetV1AccountsAccountIDTransactionsResponse, error) {
+	rsp, err := c.GetV1AccountsAccountIDTransactions(ctx, accountID, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseGetApiAccountsAccountIDTransactionsResponse(rsp)
+	return ParseGetV1AccountsAccountIDTransactionsResponse(rsp)
 }
 
-// PostApiAccountsAccountIDTransactionsWithBodyWithResponse request with arbitrary body returning *PostApiAccountsAccountIDTransactionsResponse
-func (c *ClientWithResponses) PostApiAccountsAccountIDTransactionsWithBodyWithResponse(ctx context.Context, accountID AccountPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostApiAccountsAccountIDTransactionsResponse, error) {
-	rsp, err := c.PostApiAccountsAccountIDTransactionsWithBody(ctx, accountID, contentType, body, reqEditors...)
+// PostV1AccountsAccountIDTransactionsWithBodyWithResponse request with arbitrary body returning *PostV1AccountsAccountIDTransactionsResponse
+func (c *ClientWithResponses) PostV1AccountsAccountIDTransactionsWithBodyWithResponse(ctx context.Context, accountID AccountPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PostV1AccountsAccountIDTransactionsResponse, error) {
+	rsp, err := c.PostV1AccountsAccountIDTransactionsWithBody(ctx, accountID, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParsePostApiAccountsAccountIDTransactionsResponse(rsp)
+	return ParsePostV1AccountsAccountIDTransactionsResponse(rsp)
 }
 
-func (c *ClientWithResponses) PostApiAccountsAccountIDTransactionsWithResponse(ctx context.Context, accountID AccountPathParam, body PostApiAccountsAccountIDTransactionsJSONRequestBody, reqEditors ...RequestEditorFn) (*PostApiAccountsAccountIDTransactionsResponse, error) {
-	rsp, err := c.PostApiAccountsAccountIDTransactions(ctx, accountID, body, reqEditors...)
+func (c *ClientWithResponses) PostV1AccountsAccountIDTransactionsWithResponse(ctx context.Context, accountID AccountPathParam, body PostV1AccountsAccountIDTransactionsJSONRequestBody, reqEditors ...RequestEditorFn) (*PostV1AccountsAccountIDTransactionsResponse, error) {
+	rsp, err := c.PostV1AccountsAccountIDTransactions(ctx, accountID, body, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParsePostApiAccountsAccountIDTransactionsResponse(rsp)
+	return ParsePostV1AccountsAccountIDTransactionsResponse(rsp)
 }
 
-// GetApiAccountsAccountIDTransactionsTransactionIDWithResponse request returning *GetApiAccountsAccountIDTransactionsTransactionIDResponse
-func (c *ClientWithResponses) GetApiAccountsAccountIDTransactionsTransactionIDWithResponse(ctx context.Context, accountID AccountPathParam, transactionID TransactionPathParam, reqEditors ...RequestEditorFn) (*GetApiAccountsAccountIDTransactionsTransactionIDResponse, error) {
-	rsp, err := c.GetApiAccountsAccountIDTransactionsTransactionID(ctx, accountID, transactionID, reqEditors...)
+// GetV1AccountsAccountIDTransactionsTransactionIDWithResponse request returning *GetV1AccountsAccountIDTransactionsTransactionIDResponse
+func (c *ClientWithResponses) GetV1AccountsAccountIDTransactionsTransactionIDWithResponse(ctx context.Context, accountID AccountPathParam, transactionID TransactionPathParam, reqEditors ...RequestEditorFn) (*GetV1AccountsAccountIDTransactionsTransactionIDResponse, error) {
+	rsp, err := c.GetV1AccountsAccountIDTransactionsTransactionID(ctx, accountID, transactionID, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseGetApiAccountsAccountIDTransactionsTransactionIDResponse(rsp)
+	return ParseGetV1AccountsAccountIDTransactionsTransactionIDResponse(rsp)
 }
 
-// GetApiMarketsMarketHistoryWithResponse request returning *GetApiMarketsMarketHistoryResponse
-func (c *ClientWithResponses) GetApiMarketsMarketHistoryWithResponse(ctx context.Context, market MarketParam, params *GetApiMarketsMarketHistoryParams, reqEditors ...RequestEditorFn) (*GetApiMarketsMarketHistoryResponse, error) {
-	rsp, err := c.GetApiMarketsMarketHistory(ctx, market, params, reqEditors...)
+// GetV1MarketsMarketHistoryWithResponse request returning *GetV1MarketsMarketHistoryResponse
+func (c *ClientWithResponses) GetV1MarketsMarketHistoryWithResponse(ctx context.Context, market MarketParam, params *GetV1MarketsMarketHistoryParams, reqEditors ...RequestEditorFn) (*GetV1MarketsMarketHistoryResponse, error) {
+	rsp, err := c.GetV1MarketsMarketHistory(ctx, market, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseGetApiMarketsMarketHistoryResponse(rsp)
+	return ParseGetV1MarketsMarketHistoryResponse(rsp)
 }
 
-// GetApiMarketsMarketSnapshotWithResponse request returning *GetApiMarketsMarketSnapshotResponse
-func (c *ClientWithResponses) GetApiMarketsMarketSnapshotWithResponse(ctx context.Context, market MarketParam, params *GetApiMarketsMarketSnapshotParams, reqEditors ...RequestEditorFn) (*GetApiMarketsMarketSnapshotResponse, error) {
-	rsp, err := c.GetApiMarketsMarketSnapshot(ctx, market, params, reqEditors...)
+// GetV1MarketsMarketSnapshotWithResponse request returning *GetV1MarketsMarketSnapshotResponse
+func (c *ClientWithResponses) GetV1MarketsMarketSnapshotWithResponse(ctx context.Context, market MarketParam, params *GetV1MarketsMarketSnapshotParams, reqEditors ...RequestEditorFn) (*GetV1MarketsMarketSnapshotResponse, error) {
+	rsp, err := c.GetV1MarketsMarketSnapshot(ctx, market, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseGetApiMarketsMarketSnapshotResponse(rsp)
+	return ParseGetV1MarketsMarketSnapshotResponse(rsp)
 }
 
-// ParseGetApiAccountsResponse parses an HTTP response from a GetApiAccountsWithResponse call
-func ParseGetApiAccountsResponse(rsp *http.Response) (*GetApiAccountsResponse, error) {
+// ParseGetV1AccountsResponse parses an HTTP response from a GetV1AccountsWithResponse call
+func ParseGetV1AccountsResponse(rsp *http.Response) (*GetV1AccountsResponse, error) {
 	bodyBytes, err := ioutil.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &GetApiAccountsResponse{
+	response := &GetV1AccountsResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
@@ -1916,15 +1916,15 @@ func ParseGetApiAccountsResponse(rsp *http.Response) (*GetApiAccountsResponse, e
 	return response, nil
 }
 
-// ParseGetApiAccountsAccountIDResponse parses an HTTP response from a GetApiAccountsAccountIDWithResponse call
-func ParseGetApiAccountsAccountIDResponse(rsp *http.Response) (*GetApiAccountsAccountIDResponse, error) {
+// ParseGetV1AccountsAccountIDResponse parses an HTTP response from a GetV1AccountsAccountIDWithResponse call
+func ParseGetV1AccountsAccountIDResponse(rsp *http.Response) (*GetV1AccountsAccountIDResponse, error) {
 	bodyBytes, err := ioutil.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &GetApiAccountsAccountIDResponse{
+	response := &GetV1AccountsAccountIDResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
@@ -1946,15 +1946,15 @@ func ParseGetApiAccountsAccountIDResponse(rsp *http.Response) (*GetApiAccountsAc
 	return response, nil
 }
 
-// ParseGetApiAccountsAccountIDAddressesSymbolNameResponse parses an HTTP response from a GetApiAccountsAccountIDAddressesSymbolNameWithResponse call
-func ParseGetApiAccountsAccountIDAddressesSymbolNameResponse(rsp *http.Response) (*GetApiAccountsAccountIDAddressesSymbolNameResponse, error) {
+// ParseGetV1AccountsAccountIDAddressesSymbolNameResponse parses an HTTP response from a GetV1AccountsAccountIDAddressesSymbolNameWithResponse call
+func ParseGetV1AccountsAccountIDAddressesSymbolNameResponse(rsp *http.Response) (*GetV1AccountsAccountIDAddressesSymbolNameResponse, error) {
 	bodyBytes, err := ioutil.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &GetApiAccountsAccountIDAddressesSymbolNameResponse{
+	response := &GetV1AccountsAccountIDAddressesSymbolNameResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
@@ -1975,15 +1975,15 @@ func ParseGetApiAccountsAccountIDAddressesSymbolNameResponse(rsp *http.Response)
 	return response, nil
 }
 
-// ParseGetApiAccountsAccountIDCodeResponse parses an HTTP response from a GetApiAccountsAccountIDCodeWithResponse call
-func ParseGetApiAccountsAccountIDCodeResponse(rsp *http.Response) (*GetApiAccountsAccountIDCodeResponse, error) {
+// ParseGetV1AccountsAccountIDCodeResponse parses an HTTP response from a GetV1AccountsAccountIDCodeWithResponse call
+func ParseGetV1AccountsAccountIDCodeResponse(rsp *http.Response) (*GetV1AccountsAccountIDCodeResponse, error) {
 	bodyBytes, err := ioutil.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &GetApiAccountsAccountIDCodeResponse{
+	response := &GetV1AccountsAccountIDCodeResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
@@ -1991,15 +1991,15 @@ func ParseGetApiAccountsAccountIDCodeResponse(rsp *http.Response) (*GetApiAccoun
 	return response, nil
 }
 
-// ParseGetApiAccountsAccountIDOrdersResponse parses an HTTP response from a GetApiAccountsAccountIDOrdersWithResponse call
-func ParseGetApiAccountsAccountIDOrdersResponse(rsp *http.Response) (*GetApiAccountsAccountIDOrdersResponse, error) {
+// ParseGetV1AccountsAccountIDOrdersResponse parses an HTTP response from a GetV1AccountsAccountIDOrdersWithResponse call
+func ParseGetV1AccountsAccountIDOrdersResponse(rsp *http.Response) (*GetV1AccountsAccountIDOrdersResponse, error) {
 	bodyBytes, err := ioutil.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &GetApiAccountsAccountIDOrdersResponse{
+	response := &GetV1AccountsAccountIDOrdersResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
@@ -2029,15 +2029,15 @@ func ParseGetApiAccountsAccountIDOrdersResponse(rsp *http.Response) (*GetApiAcco
 	return response, nil
 }
 
-// ParsePostApiAccountsAccountIDOrdersResponse parses an HTTP response from a PostApiAccountsAccountIDOrdersWithResponse call
-func ParsePostApiAccountsAccountIDOrdersResponse(rsp *http.Response) (*PostApiAccountsAccountIDOrdersResponse, error) {
+// ParsePostV1AccountsAccountIDOrdersResponse parses an HTTP response from a PostV1AccountsAccountIDOrdersWithResponse call
+func ParsePostV1AccountsAccountIDOrdersResponse(rsp *http.Response) (*PostV1AccountsAccountIDOrdersResponse, error) {
 	bodyBytes, err := ioutil.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &PostApiAccountsAccountIDOrdersResponse{
+	response := &PostV1AccountsAccountIDOrdersResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
@@ -2075,15 +2075,15 @@ func ParsePostApiAccountsAccountIDOrdersResponse(rsp *http.Response) (*PostApiAc
 	return response, nil
 }
 
-// ParseGetApiAccountsAccountIDOrdersOrderIDResponse parses an HTTP response from a GetApiAccountsAccountIDOrdersOrderIDWithResponse call
-func ParseGetApiAccountsAccountIDOrdersOrderIDResponse(rsp *http.Response) (*GetApiAccountsAccountIDOrdersOrderIDResponse, error) {
+// ParseGetV1AccountsAccountIDOrdersOrderIDResponse parses an HTTP response from a GetV1AccountsAccountIDOrdersOrderIDWithResponse call
+func ParseGetV1AccountsAccountIDOrdersOrderIDResponse(rsp *http.Response) (*GetV1AccountsAccountIDOrdersOrderIDResponse, error) {
 	bodyBytes, err := ioutil.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &GetApiAccountsAccountIDOrdersOrderIDResponse{
+	response := &GetV1AccountsAccountIDOrdersOrderIDResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
@@ -2104,15 +2104,15 @@ func ParseGetApiAccountsAccountIDOrdersOrderIDResponse(rsp *http.Response) (*Get
 	return response, nil
 }
 
-// ParsePatchApiAccountsAccountIDOrdersOrderIDResponse parses an HTTP response from a PatchApiAccountsAccountIDOrdersOrderIDWithResponse call
-func ParsePatchApiAccountsAccountIDOrdersOrderIDResponse(rsp *http.Response) (*PatchApiAccountsAccountIDOrdersOrderIDResponse, error) {
+// ParsePatchV1AccountsAccountIDOrdersOrderIDResponse parses an HTTP response from a PatchV1AccountsAccountIDOrdersOrderIDWithResponse call
+func ParsePatchV1AccountsAccountIDOrdersOrderIDResponse(rsp *http.Response) (*PatchV1AccountsAccountIDOrdersOrderIDResponse, error) {
 	bodyBytes, err := ioutil.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &PatchApiAccountsAccountIDOrdersOrderIDResponse{
+	response := &PatchV1AccountsAccountIDOrdersOrderIDResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
@@ -2159,15 +2159,15 @@ func ParsePatchApiAccountsAccountIDOrdersOrderIDResponse(rsp *http.Response) (*P
 	return response, nil
 }
 
-// ParseGetApiAccountsAccountIDTransactionsResponse parses an HTTP response from a GetApiAccountsAccountIDTransactionsWithResponse call
-func ParseGetApiAccountsAccountIDTransactionsResponse(rsp *http.Response) (*GetApiAccountsAccountIDTransactionsResponse, error) {
+// ParseGetV1AccountsAccountIDTransactionsResponse parses an HTTP response from a GetV1AccountsAccountIDTransactionsWithResponse call
+func ParseGetV1AccountsAccountIDTransactionsResponse(rsp *http.Response) (*GetV1AccountsAccountIDTransactionsResponse, error) {
 	bodyBytes, err := ioutil.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &GetApiAccountsAccountIDTransactionsResponse{
+	response := &GetV1AccountsAccountIDTransactionsResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
@@ -2197,15 +2197,15 @@ func ParseGetApiAccountsAccountIDTransactionsResponse(rsp *http.Response) (*GetA
 	return response, nil
 }
 
-// ParsePostApiAccountsAccountIDTransactionsResponse parses an HTTP response from a PostApiAccountsAccountIDTransactionsWithResponse call
-func ParsePostApiAccountsAccountIDTransactionsResponse(rsp *http.Response) (*PostApiAccountsAccountIDTransactionsResponse, error) {
+// ParsePostV1AccountsAccountIDTransactionsResponse parses an HTTP response from a PostV1AccountsAccountIDTransactionsWithResponse call
+func ParsePostV1AccountsAccountIDTransactionsResponse(rsp *http.Response) (*PostV1AccountsAccountIDTransactionsResponse, error) {
 	bodyBytes, err := ioutil.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &PostApiAccountsAccountIDTransactionsResponse{
+	response := &PostV1AccountsAccountIDTransactionsResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
@@ -2253,15 +2253,15 @@ func ParsePostApiAccountsAccountIDTransactionsResponse(rsp *http.Response) (*Pos
 	return response, nil
 }
 
-// ParseGetApiAccountsAccountIDTransactionsTransactionIDResponse parses an HTTP response from a GetApiAccountsAccountIDTransactionsTransactionIDWithResponse call
-func ParseGetApiAccountsAccountIDTransactionsTransactionIDResponse(rsp *http.Response) (*GetApiAccountsAccountIDTransactionsTransactionIDResponse, error) {
+// ParseGetV1AccountsAccountIDTransactionsTransactionIDResponse parses an HTTP response from a GetV1AccountsAccountIDTransactionsTransactionIDWithResponse call
+func ParseGetV1AccountsAccountIDTransactionsTransactionIDResponse(rsp *http.Response) (*GetV1AccountsAccountIDTransactionsTransactionIDResponse, error) {
 	bodyBytes, err := ioutil.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &GetApiAccountsAccountIDTransactionsTransactionIDResponse{
+	response := &GetV1AccountsAccountIDTransactionsTransactionIDResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
@@ -2283,15 +2283,15 @@ func ParseGetApiAccountsAccountIDTransactionsTransactionIDResponse(rsp *http.Res
 	return response, nil
 }
 
-// ParseGetApiMarketsMarketHistoryResponse parses an HTTP response from a GetApiMarketsMarketHistoryWithResponse call
-func ParseGetApiMarketsMarketHistoryResponse(rsp *http.Response) (*GetApiMarketsMarketHistoryResponse, error) {
+// ParseGetV1MarketsMarketHistoryResponse parses an HTTP response from a GetV1MarketsMarketHistoryWithResponse call
+func ParseGetV1MarketsMarketHistoryResponse(rsp *http.Response) (*GetV1MarketsMarketHistoryResponse, error) {
 	bodyBytes, err := ioutil.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &GetApiMarketsMarketHistoryResponse{
+	response := &GetV1MarketsMarketHistoryResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
@@ -2320,15 +2320,15 @@ func ParseGetApiMarketsMarketHistoryResponse(rsp *http.Response) (*GetApiMarkets
 	return response, nil
 }
 
-// ParseGetApiMarketsMarketSnapshotResponse parses an HTTP response from a GetApiMarketsMarketSnapshotWithResponse call
-func ParseGetApiMarketsMarketSnapshotResponse(rsp *http.Response) (*GetApiMarketsMarketSnapshotResponse, error) {
+// ParseGetV1MarketsMarketSnapshotResponse parses an HTTP response from a GetV1MarketsMarketSnapshotWithResponse call
+func ParseGetV1MarketsMarketSnapshotResponse(rsp *http.Response) (*GetV1MarketsMarketSnapshotResponse, error) {
 	bodyBytes, err := ioutil.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &GetApiMarketsMarketSnapshotResponse{
+	response := &GetV1MarketsMarketSnapshotResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}

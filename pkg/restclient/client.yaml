@@ -3,7 +3,7 @@ info:
   title: Cloud Exchange REST API
   version: 0.0.1
 paths:
-  /api/accounts:
+  /v1/accounts:
     get:
       description: Retrieve all account information
       responses:
@@ -19,7 +19,7 @@ paths:
                       $ref: '#/components/schemas/Account'
                   error:
                     $ref: '#/components/schemas/ResponseError'
-  /api/accounts/{accountID}:
+  /v1/accounts/{accountID}:
     parameters:
       - $ref: '#/components/parameters/AccountPathParam'
     get:
@@ -35,7 +35,7 @@ paths:
                     $ref: '#/components/schemas/Account'
                   error:
                     $ref: '#/components/schemas/ResponseError'
-  /api/accounts/{accountID}/code:
+  /v1/accounts/{accountID}/code:
     parameters:
       - $ref: '#/components/parameters/AccountPathParam'
     get:
@@ -48,7 +48,7 @@ paths:
               schema:
                 type: string
                 format: binary
-  /api/accounts/{accountID}/addresses/{symbolName}:
+  /v1/accounts/{accountID}/addresses/{symbolName}:
     parameters:
       - $ref: '#/components/parameters/AccountPathParam'
       - $ref: '#/components/parameters/SymbolPathParam'
@@ -65,7 +65,7 @@ paths:
                     $ref: '#/components/schemas/AddressItem'
                   error:
                     $ref: '#/components/schemas/ResponseError'
-  /api/accounts/{accountID}/transactions:
+  /v1/accounts/{accountID}/transactions:
     parameters:
       - $ref: '#/components/parameters/AccountPathParam'
     post:
@@ -133,7 +133,7 @@ paths:
                 properties:
                   error:
                     $ref: '#/components/schemas/ResponseError'
-  /api/accounts/{accountID}/transactions/{transactionID}:
+  /v1/accounts/{accountID}/transactions/{transactionID}:
     parameters:
       - $ref: '#/components/parameters/AccountPathParam'
       - $ref: '#/components/parameters/TransactionPathParam'
@@ -152,7 +152,7 @@ paths:
                     $ref: '#/components/schemas/Transaction'
                   error:
                     $ref: '#/components/schemas/ResponseError'
-  /api/accounts/{accountID}/orders:
+  /v1/accounts/{accountID}/orders:
     parameters:
       - $ref: '#/components/parameters/AccountPathParam'
     post:
@@ -216,7 +216,7 @@ paths:
                 properties:
                   error:
                     $ref: '#/components/schemas/ResponseError'
-  /api/accounts/{accountID}/orders/{orderID}:
+  /v1/accounts/{accountID}/orders/{orderID}:
     parameters:
       - $ref: '#/components/parameters/AccountPathParam'
       - $ref: '#/components/parameters/OrderPathParam'
@@ -282,7 +282,7 @@ paths:
                 properties:
                   error:
                     $ref: '#/components/schemas/ResponseError'
-  /api/markets/{market}/history:
+  /v1/markets/{market}/history:
     parameters:
       - $ref: '#/components/parameters/MarketParam'
     get:
@@ -316,7 +316,7 @@ paths:
                 properties:
                   error:
                     $ref: '#/components/schemas/ResponseError'
-  /api/markets/{market}/snapshot:
+  /v1/markets/{market}/snapshot:
     parameters:
       - $ref: '#/components/parameters/MarketParam'
     get:
