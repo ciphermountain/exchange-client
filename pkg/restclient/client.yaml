@@ -17,8 +17,8 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Account'
-                  error:
-                    $ref: '#/components/schemas/ResponseError'
+                  errors:
+                    $ref: '#/components/schemas/ResponseErrorList'
   /v1/accounts/{accountID}:
     parameters:
       - $ref: '#/components/parameters/AccountPathParam'
@@ -33,8 +33,8 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Account'
-                  error:
-                    $ref: '#/components/schemas/ResponseError'
+                  errors:
+                    $ref: '#/components/schemas/ResponseErrorList'
   /v1/accounts/{accountID}/code:
     parameters:
       - $ref: '#/components/parameters/AccountPathParam'
@@ -63,8 +63,8 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/AddressItem'
-                  error:
-                    $ref: '#/components/schemas/ResponseError'
+                  errors:
+                    $ref: '#/components/schemas/ResponseErrorList'
   /v1/accounts/{accountID}/transactions:
     parameters:
       - $ref: '#/components/parameters/AccountPathParam'
@@ -94,24 +94,24 @@ paths:
             'application/json':
               schema:
                 properties:
-                  error:
-                    $ref: '#/components/schemas/ResponseError'
+                  errors:
+                    $ref: '#/components/schemas/ResponseErrorList'
         409:
           description: Insufficient account balance
           content:
             'application/json':
               schema:
                 properties:
-                  error:
-                    $ref: '#/components/schemas/ResponseError'
+                  errors:
+                    $ref: '#/components/schemas/ResponseErrorList'
         500:
           description: Internal server error
           content:
             'application/json':
               schema:
                 properties:
-                  error:
-                    $ref: '#/components/schemas/ResponseError'
+                  errors:
+                    $ref: '#/components/schemas/ResponseErrorList'
     get:
       description: Retrieve account transactions
       responses:
@@ -123,16 +123,16 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/TransactionList'
-                  error:
-                    $ref: '#/components/schemas/ResponseError'
+                  errors:
+                    $ref: '#/components/schemas/ResponseErrorList'
         500:
           description: Internal server error
           content:
             'application/json':
               schema:
                 properties:
-                  error:
-                    $ref: '#/components/schemas/ResponseError'
+                  errors:
+                    $ref: '#/components/schemas/ResponseErrorList'
   /v1/accounts/{accountID}/transactions/{transactionID}:
     parameters:
       - $ref: '#/components/parameters/AccountPathParam'
@@ -150,8 +150,8 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Transaction'
-                  error:
-                    $ref: '#/components/schemas/ResponseError'
+                  errors:
+                    $ref: '#/components/schemas/ResponseErrorList'
   /v1/accounts/{accountID}/orders:
     parameters:
       - $ref: '#/components/parameters/AccountPathParam'
@@ -183,16 +183,16 @@ paths:
             'application/json':
               schema:
                 properties:
-                  error:
-                    $ref: '#/components/schemas/ResponseError'
+                  errors:
+                    $ref: '#/components/schemas/ResponseErrorList'
         500:
           description: Internal server error
           content:
             'application/json':
               schema:
                 properties:
-                  error:
-                    $ref: '#/components/schemas/ResponseError'
+                  errors:
+                    $ref: '#/components/schemas/ResponseErrorList'
     get:
       description: Retrieve order list
       parameters:
@@ -206,16 +206,16 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/BookOrderList'
-                  error:
-                    $ref: '#/components/schemas/ResponseError'
+                  errors:
+                    $ref: '#/components/schemas/ResponseErrorList'
         500:
           description: Internal server error
           content:
             'application/json':
               schema:
                 properties:
-                  error:
-                    $ref: '#/components/schemas/ResponseError'
+                  errors:
+                    $ref: '#/components/schemas/ResponseErrorList'
   /v1/accounts/{accountID}/orders/{orderID}:
     parameters:
       - $ref: '#/components/parameters/AccountPathParam'
@@ -233,8 +233,8 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/BookOrder'
-                  error:
-                    $ref: '#/components/schemas/ResponseError'
+                  errors:
+                    $ref: '#/components/schemas/ResponseErrorList'
     patch:
       description: Cancel an order
       security:
@@ -264,24 +264,24 @@ paths:
             'application/json':
               schema:
                 properties:
-                  error:
-                    $ref: '#/components/schemas/ResponseError'
+                  errors:
+                    $ref: '#/components/schemas/ResponseErrorList'
         404:
           description: Order not found
           content:
             'application/json':
               schema:
                 properties:
-                  error:
-                    $ref: '#/components/schemas/ResponseError'
+                  errors:
+                    $ref: '#/components/schemas/ResponseErrorList'
         500:
           description: Server error
           content:
             'application/json':
               schema:
                 properties:
-                  error:
-                    $ref: '#/components/schemas/ResponseError'
+                  errors:
+                    $ref: '#/components/schemas/ResponseErrorList'
   /v1/markets/{market}/history:
     parameters:
       - $ref: '#/components/parameters/MarketParam'
@@ -314,8 +314,8 @@ paths:
             'application/json':
               schema:
                 properties:
-                  error:
-                    $ref: '#/components/schemas/ResponseError'
+                  errors:
+                    $ref: '#/components/schemas/ResponseErrorList'
   /v1/markets/{market}/snapshot:
     parameters:
       - $ref: '#/components/parameters/MarketParam'
@@ -347,8 +347,8 @@ paths:
             'application/json':
               schema:
                 properties:
-                  error:
-                    $ref: '#/components/schemas/ResponseError'
+                  errors:
+                    $ref: '#/components/schemas/ResponseErrorList'
 components:
   parameters:
     AccountPathParam:
@@ -399,6 +399,10 @@ components:
       schema:
         $ref: '#/components/schemas/TimeSpanType'
   schemas:
+    ResponseErrorList:
+      type: array
+      items:
+        $ref: '#/components/schemas/ResponseError'
     ResponseError:
       type: object
       required:
