@@ -251,6 +251,9 @@ type ResponseError struct {
 	Detail string `json:"detail"`
 }
 
+// ResponseErrorList defines model for ResponseErrorList.
+type ResponseErrorList = []ResponseError
+
 // Order book snapshot item
 type SnapshotItem struct {
 	Depth string `json:"depth"`
@@ -1395,8 +1398,8 @@ type GetV1AccountsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
-		Data  *[]Account     `json:"data,omitempty"`
-		Error *ResponseError `json:"error,omitempty"`
+		Data   *[]Account         `json:"data,omitempty"`
+		Errors *ResponseErrorList `json:"errors,omitempty"`
 	}
 }
 
@@ -1421,8 +1424,8 @@ type GetV1AccountsAccountIDResponse struct {
 	HTTPResponse *http.Response
 	JSON200      *struct {
 		// Balances account
-		Data  *Account       `json:"data,omitempty"`
-		Error *ResponseError `json:"error,omitempty"`
+		Data   *Account           `json:"data,omitempty"`
+		Errors *ResponseErrorList `json:"errors,omitempty"`
 	}
 }
 
@@ -1446,8 +1449,8 @@ type GetV1AccountsAccountIDAddressesSymbolNameResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
-		Data  *AddressItem   `json:"data,omitempty"`
-		Error *ResponseError `json:"error,omitempty"`
+		Data   *AddressItem       `json:"data,omitempty"`
+		Errors *ResponseErrorList `json:"errors,omitempty"`
 	}
 }
 
@@ -1492,11 +1495,11 @@ type GetV1AccountsAccountIDOrdersResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
-		Data  *BookOrderList `json:"data,omitempty"`
-		Error *ResponseError `json:"error,omitempty"`
+		Data   *BookOrderList     `json:"data,omitempty"`
+		Errors *ResponseErrorList `json:"errors,omitempty"`
 	}
 	JSON500 *struct {
-		Error *ResponseError `json:"error,omitempty"`
+		Errors *ResponseErrorList `json:"errors,omitempty"`
 	}
 }
 
@@ -1523,10 +1526,10 @@ type PostV1AccountsAccountIDOrdersResponse struct {
 		Data *BookOrder `json:"data,omitempty"`
 	}
 	JSON409 *struct {
-		Error *ResponseError `json:"error,omitempty"`
+		Errors *ResponseErrorList `json:"errors,omitempty"`
 	}
 	JSON500 *struct {
-		Error *ResponseError `json:"error,omitempty"`
+		Errors *ResponseErrorList `json:"errors,omitempty"`
 	}
 }
 
@@ -1550,8 +1553,8 @@ type GetV1AccountsAccountIDOrdersOrderIDResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
-		Data  *BookOrder     `json:"data,omitempty"`
-		Error *ResponseError `json:"error,omitempty"`
+		Data   *BookOrder         `json:"data,omitempty"`
+		Errors *ResponseErrorList `json:"errors,omitempty"`
 	}
 }
 
@@ -1578,13 +1581,13 @@ type PatchV1AccountsAccountIDOrdersOrderIDResponse struct {
 		Data *BookOrder `json:"data,omitempty"`
 	}
 	JSON400 *struct {
-		Error *ResponseError `json:"error,omitempty"`
+		Errors *ResponseErrorList `json:"errors,omitempty"`
 	}
 	JSON404 *struct {
-		Error *ResponseError `json:"error,omitempty"`
+		Errors *ResponseErrorList `json:"errors,omitempty"`
 	}
 	JSON500 *struct {
-		Error *ResponseError `json:"error,omitempty"`
+		Errors *ResponseErrorList `json:"errors,omitempty"`
 	}
 }
 
@@ -1608,11 +1611,11 @@ type GetV1AccountsAccountIDTransactionsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	JSON200      *struct {
-		Data  *TransactionList `json:"data,omitempty"`
-		Error *ResponseError   `json:"error,omitempty"`
+		Data   *TransactionList   `json:"data,omitempty"`
+		Errors *ResponseErrorList `json:"errors,omitempty"`
 	}
 	JSON500 *struct {
-		Error *ResponseError `json:"error,omitempty"`
+		Errors *ResponseErrorList `json:"errors,omitempty"`
 	}
 }
 
@@ -1640,13 +1643,13 @@ type PostV1AccountsAccountIDTransactionsResponse struct {
 		Data *Transaction `json:"data,omitempty"`
 	}
 	JSON400 *struct {
-		Error *ResponseError `json:"error,omitempty"`
+		Errors *ResponseErrorList `json:"errors,omitempty"`
 	}
 	JSON409 *struct {
-		Error *ResponseError `json:"error,omitempty"`
+		Errors *ResponseErrorList `json:"errors,omitempty"`
 	}
 	JSON500 *struct {
-		Error *ResponseError `json:"error,omitempty"`
+		Errors *ResponseErrorList `json:"errors,omitempty"`
 	}
 }
 
@@ -1671,8 +1674,8 @@ type GetV1AccountsAccountIDTransactionsTransactionIDResponse struct {
 	HTTPResponse *http.Response
 	JSON200      *struct {
 		// Account balance change
-		Data  *Transaction   `json:"data,omitempty"`
-		Error *ResponseError `json:"error,omitempty"`
+		Data   *Transaction       `json:"data,omitempty"`
+		Errors *ResponseErrorList `json:"errors,omitempty"`
 	}
 }
 
@@ -1699,7 +1702,7 @@ type GetV1MarketsMarketHistoryResponse struct {
 		Data *PriceHistoryList `json:"data,omitempty"`
 	}
 	JSONDefault *struct {
-		Error *ResponseError `json:"error,omitempty"`
+		Errors *ResponseErrorList `json:"errors,omitempty"`
 	}
 }
 
@@ -1726,7 +1729,7 @@ type GetV1MarketsMarketSnapshotResponse struct {
 		Data *SnapshotItemList `json:"data,omitempty"`
 	}
 	JSONDefault *struct {
-		Error *ResponseError `json:"error,omitempty"`
+		Errors *ResponseErrorList `json:"errors,omitempty"`
 	}
 }
 
@@ -1903,8 +1906,8 @@ func ParseGetV1AccountsResponse(rsp *http.Response) (*GetV1AccountsResponse, err
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
-			Data  *[]Account     `json:"data,omitempty"`
-			Error *ResponseError `json:"error,omitempty"`
+			Data   *[]Account         `json:"data,omitempty"`
+			Errors *ResponseErrorList `json:"errors,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
@@ -1933,8 +1936,8 @@ func ParseGetV1AccountsAccountIDResponse(rsp *http.Response) (*GetV1AccountsAcco
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
 			// Balances account
-			Data  *Account       `json:"data,omitempty"`
-			Error *ResponseError `json:"error,omitempty"`
+			Data   *Account           `json:"data,omitempty"`
+			Errors *ResponseErrorList `json:"errors,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
@@ -1962,8 +1965,8 @@ func ParseGetV1AccountsAccountIDAddressesSymbolNameResponse(rsp *http.Response) 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
-			Data  *AddressItem   `json:"data,omitempty"`
-			Error *ResponseError `json:"error,omitempty"`
+			Data   *AddressItem       `json:"data,omitempty"`
+			Errors *ResponseErrorList `json:"errors,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
@@ -2007,8 +2010,8 @@ func ParseGetV1AccountsAccountIDOrdersResponse(rsp *http.Response) (*GetV1Accoun
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
-			Data  *BookOrderList `json:"data,omitempty"`
-			Error *ResponseError `json:"error,omitempty"`
+			Data   *BookOrderList     `json:"data,omitempty"`
+			Errors *ResponseErrorList `json:"errors,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
@@ -2017,7 +2020,7 @@ func ParseGetV1AccountsAccountIDOrdersResponse(rsp *http.Response) (*GetV1Accoun
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest struct {
-			Error *ResponseError `json:"error,omitempty"`
+			Errors *ResponseErrorList `json:"errors,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
@@ -2054,7 +2057,7 @@ func ParsePostV1AccountsAccountIDOrdersResponse(rsp *http.Response) (*PostV1Acco
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
 		var dest struct {
-			Error *ResponseError `json:"error,omitempty"`
+			Errors *ResponseErrorList `json:"errors,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
@@ -2063,7 +2066,7 @@ func ParsePostV1AccountsAccountIDOrdersResponse(rsp *http.Response) (*PostV1Acco
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest struct {
-			Error *ResponseError `json:"error,omitempty"`
+			Errors *ResponseErrorList `json:"errors,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
@@ -2091,8 +2094,8 @@ func ParseGetV1AccountsAccountIDOrdersOrderIDResponse(rsp *http.Response) (*GetV
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
-			Data  *BookOrder     `json:"data,omitempty"`
-			Error *ResponseError `json:"error,omitempty"`
+			Data   *BookOrder         `json:"data,omitempty"`
+			Errors *ResponseErrorList `json:"errors,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
@@ -2129,7 +2132,7 @@ func ParsePatchV1AccountsAccountIDOrdersOrderIDResponse(rsp *http.Response) (*Pa
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
 		var dest struct {
-			Error *ResponseError `json:"error,omitempty"`
+			Errors *ResponseErrorList `json:"errors,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
@@ -2138,7 +2141,7 @@ func ParsePatchV1AccountsAccountIDOrdersOrderIDResponse(rsp *http.Response) (*Pa
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
 		var dest struct {
-			Error *ResponseError `json:"error,omitempty"`
+			Errors *ResponseErrorList `json:"errors,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
@@ -2147,7 +2150,7 @@ func ParsePatchV1AccountsAccountIDOrdersOrderIDResponse(rsp *http.Response) (*Pa
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest struct {
-			Error *ResponseError `json:"error,omitempty"`
+			Errors *ResponseErrorList `json:"errors,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
@@ -2175,8 +2178,8 @@ func ParseGetV1AccountsAccountIDTransactionsResponse(rsp *http.Response) (*GetV1
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
-			Data  *TransactionList `json:"data,omitempty"`
-			Error *ResponseError   `json:"error,omitempty"`
+			Data   *TransactionList   `json:"data,omitempty"`
+			Errors *ResponseErrorList `json:"errors,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
@@ -2185,7 +2188,7 @@ func ParseGetV1AccountsAccountIDTransactionsResponse(rsp *http.Response) (*GetV1
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest struct {
-			Error *ResponseError `json:"error,omitempty"`
+			Errors *ResponseErrorList `json:"errors,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
@@ -2223,7 +2226,7 @@ func ParsePostV1AccountsAccountIDTransactionsResponse(rsp *http.Response) (*Post
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
 		var dest struct {
-			Error *ResponseError `json:"error,omitempty"`
+			Errors *ResponseErrorList `json:"errors,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
@@ -2232,7 +2235,7 @@ func ParsePostV1AccountsAccountIDTransactionsResponse(rsp *http.Response) (*Post
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 409:
 		var dest struct {
-			Error *ResponseError `json:"error,omitempty"`
+			Errors *ResponseErrorList `json:"errors,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
@@ -2241,7 +2244,7 @@ func ParsePostV1AccountsAccountIDTransactionsResponse(rsp *http.Response) (*Post
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest struct {
-			Error *ResponseError `json:"error,omitempty"`
+			Errors *ResponseErrorList `json:"errors,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
@@ -2270,8 +2273,8 @@ func ParseGetV1AccountsAccountIDTransactionsTransactionIDResponse(rsp *http.Resp
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest struct {
 			// Account balance change
-			Data  *Transaction   `json:"data,omitempty"`
-			Error *ResponseError `json:"error,omitempty"`
+			Data   *Transaction       `json:"data,omitempty"`
+			Errors *ResponseErrorList `json:"errors,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
@@ -2308,7 +2311,7 @@ func ParseGetV1MarketsMarketHistoryResponse(rsp *http.Response) (*GetV1MarketsMa
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
 		var dest struct {
-			Error *ResponseError `json:"error,omitempty"`
+			Errors *ResponseErrorList `json:"errors,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
@@ -2345,7 +2348,7 @@ func ParseGetV1MarketsMarketSnapshotResponse(rsp *http.Response) (*GetV1MarketsM
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
 		var dest struct {
-			Error *ResponseError `json:"error,omitempty"`
+			Errors *ResponseErrorList `json:"errors,omitempty"`
 		}
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
