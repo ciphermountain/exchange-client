@@ -61,12 +61,10 @@ const (
 
 // Defines values for SymbolType.
 const (
-	BCH  SymbolType = "BCH"
 	BTC  SymbolType = "BTC"
-	CMTN SymbolType = "CMTN"
-	DOGE SymbolType = "DOGE"
 	ETH  SymbolType = "ETH"
-	UNI  SymbolType = "UNI"
+	USDC SymbolType = "USDC"
+	XIFR SymbolType = "XIFR"
 )
 
 // Defines values for TimeSpanType.
@@ -119,7 +117,7 @@ type AddressItem struct {
 	// Address hash for funding this balance
 	Address string `json:"address"`
 
-	// Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `BCH` - bitcoin cash currency identifier * `DOGE` - dogecoin currency identifier * `UNI` - uniswap currency identifer * `CMTN` - cipher mountain currency identifer
+	// Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDC` - U.S. Dollar stable coin * `XIFR` - cipher mountain currency identifer
 	Symbol SymbolType `json:"symbol"`
 }
 
@@ -128,7 +126,7 @@ type BalanceItem struct {
 	Available CurrencyValue `json:"available"`
 	Quantity  CurrencyValue `json:"quantity"`
 
-	// Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `BCH` - bitcoin cash currency identifier * `DOGE` - dogecoin currency identifier * `UNI` - uniswap currency identifer * `CMTN` - cipher mountain currency identifer
+	// Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDC` - U.S. Dollar stable coin * `XIFR` - cipher mountain currency identifer
 	Symbol SymbolType `json:"symbol"`
 }
 
@@ -154,9 +152,6 @@ type CurrencyValue = string
 
 // LimitOrderRequest defines model for LimitOrderRequest.
 type LimitOrderRequest struct {
-	// Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `BCH` - bitcoin cash currency identifier * `DOGE` - dogecoin currency identifier * `UNI` - uniswap currency identifer * `CMTN` - cipher mountain currency identifer
-	Base SymbolType `json:"base"`
-
 	// Order type: * `MARKET` - order type used to buy or sell at market value * `LIMIT` - used to set buy or sell limit
 	Name     LimitOrderRequestName `json:"name"`
 	Price    CurrencyValue         `json:"price"`
@@ -168,7 +163,7 @@ type LimitOrderRequestName string
 
 // MarketOrderRequest defines model for MarketOrderRequest.
 type MarketOrderRequest struct {
-	// Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `BCH` - bitcoin cash currency identifier * `DOGE` - dogecoin currency identifier * `UNI` - uniswap currency identifer * `CMTN` - cipher mountain currency identifer
+	// Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDC` - U.S. Dollar stable coin * `XIFR` - cipher mountain currency identifer
 	Base SymbolType `json:"base"`
 
 	// Order type: * `MARKET` - order type used to buy or sell at market value * `LIMIT` - used to set buy or sell limit
@@ -184,10 +179,10 @@ type OrderRequest struct {
 	// Action type: * `BUY` - use base currency to buy target currency * `SELL` - sell target currency for base currency
 	Action ActionType `json:"action"`
 
-	// Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `BCH` - bitcoin cash currency identifier * `DOGE` - dogecoin currency identifier * `UNI` - uniswap currency identifer * `CMTN` - cipher mountain currency identifer
+	// Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDC` - U.S. Dollar stable coin * `XIFR` - cipher mountain currency identifer
 	Base SymbolType `json:"base"`
 
-	// Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `BCH` - bitcoin cash currency identifier * `DOGE` - dogecoin currency identifier * `UNI` - uniswap currency identifer * `CMTN` - cipher mountain currency identifer
+	// Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDC` - U.S. Dollar stable coin * `XIFR` - cipher mountain currency identifer
 	Quote SymbolType       `json:"quote"`
 	Type  OrderRequestType `json:"type"`
 }
@@ -264,7 +259,7 @@ type SnapshotItem struct {
 // SnapshotItemList defines model for SnapshotItemList.
 type SnapshotItemList = []SnapshotItem
 
-// Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `BCH` - bitcoin cash currency identifier * `DOGE` - dogecoin currency identifier * `UNI` - uniswap currency identifer * `CMTN` - cipher mountain currency identifer
+// Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDC` - U.S. Dollar stable coin * `XIFR` - cipher mountain currency identifer
 type SymbolType string
 
 // Time Span: * `5m` - 5 minutes
@@ -287,7 +282,7 @@ type Transaction struct {
 	// Transaction Status: * `INITIATED` - the transaction has been started * `COMPLETED` - the transaction was successful * `FAILED` - the transaction request failed
 	Status TransactionStatus `json:"status"`
 
-	// Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `BCH` - bitcoin cash currency identifier * `DOGE` - dogecoin currency identifier * `UNI` - uniswap currency identifer * `CMTN` - cipher mountain currency identifer
+	// Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDC` - U.S. Dollar stable coin * `XIFR` - cipher mountain currency identifer
 	Symbol SymbolType `json:"symbol"`
 
 	// Transaction Type: * `ORDER` - transaction resulting from a match on the order book * `DEPOSIT` - transaction resulting from a funding deposit * `TRANSFER` - transaction resulting from a funding withdrawal
@@ -307,7 +302,7 @@ type TransactionRequest struct {
 	// Recipient represents a target identifier for which to send the defined funds. The format for the provided value is determined by the recipient type and symbol.
 	Recipient string `json:"recipient"`
 
-	// Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `BCH` - bitcoin cash currency identifier * `DOGE` - dogecoin currency identifier * `UNI` - uniswap currency identifer * `CMTN` - cipher mountain currency identifer
+	// Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDC` - U.S. Dollar stable coin * `XIFR` - cipher mountain currency identifer
 	Symbol SymbolType `json:"symbol"`
 
 	// Recipient Type: * `LOCAL` - recipient public id within Xifer system * `REMOTE` - recipient value is an address defined by the provided symbol
@@ -332,7 +327,7 @@ type OrderPathParam = string
 // Symbol Type: * `OPEN` - incomplete order * `PARTIAL` - partial order * `FILLED` - filled order * `CANCELLED` - cancelled order
 type OrderStatusParam = OrderStatus
 
-// Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `BCH` - bitcoin cash currency identifier * `DOGE` - dogecoin currency identifier * `UNI` - uniswap currency identifer * `CMTN` - cipher mountain currency identifer
+// Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDC` - U.S. Dollar stable coin * `XIFR` - cipher mountain currency identifer
 type SymbolPathParam = SymbolType
 
 // Time Span: * `5m` - 5 minutes
