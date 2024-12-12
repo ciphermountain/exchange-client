@@ -428,18 +428,14 @@ components:
       enum:
       - BTC
       - ETH
-      - BCH
-      - DOGE
-      - UNI
-      - CMTN
+      - USDC
+      - XIFR
       description: >
         Symbol Type:
         * `BTC` - bitcoin currency identifier
         * `ETH` - ethereum currency identifier
-        * `BCH` - bitcoin cash currency identifier
-        * `DOGE` - dogecoin currency identifier
-        * `UNI` - uniswap currency identifer
-        * `CMTN` - cipher mountain currency identifer
+        * `USDC` - U.S. Dollar stable coin
+        * `XIFR` - cipher mountain currency identifer
     TransactionType:
       type: string
       enum:
@@ -739,12 +735,9 @@ components:
         - $ref: '#/components/schemas/OrderType'
         - type: object
           required:
-          - base
           - price
           - quantity
           properties:
-            base:
-              $ref: '#/components/schemas/SymbolType'
             price:
               $ref: '#/components/schemas/CurrencyValue'
             quantity:
