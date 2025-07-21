@@ -428,13 +428,13 @@ components:
       enum:
       - BTC
       - ETH
-      - USDC
+      - USDT
       - XIFR
       description: >
         Symbol Type:
         * `BTC` - bitcoin currency identifier
         * `ETH` - ethereum currency identifier
-        * `USDC` - U.S. Dollar stable coin
+        * `USDT` - U.S. Dollar stable coin (Tether)
         * `XIFR` - cipher mountain currency identifer
     TransactionType:
       type: string
