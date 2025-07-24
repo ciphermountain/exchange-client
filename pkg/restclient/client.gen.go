@@ -381,7 +381,7 @@ func (t OrderRequestType) AsMarketOrderRequest() (MarketOrderRequest, error) {
 
 // FromMarketOrderRequest overwrites any union data inside the OrderRequestType as the provided MarketOrderRequest
 func (t *OrderRequestType) FromMarketOrderRequest(v MarketOrderRequest) error {
-	v.Name = "MarketOrderRequest"
+	v.Name = MarketOrderRequestNameMARKET
 	b, err := json.Marshal(v)
 	t.union = b
 	return err
@@ -389,7 +389,7 @@ func (t *OrderRequestType) FromMarketOrderRequest(v MarketOrderRequest) error {
 
 // MergeMarketOrderRequest performs a merge with any union data inside the OrderRequestType, using the provided MarketOrderRequest
 func (t *OrderRequestType) MergeMarketOrderRequest(v MarketOrderRequest) error {
-	v.Name = "MarketOrderRequest"
+	v.Name = MarketOrderRequestNameMARKET
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -409,7 +409,7 @@ func (t OrderRequestType) AsLimitOrderRequest() (LimitOrderRequest, error) {
 
 // FromLimitOrderRequest overwrites any union data inside the OrderRequestType as the provided LimitOrderRequest
 func (t *OrderRequestType) FromLimitOrderRequest(v LimitOrderRequest) error {
-	v.Name = "LimitOrderRequest"
+	v.Name = LimitOrderRequestNameLIMIT
 	b, err := json.Marshal(v)
 	t.union = b
 	return err
@@ -417,7 +417,7 @@ func (t *OrderRequestType) FromLimitOrderRequest(v LimitOrderRequest) error {
 
 // MergeLimitOrderRequest performs a merge with any union data inside the OrderRequestType, using the provided LimitOrderRequest
 func (t *OrderRequestType) MergeLimitOrderRequest(v LimitOrderRequest) error {
-	v.Name = "LimitOrderRequest"
+	v.Name = LimitOrderRequestNameLIMIT
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -442,9 +442,9 @@ func (t OrderRequestType) ValueByDiscriminator() (interface{}, error) {
 		return nil, err
 	}
 	switch discriminator {
-	case "LimitOrderRequest":
+	case string(LimitOrderRequestNameLIMIT):
 		return t.AsLimitOrderRequest()
-	case "MarketOrderRequest":
+	case string(MarketOrderRequestNameMARKET):
 		return t.AsMarketOrderRequest()
 	default:
 		return nil, errors.New("unknown discriminator value: " + discriminator)
