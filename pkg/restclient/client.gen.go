@@ -343,6 +343,15 @@ type TimeSpanParam = TimeSpanType
 // TransactionPathParam defines model for TransactionPathParam.
 type TransactionPathParam = string
 
+// GetV1AccountsAccountIDCodeParams defines parameters for GetV1AccountsAccountIDCode.
+type GetV1AccountsAccountIDCodeParams struct {
+	// Symbol A valid symbol added to a QR code defines the type of currency a user is requesting.
+	Symbol *string `form:"symbol,omitempty" json:"symbol,omitempty"`
+
+	// Amount Value being requested in decimal format.
+	Amount *string `form:"amount,omitempty" json:"amount,omitempty"`
+}
+
 // GetV1AccountsAccountIDOrdersParams defines parameters for GetV1AccountsAccountIDOrders.
 type GetV1AccountsAccountIDOrdersParams struct {
 	Status *OrderStatusParam `form:"status,omitempty" json:"status,omitempty"`
@@ -366,6 +375,15 @@ type GetV1MarketsMarketSnapshotParams struct {
 
 	// Bids include bids in snapshot
 	Bids *bool `form:"bids,omitempty" json:"bids,omitempty"`
+}
+
+// PostV1PubkeyParams defines parameters for PostV1Pubkey.
+type PostV1PubkeyParams struct {
+	// Data The value to verify using the default public key.
+	Data *string `form:"data,omitempty" json:"data,omitempty"`
+
+	// Sig The hashed signature to compare.
+	Sig *string `form:"sig,omitempty" json:"sig,omitempty"`
 }
 
 // PostV1AccountsAccountIDOrdersJSONRequestBody defines body for PostV1AccountsAccountIDOrders for application/json ContentType.
@@ -549,7 +567,7 @@ type ClientInterface interface {
 	GetV1AccountsAccountIDAddressesSymbolName(ctx context.Context, accountID AccountPathParam, symbolName SymbolPathParam, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetV1AccountsAccountIDCode request
-	GetV1AccountsAccountIDCode(ctx context.Context, accountID AccountPathParam, reqEditors ...RequestEditorFn) (*http.Response, error)
+	GetV1AccountsAccountIDCode(ctx context.Context, accountID AccountPathParam, params *GetV1AccountsAccountIDCodeParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetV1AccountsAccountIDOrders request
 	GetV1AccountsAccountIDOrders(ctx context.Context, accountID AccountPathParam, params *GetV1AccountsAccountIDOrdersParams, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -588,7 +606,7 @@ type ClientInterface interface {
 	GetV1Pubkey(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// PostV1Pubkey request
-	PostV1Pubkey(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+	PostV1Pubkey(ctx context.Context, params *PostV1PubkeyParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
 func (c *Client) GetV1Accounts(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -627,8 +645,8 @@ func (c *Client) GetV1AccountsAccountIDAddressesSymbolName(ctx context.Context, 
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetV1AccountsAccountIDCode(ctx context.Context, accountID AccountPathParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetV1AccountsAccountIDCodeRequest(c.Server, accountID)
+func (c *Client) GetV1AccountsAccountIDCode(ctx context.Context, accountID AccountPathParam, params *GetV1AccountsAccountIDCodeParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetV1AccountsAccountIDCodeRequest(c.Server, accountID, params)
 	if err != nil {
 		return nil, err
 	}
@@ -795,8 +813,8 @@ func (c *Client) GetV1Pubkey(ctx context.Context, reqEditors ...RequestEditorFn)
 	return c.Client.Do(req)
 }
 
-func (c *Client) PostV1Pubkey(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewPostV1PubkeyRequest(c.Server)
+func (c *Client) PostV1Pubkey(ctx context.Context, params *PostV1PubkeyParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostV1PubkeyRequest(c.Server, params)
 	if err != nil {
 		return nil, err
 	}
@@ -910,7 +928,7 @@ func NewGetV1AccountsAccountIDAddressesSymbolNameRequest(server string, accountI
 }
 
 // NewGetV1AccountsAccountIDCodeRequest generates requests for GetV1AccountsAccountIDCode
-func NewGetV1AccountsAccountIDCodeRequest(server string, accountID AccountPathParam) (*http.Request, error) {
+func NewGetV1AccountsAccountIDCodeRequest(server string, accountID AccountPathParam, params *GetV1AccountsAccountIDCodeParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -933,6 +951,44 @@ func NewGetV1AccountsAccountIDCodeRequest(server string, accountID AccountPathPa
 	queryURL, err := serverURL.Parse(operationPath)
 	if err != nil {
 		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Symbol != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "symbol", runtime.ParamLocationQuery, *params.Symbol); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Amount != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "amount", runtime.ParamLocationQuery, *params.Amount); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
 	}
 
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
@@ -1451,7 +1507,7 @@ func NewGetV1PubkeyRequest(server string) (*http.Request, error) {
 }
 
 // NewPostV1PubkeyRequest generates requests for PostV1Pubkey
-func NewPostV1PubkeyRequest(server string) (*http.Request, error) {
+func NewPostV1PubkeyRequest(server string, params *PostV1PubkeyParams) (*http.Request, error) {
 	var err error
 
 	serverURL, err := url.Parse(server)
@@ -1467,6 +1523,44 @@ func NewPostV1PubkeyRequest(server string) (*http.Request, error) {
 	queryURL, err := serverURL.Parse(operationPath)
 	if err != nil {
 		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Data != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "data", runtime.ParamLocationQuery, *params.Data); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Sig != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "sig", runtime.ParamLocationQuery, *params.Sig); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
 	}
 
 	req, err := http.NewRequest("POST", queryURL.String(), nil)
@@ -1530,7 +1624,7 @@ type ClientWithResponsesInterface interface {
 	GetV1AccountsAccountIDAddressesSymbolNameWithResponse(ctx context.Context, accountID AccountPathParam, symbolName SymbolPathParam, reqEditors ...RequestEditorFn) (*GetV1AccountsAccountIDAddressesSymbolNameResponse, error)
 
 	// GetV1AccountsAccountIDCodeWithResponse request
-	GetV1AccountsAccountIDCodeWithResponse(ctx context.Context, accountID AccountPathParam, reqEditors ...RequestEditorFn) (*GetV1AccountsAccountIDCodeResponse, error)
+	GetV1AccountsAccountIDCodeWithResponse(ctx context.Context, accountID AccountPathParam, params *GetV1AccountsAccountIDCodeParams, reqEditors ...RequestEditorFn) (*GetV1AccountsAccountIDCodeResponse, error)
 
 	// GetV1AccountsAccountIDOrdersWithResponse request
 	GetV1AccountsAccountIDOrdersWithResponse(ctx context.Context, accountID AccountPathParam, params *GetV1AccountsAccountIDOrdersParams, reqEditors ...RequestEditorFn) (*GetV1AccountsAccountIDOrdersResponse, error)
@@ -1569,7 +1663,7 @@ type ClientWithResponsesInterface interface {
 	GetV1PubkeyWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetV1PubkeyResponse, error)
 
 	// PostV1PubkeyWithResponse request
-	PostV1PubkeyWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*PostV1PubkeyResponse, error)
+	PostV1PubkeyWithResponse(ctx context.Context, params *PostV1PubkeyParams, reqEditors ...RequestEditorFn) (*PostV1PubkeyResponse, error)
 }
 
 type GetV1AccountsResponse struct {
@@ -2001,8 +2095,8 @@ func (c *ClientWithResponses) GetV1AccountsAccountIDAddressesSymbolNameWithRespo
 }
 
 // GetV1AccountsAccountIDCodeWithResponse request returning *GetV1AccountsAccountIDCodeResponse
-func (c *ClientWithResponses) GetV1AccountsAccountIDCodeWithResponse(ctx context.Context, accountID AccountPathParam, reqEditors ...RequestEditorFn) (*GetV1AccountsAccountIDCodeResponse, error) {
-	rsp, err := c.GetV1AccountsAccountIDCode(ctx, accountID, reqEditors...)
+func (c *ClientWithResponses) GetV1AccountsAccountIDCodeWithResponse(ctx context.Context, accountID AccountPathParam, params *GetV1AccountsAccountIDCodeParams, reqEditors ...RequestEditorFn) (*GetV1AccountsAccountIDCodeResponse, error) {
+	rsp, err := c.GetV1AccountsAccountIDCode(ctx, accountID, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -2124,8 +2218,8 @@ func (c *ClientWithResponses) GetV1PubkeyWithResponse(ctx context.Context, reqEd
 }
 
 // PostV1PubkeyWithResponse request returning *PostV1PubkeyResponse
-func (c *ClientWithResponses) PostV1PubkeyWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*PostV1PubkeyResponse, error) {
-	rsp, err := c.PostV1Pubkey(ctx, reqEditors...)
+func (c *ClientWithResponses) PostV1PubkeyWithResponse(ctx context.Context, params *PostV1PubkeyParams, reqEditors ...RequestEditorFn) (*PostV1PubkeyResponse, error) {
+	rsp, err := c.PostV1Pubkey(ctx, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}

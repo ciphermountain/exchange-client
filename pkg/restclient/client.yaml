@@ -14,7 +14,22 @@ paths:
               schema:
                 type: string
     post:
-      description: Verify QR code signature
+      description: >
+        Verify QR code signature. This endpoint is a convenience method. The public key is also available for offline
+        has verification.
+      parameters:
+        - name: data
+          in: query
+          schema:
+            type: string
+          description: >
+            The value to verify using the default public key.
+        - name: sig
+          in: query
+          schema:
+            type: string
+          description: >
+            The hashed signature to compare.
       responses:
         200:
           description: OK
@@ -63,7 +78,24 @@ paths:
     parameters:
       - $ref: '#/components/parameters/AccountPathParam'
     get:
-      description: Get a QRCode generated with the public id for receiving funds
+      description: >
+        Get a QRCode generated with the public id for receiving funds. If generating a QR code to request funds, both
+        the symbol and amount will need to be provided.
+      parameters:
+        - name: symbol
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >
+            A valid symbol added to a QR code defines the type of currency a user is requesting.
+        - name: amount
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >
+            Value being requested in decimal format.
       responses:
         200:
           description: OK
