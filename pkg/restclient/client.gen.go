@@ -29,14 +29,8 @@ const (
 
 // Defines values for LimitOrderRequestName.
 const (
-	LimitOrderRequestNameLIMIT  LimitOrderRequestName = "LIMIT"
-	LimitOrderRequestNameMARKET LimitOrderRequestName = "MARKET"
-)
-
-// Defines values for MarketOrderRequestName.
-const (
-	MarketOrderRequestNameLIMIT  MarketOrderRequestName = "LIMIT"
-	MarketOrderRequestNameMARKET MarketOrderRequestName = "MARKET"
+	OrderRequestNameLIMIT  OrderRequestName = "LIMIT"
+	OrderRequestNameMARKET OrderRequestName = "MARKET"
 )
 
 // Defines values for OrderStatus.
@@ -153,13 +147,13 @@ type CurrencyValue = string
 // LimitOrderRequest defines model for LimitOrderRequest.
 type LimitOrderRequest struct {
 	// Name Order type: * `MARKET` - order type used to buy or sell at market value * `LIMIT` - used to set buy or sell limit
-	Name     LimitOrderRequestName `json:"name"`
-	Price    CurrencyValue         `json:"price"`
-	Quantity CurrencyValue         `json:"quantity"`
+	Name     OrderRequestName `json:"name"`
+	Price    CurrencyValue    `json:"price"`
+	Quantity CurrencyValue    `json:"quantity"`
 }
 
-// LimitOrderRequestName Order type: * `MARKET` - order type used to buy or sell at market value * `LIMIT` - used to set buy or sell limit
-type LimitOrderRequestName string
+// OrderRequestName Order type: * `MARKET` - order type used to buy or sell at market value * `LIMIT` - used to set buy or sell limit
+type OrderRequestName string
 
 // MarketOrderRequest defines model for MarketOrderRequest.
 type MarketOrderRequest struct {
@@ -167,12 +161,9 @@ type MarketOrderRequest struct {
 	Base SymbolType `json:"base"`
 
 	// Name Order type: * `MARKET` - order type used to buy or sell at market value * `LIMIT` - used to set buy or sell limit
-	Name     MarketOrderRequestName `json:"name"`
-	Quantity CurrencyValue          `json:"quantity"`
+	Name     OrderRequestName `json:"name"`
+	Quantity CurrencyValue    `json:"quantity"`
 }
-
-// MarketOrderRequestName Order type: * `MARKET` - order type used to buy or sell at market value * `LIMIT` - used to set buy or sell limit
-type MarketOrderRequestName string
 
 // OrderRequest Request to create a new order on the order book
 type OrderRequest struct {
@@ -404,7 +395,7 @@ func (t OrderRequestType) AsMarketOrderRequest() (MarketOrderRequest, error) {
 
 // FromMarketOrderRequest overwrites any union data inside the OrderRequestType as the provided MarketOrderRequest
 func (t *OrderRequestType) FromMarketOrderRequest(v MarketOrderRequest) error {
-	v.Name = "MarketOrderRequest"
+	v.Name = OrderRequestNameMARKET
 	b, err := json.Marshal(v)
 	t.union = b
 	return err
@@ -412,7 +403,7 @@ func (t *OrderRequestType) FromMarketOrderRequest(v MarketOrderRequest) error {
 
 // MergeMarketOrderRequest performs a merge with any union data inside the OrderRequestType, using the provided MarketOrderRequest
 func (t *OrderRequestType) MergeMarketOrderRequest(v MarketOrderRequest) error {
-	v.Name = "MarketOrderRequest"
+	v.Name = OrderRequestNameMARKET
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -432,7 +423,7 @@ func (t OrderRequestType) AsLimitOrderRequest() (LimitOrderRequest, error) {
 
 // FromLimitOrderRequest overwrites any union data inside the OrderRequestType as the provided LimitOrderRequest
 func (t *OrderRequestType) FromLimitOrderRequest(v LimitOrderRequest) error {
-	v.Name = "LimitOrderRequest"
+	v.Name = OrderRequestNameLIMIT
 	b, err := json.Marshal(v)
 	t.union = b
 	return err
@@ -440,7 +431,7 @@ func (t *OrderRequestType) FromLimitOrderRequest(v LimitOrderRequest) error {
 
 // MergeLimitOrderRequest performs a merge with any union data inside the OrderRequestType, using the provided LimitOrderRequest
 func (t *OrderRequestType) MergeLimitOrderRequest(v LimitOrderRequest) error {
-	v.Name = "LimitOrderRequest"
+	v.Name = OrderRequestNameLIMIT
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -465,9 +456,9 @@ func (t OrderRequestType) ValueByDiscriminator() (interface{}, error) {
 		return nil, err
 	}
 	switch discriminator {
-	case "LimitOrderRequest":
+	case string(OrderRequestNameLIMIT):
 		return t.AsLimitOrderRequest()
-	case "MarketOrderRequest":
+	case string(OrderRequestNameMARKET):
 		return t.AsMarketOrderRequest()
 	default:
 		return nil, errors.New("unknown discriminator value: " + discriminator)
