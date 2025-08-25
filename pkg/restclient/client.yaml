@@ -18,13 +18,14 @@ paths:
         Verify QR code signature. This endpoint is a convenience method. The public key is also available for offline
         has verification.
       parameters:
-        - name: data
+        - name: checksum
           in: query
           schema:
             type: string
           description: >
-            The value to verify using the default public key.
-        - name: sig
+            The checksum value to verify. All QR codes should contain botha checksum and signature in the form of 
+            [checksum].[signature]
+        - name: signature
           in: query
           schema:
             type: string
