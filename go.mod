@@ -1,6 +1,6 @@
 module github.com/ciphermountain/exchange-client
 
-go 1.23
+go 1.24.5
 
 require (
 	github.com/oapi-codegen/runtime v1.1.2
