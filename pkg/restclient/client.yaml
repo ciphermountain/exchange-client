@@ -60,6 +60,9 @@ paths:
                   errors:
                     $ref: '#/components/schemas/ResponseErrorList'
   /v1/accounts/{accountID}:
+    description: >
+      Return account information for the provided account id. For default account, provide `default` as the account
+      id. This method will allow pulling all account information in one API call.
     parameters:
       - $ref: '#/components/parameters/AccountPathParam'
     get:
@@ -727,6 +730,7 @@ components:
       - symbol
       - quantity
       - available
+      - funding_address
       properties:
         symbol:
           $ref: '#/components/schemas/SymbolType'
@@ -734,6 +738,9 @@ components:
           $ref: '#/components/schemas/CurrencyValue'
         available:
           $ref: '#/components/schemas/CurrencyValue'
+        funding_address:
+          type: string
+          description: Address hash for funding this balance
     AddressItem:
       type: object
       required:

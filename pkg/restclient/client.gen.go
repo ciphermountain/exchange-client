@@ -118,7 +118,10 @@ type AddressItem struct {
 // BalanceItem defines model for BalanceItem.
 type BalanceItem struct {
 	Available CurrencyValue `json:"available"`
-	Quantity  CurrencyValue `json:"quantity"`
+
+	// FundingAddress Address hash for funding this balance
+	FundingAddress string        `json:"funding_address"`
+	Quantity       CurrencyValue `json:"quantity"`
 
 	// Symbol Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDT` - U.S. Dollar stable coin (Tether) * `XIFR` - cipher mountain currency identifer
 	Symbol SymbolType `json:"symbol"`
@@ -370,11 +373,11 @@ type GetV1MarketsMarketSnapshotParams struct {
 
 // PostV1PubkeyParams defines parameters for PostV1Pubkey.
 type PostV1PubkeyParams struct {
-	// Data The value to verify using the default public key.
-	Data *string `form:"data,omitempty" json:"data,omitempty"`
+	// Checksum The checksum value to verify. All QR codes should contain botha checksum and signature in the form of  [checksum].[signature]
+	Checksum *string `form:"checksum,omitempty" json:"checksum,omitempty"`
 
-	// Sig The hashed signature to compare.
-	Sig *string `form:"sig,omitempty" json:"sig,omitempty"`
+	// Signature The hashed signature to compare.
+	Signature *string `form:"signature,omitempty" json:"signature,omitempty"`
 }
 
 // PostV1AccountsAccountIDOrdersJSONRequestBody defines body for PostV1AccountsAccountIDOrders for application/json ContentType.
@@ -1519,9 +1522,9 @@ func NewPostV1PubkeyRequest(server string, params *PostV1PubkeyParams) (*http.Re
 	if params != nil {
 		queryValues := queryURL.Query()
 
-		if params.Data != nil {
+		if params.Checksum != nil {
 
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "data", runtime.ParamLocationQuery, *params.Data); err != nil {
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "checksum", runtime.ParamLocationQuery, *params.Checksum); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -1535,9 +1538,9 @@ func NewPostV1PubkeyRequest(server string, params *PostV1PubkeyParams) (*http.Re
 
 		}
 
-		if params.Sig != nil {
+		if params.Signature != nil {
 
-			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "sig", runtime.ParamLocationQuery, *params.Sig); err != nil {
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "signature", runtime.ParamLocationQuery, *params.Signature); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
