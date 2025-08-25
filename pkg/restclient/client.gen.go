@@ -251,6 +251,11 @@ type ResponseError struct {
 // ResponseErrorList defines model for ResponseErrorList.
 type ResponseErrorList = []ResponseError
 
+// SignatureVerifyResult defines model for SignatureVerifyResult.
+type SignatureVerifyResult struct {
+	Valid bool `json:"valid"`
+}
+
 // SnapshotItem Order book snapshot item
 type SnapshotItem struct {
 	Depth string `json:"depth"`
@@ -381,7 +386,7 @@ func (t OrderRequestType) AsMarketOrderRequest() (MarketOrderRequest, error) {
 
 // FromMarketOrderRequest overwrites any union data inside the OrderRequestType as the provided MarketOrderRequest
 func (t *OrderRequestType) FromMarketOrderRequest(v MarketOrderRequest) error {
-	v.Name = MarketOrderRequestNameMARKET
+	v.Name = "MarketOrderRequest"
 	b, err := json.Marshal(v)
 	t.union = b
 	return err
@@ -389,7 +394,7 @@ func (t *OrderRequestType) FromMarketOrderRequest(v MarketOrderRequest) error {
 
 // MergeMarketOrderRequest performs a merge with any union data inside the OrderRequestType, using the provided MarketOrderRequest
 func (t *OrderRequestType) MergeMarketOrderRequest(v MarketOrderRequest) error {
-	v.Name = MarketOrderRequestNameMARKET
+	v.Name = "MarketOrderRequest"
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -409,7 +414,7 @@ func (t OrderRequestType) AsLimitOrderRequest() (LimitOrderRequest, error) {
 
 // FromLimitOrderRequest overwrites any union data inside the OrderRequestType as the provided LimitOrderRequest
 func (t *OrderRequestType) FromLimitOrderRequest(v LimitOrderRequest) error {
-	v.Name = LimitOrderRequestNameLIMIT
+	v.Name = "LimitOrderRequest"
 	b, err := json.Marshal(v)
 	t.union = b
 	return err
@@ -417,7 +422,7 @@ func (t *OrderRequestType) FromLimitOrderRequest(v LimitOrderRequest) error {
 
 // MergeLimitOrderRequest performs a merge with any union data inside the OrderRequestType, using the provided LimitOrderRequest
 func (t *OrderRequestType) MergeLimitOrderRequest(v LimitOrderRequest) error {
-	v.Name = LimitOrderRequestNameLIMIT
+	v.Name = "LimitOrderRequest"
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -442,9 +447,9 @@ func (t OrderRequestType) ValueByDiscriminator() (interface{}, error) {
 		return nil, err
 	}
 	switch discriminator {
-	case string(LimitOrderRequestNameLIMIT):
+	case "LimitOrderRequest":
 		return t.AsLimitOrderRequest()
-	case string(MarketOrderRequestNameMARKET):
+	case "MarketOrderRequest":
 		return t.AsMarketOrderRequest()
 	default:
 		return nil, errors.New("unknown discriminator value: " + discriminator)
@@ -578,6 +583,12 @@ type ClientInterface interface {
 
 	// GetV1MarketsMarketSnapshot request
 	GetV1MarketsMarketSnapshot(ctx context.Context, market MarketParam, params *GetV1MarketsMarketSnapshotParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetV1Pubkey request
+	GetV1Pubkey(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PostV1Pubkey request
+	PostV1Pubkey(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
 func (c *Client) GetV1Accounts(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -762,6 +773,30 @@ func (c *Client) GetV1MarketsMarketHistory(ctx context.Context, market MarketPar
 
 func (c *Client) GetV1MarketsMarketSnapshot(ctx context.Context, market MarketParam, params *GetV1MarketsMarketSnapshotParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetV1MarketsMarketSnapshotRequest(c.Server, market, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetV1Pubkey(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetV1PubkeyRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PostV1Pubkey(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPostV1PubkeyRequest(c.Server)
 	if err != nil {
 		return nil, err
 	}
@@ -1388,6 +1423,60 @@ func NewGetV1MarketsMarketSnapshotRequest(server string, market MarketParam, par
 	return req, nil
 }
 
+// NewGetV1PubkeyRequest generates requests for GetV1Pubkey
+func NewGetV1PubkeyRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/pubkey")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewPostV1PubkeyRequest generates requests for PostV1Pubkey
+func NewPostV1PubkeyRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/v1/pubkey")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 func (c *Client) applyEditors(ctx context.Context, req *http.Request, additionalEditors []RequestEditorFn) error {
 	for _, r := range c.RequestEditors {
 		if err := r(ctx, req); err != nil {
@@ -1475,6 +1564,12 @@ type ClientWithResponsesInterface interface {
 
 	// GetV1MarketsMarketSnapshotWithResponse request
 	GetV1MarketsMarketSnapshotWithResponse(ctx context.Context, market MarketParam, params *GetV1MarketsMarketSnapshotParams, reqEditors ...RequestEditorFn) (*GetV1MarketsMarketSnapshotResponse, error)
+
+	// GetV1PubkeyWithResponse request
+	GetV1PubkeyWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetV1PubkeyResponse, error)
+
+	// PostV1PubkeyWithResponse request
+	PostV1PubkeyWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*PostV1PubkeyResponse, error)
 }
 
 type GetV1AccountsResponse struct {
@@ -1832,6 +1927,52 @@ func (r GetV1MarketsMarketSnapshotResponse) StatusCode() int {
 	return 0
 }
 
+type GetV1PubkeyResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+}
+
+// Status returns HTTPResponse.Status
+func (r GetV1PubkeyResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetV1PubkeyResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type PostV1PubkeyResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *struct {
+		Data   *SignatureVerifyResult `json:"data,omitempty"`
+		Errors *ResponseErrorList     `json:"errors,omitempty"`
+	}
+}
+
+// Status returns HTTPResponse.Status
+func (r PostV1PubkeyResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PostV1PubkeyResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
 // GetV1AccountsWithResponse request returning *GetV1AccountsResponse
 func (c *ClientWithResponses) GetV1AccountsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetV1AccountsResponse, error) {
 	rsp, err := c.GetV1Accounts(ctx, reqEditors...)
@@ -1971,6 +2112,24 @@ func (c *ClientWithResponses) GetV1MarketsMarketSnapshotWithResponse(ctx context
 		return nil, err
 	}
 	return ParseGetV1MarketsMarketSnapshotResponse(rsp)
+}
+
+// GetV1PubkeyWithResponse request returning *GetV1PubkeyResponse
+func (c *ClientWithResponses) GetV1PubkeyWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetV1PubkeyResponse, error) {
+	rsp, err := c.GetV1Pubkey(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetV1PubkeyResponse(rsp)
+}
+
+// PostV1PubkeyWithResponse request returning *PostV1PubkeyResponse
+func (c *ClientWithResponses) PostV1PubkeyWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*PostV1PubkeyResponse, error) {
+	rsp, err := c.PostV1Pubkey(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePostV1PubkeyResponse(rsp)
 }
 
 // ParseGetV1AccountsResponse parses an HTTP response from a GetV1AccountsWithResponse call
@@ -2437,6 +2596,51 @@ func ParseGetV1MarketsMarketSnapshotResponse(rsp *http.Response) (*GetV1MarketsM
 			return nil, err
 		}
 		response.JSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetV1PubkeyResponse parses an HTTP response from a GetV1PubkeyWithResponse call
+func ParseGetV1PubkeyResponse(rsp *http.Response) (*GetV1PubkeyResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetV1PubkeyResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	return response, nil
+}
+
+// ParsePostV1PubkeyResponse parses an HTTP response from a PostV1PubkeyWithResponse call
+func ParsePostV1PubkeyResponse(rsp *http.Response) (*PostV1PubkeyResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PostV1PubkeyResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest struct {
+			Data   *SignatureVerifyResult `json:"data,omitempty"`
+			Errors *ResponseErrorList     `json:"errors,omitempty"`
+		}
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
 
 	}
 

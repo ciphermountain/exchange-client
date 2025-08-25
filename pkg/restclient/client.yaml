@@ -3,6 +3,30 @@ info:
   title: Cloud Exchange REST API
   version: 0.0.1
 paths:
+  /v1/pubkey:
+    get:
+      description: Return the signature public key for signing QR code data
+      responses:
+        200:
+          description: OK
+          content:
+            'text/plain':
+              schema:
+                type: string
+    post:
+      description: Verify QR code signature
+      responses:
+        200:
+          description: OK
+          content:
+            'application/json':
+              schema:
+                properties:
+                  data:
+                    type:
+                    $ref: '#/components/schemas/SignatureVerifyResult'
+                  errors:
+                    $ref: '#/components/schemas/ResponseErrorList'
   /v1/accounts:
     get:
       description: Retrieve all account information
@@ -410,6 +434,13 @@ components:
       properties:
         detail:
           type: string
+    SignatureVerifyResult:
+      type: object
+      required:
+      - valid
+      properties:
+        valid:
+          type: boolean
     QueryTime:
       type: integer
       format: int64
