@@ -1,0 +1,11 @@
+ResponseErrorList:
+  type: array
+  items:
+    $ref: '#/ResponseError'
+ResponseError:
+  type: object
+  required:
+  - detail
+  properties:
+    detail:
+      type: string

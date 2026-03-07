@@ -1,0 +1,9 @@
+description: OK
+content: 
+  'application/json': 
+    schema: 
+      properties:
+        data:
+          $ref: '../schemas/Payments.yaml#/PaymentOrderChain'
+        errors:
+          $ref: '../schemas/ResponseError.yaml#/ResponseErrorList'

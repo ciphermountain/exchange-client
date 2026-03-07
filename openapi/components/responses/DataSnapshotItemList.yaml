@@ -1,0 +1,10 @@
+description: OK
+content:
+  'application/json':
+    schema:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '../schemas/Markets.yaml#/SnapshotItem'

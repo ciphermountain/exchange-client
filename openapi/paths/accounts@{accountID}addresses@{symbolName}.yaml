@@ -1,0 +1,15 @@
+paths:
+  /accounts/{accountID}/addresses/{symbolName}:
+    parameters:
+      - $ref: '../components/parameters/Account.yaml#/AccountPathParam'
+      - $ref: '../components/parameters/Symbol.yaml#/SymbolPathParam'
+    get:
+      description: Desc
+      operationId: GetAddressForSymbol
+      responses:
+        200:
+          $ref: '../components/responses/DataAddressItem.yaml'
+        404:
+          $ref: '../components/responses/NotFoundError.yaml#/NotFoundError'
+        500:
+          $ref: '../components/responses/InternalServerError.yaml#/InternalServerError'

@@ -1,0 +1,37 @@
+paths:
+  /accounts/{accountID}/orders/{orderID}:
+    parameters:
+      - $ref: '../components/parameters/Account.yaml#/AccountPathParam'
+      - $ref: '../components/parameters/Order.yaml#/OrderPathParam'
+    get:
+      description: Get details on an order item
+      operationId: GetOrder
+      security:
+        - OAuth2: [write]
+      responses:
+        200:
+          $ref: '../components/responses/DataOrder.yaml'
+    patch:
+      description: Cancel an order
+      operationId: UpdateOrder
+      security:
+        - OAuth2: [write]
+      requestBody: 
+        description: >
+          Adheres to JSON-PATCH RFC-6902
+          Accepted patch commands on order records:
+            op: replace; path: /status; value: CANCELLED
+        required: true
+        content: 
+          'application/json': 
+            schema: 
+              $ref: '../components/schemas/Orders.yaml#/PatchCommandList'
+      responses: 
+        200: 
+          $ref: '../components/responses/DataOrder.yaml'
+        400:
+          $ref: '../components/responses/InvalidRequest.yaml#/InvalidRequest'
+        404:
+          $ref: '../components/responses/NotFoundError.yaml#/NotFoundError'
+        500:
+          $ref: '../components/responses/InternalServerError.yaml#/InternalServerError'

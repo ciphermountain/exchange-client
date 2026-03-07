@@ -1,0 +1,17 @@
+paths:
+  /accounts/{accountID}:
+    description: >
+      Return account information for the provided account id. For default account, provide `default` as the account
+      id. This method will allow pulling all account information in one API call.
+    parameters:
+      - $ref: '../components/parameters/Account.yaml#/AccountPathParam'
+    get:
+      description: Retrieve account information
+      operationId: GetAccount
+      responses:
+        200:
+          $ref: '../components/responses/DataAccount.yaml'
+        404:
+          $ref: '../components/responses/NotFoundError.yaml#/NotFoundError'
+        500:
+          $ref: '../components/responses/InternalServerError.yaml#/InternalServerError'

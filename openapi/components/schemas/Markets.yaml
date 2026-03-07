@@ -1,0 +1,55 @@
+PriceHistoryItem:
+  type: object
+  description: Price history item
+  required:
+  - start
+  - span
+  - maximum
+  - minimum
+  - median
+  - average
+  - upperQuartile
+  - lowerQuartile
+  - volume
+  - open
+  - close
+  properties:
+    start:
+      type: string
+    span:
+      $ref: './TimeSpanType.yaml#/TimeSpanType'
+    maximum:
+      type: string
+    minimum:
+      type: string
+    median:
+      type: string
+    average:
+      type: string
+    upperQuartile:
+      type: string
+    lowerQuartile:
+      type: string
+    volume:
+      type: string
+      description: Total volume during time span
+    open:
+      type: string
+      description: First price in time span
+    close:
+      type: string
+      description: Last price in time span
+SnapshotItem:
+  type: object
+  description: Order book snapshot item
+  required:
+  - side
+  - price
+  - depth
+  properties:
+    side:
+      type: string
+    price:
+      type: string
+    depth:
+      type: string

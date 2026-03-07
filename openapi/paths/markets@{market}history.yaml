@@ -1,0 +1,26 @@
+paths:
+  /markets/{market}/history:
+    parameters:
+      - $ref: '../components/parameters/Market.yaml#/MarketPathParam'
+    get:
+      description: Get market history
+      operationId: GetMarketHistory
+      parameters:
+        - $ref: '../components/parameters/TimeSpan.yaml#/TimeSpanQueryParam'
+        - name: start
+          in: query
+          description: Start time for history items
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Limit for how many history items to retrieve (no more than the default 100)
+          schema:
+            type: string
+      responses:
+        200:
+          $ref: '../components/responses/DataPriceHistoryList.yaml'
+        500:
+          $ref: '../components/responses/Error.yaml'
+        default:
+          $ref: '../components/responses/Error.yaml'

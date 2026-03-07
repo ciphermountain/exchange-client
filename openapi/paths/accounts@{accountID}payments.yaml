@@ -1,0 +1,42 @@
+paths:
+  /accounts/{accountID}/payments:
+    parameters:
+      - $ref: '../components/parameters/Account.yaml#/AccountPathParam'
+    get:
+      description: Retrieve payment chains
+      operationId: GetPaymentOrderChains
+      parameters:
+        - $ref: '../components/parameters/OrderStatus.yaml#/OrderStatusQueryParam'
+      responses:
+        200:
+          $ref: '../components/responses/DataPaymentOrderChainList.yaml'
+        500:
+          $ref: '../components/responses/InternalServerError.yaml#/InternalServerError'
+    post:
+      description: Publishes multiple orders as a payment operation. Orders must be in a linked chain.
+      operationId: CreatePaymentOrderChain
+      security:
+        - OAuth2: [write]
+      requestBody:
+        description: >
+          Payment order chain request
+          Valid chain of orders to complete a payment request
+          Payment order chains are required to be market orders
+        required: true
+        content:
+          'application/json':
+            schema:
+              $ref: '../components/schemas/Payments.yaml#/PaymentOrderChainRequest'
+      responses:
+        200: 
+          $ref: '../components/responses/DataPaymentOrderChain.yaml'
+        409:
+          description: Insufficient account balance
+          content:
+            'application/json':
+              schema:
+                properties:
+                  errors:
+                    $ref: '../components/schemas/ResponseError.yaml#/ResponseErrorList'
+        500:
+          $ref: '../components/responses/InternalServerError.yaml#/InternalServerError'

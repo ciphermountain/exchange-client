@@ -1,0 +1,40 @@
+paths:
+  /accounts/{accountID}/orders:
+    parameters:
+      - $ref: '../components/parameters/Account.yaml#/AccountPathParam'
+    get:
+      description: Retrieve order list
+      parameters:
+        - $ref: '../components/parameters/OrderStatus.yaml#/OrderStatusQueryParam'
+      responses:
+        200:
+          $ref: '../components/responses/DataOrderList.yaml'
+        500:
+          $ref: '../components/responses/InternalServerError.yaml#/InternalServerError'
+    post:
+      description: Publishes a new order to the order book
+      operationId: CreateOrder
+      security:
+        - OAuth2: [write]
+      requestBody: 
+        description: >
+          Order request
+          Valid order pairs include BTC-ETH
+        required: true
+        content: 
+          'application/json': 
+            schema: 
+              $ref: '../components/schemas/Orders.yaml#/OrderRequest'
+      responses: 
+        200: 
+          $ref: '../components/responses/DataOrder.yaml'
+        409:
+          description: Insufficient account balance
+          content:
+            'application/json':
+              schema:
+                properties:
+                  errors:
+                    $ref: '../components/schemas/ResponseError.yaml#/ResponseErrorList'
+        500:
+          $ref: '../components/responses/InternalServerError.yaml#/InternalServerError'

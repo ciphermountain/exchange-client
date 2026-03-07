@@ -1,0 +1,8 @@
+description: OK
+content:
+  'application/json':
+    schema:
+      type: object
+      properties:
+        data:
+          $ref: '../schemas/Account.yaml#/Account'

@@ -4,21 +4,21 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/ciphermountain/exchange-client/pkg/restclient"
+	"github.com/ciphermountain/exchange-client/pkg/rest"
 )
 
 type Symbol string
 
-func ParseSymbolString(input string) (restclient.SymbolType, error) {
+func ParseSymbolString(input string) (rest.SymbolType, error) {
 	switch input {
-	case string(restclient.BTC):
-		return restclient.BTC, nil
-	case string(restclient.ETH):
-		return restclient.ETH, nil
-	case string(restclient.USDT):
-		return restclient.USDT, nil
-	case string(restclient.XIFR):
-		return restclient.XIFR, nil
+	case string(rest.BTC):
+		return rest.BTC, nil
+	case string(rest.ETH):
+		return rest.ETH, nil
+	case string(rest.USDT):
+		return rest.USDT, nil
+	case string(rest.XIFR):
+		return rest.XIFR, nil
 	default:
 		return "", errors.New("invalid symbol type")
 	}

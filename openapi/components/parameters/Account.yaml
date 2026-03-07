@@ -1,0 +1,7 @@
+AccountPathParam:
+  in: path
+  name: accountID
+  required: true
+  schema:
+    type: string
+  description: The uuid account identifier

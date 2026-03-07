@@ -1,0 +1,6 @@
+OrderStatusQueryParam:
+  in: query
+  name: status
+  required: false
+  schema:
+    $ref: '../schemas/Orders.yaml#/OrderStatus'

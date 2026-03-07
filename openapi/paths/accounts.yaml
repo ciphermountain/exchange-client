@@ -1,0 +1,10 @@
+paths:
+  /accounts:
+    get:
+      description: Retrieve all account information
+      operationId: GetAccounts
+      responses:
+        200:
+          $ref: '../components/responses/DataAccountList.yaml'
+        500:
+          $ref: '../components/responses/InternalServerError.yaml#/InternalServerError'

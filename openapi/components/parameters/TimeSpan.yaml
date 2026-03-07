@@ -1,0 +1,6 @@
+TimeSpanQueryParam:
+  in: query
+  name: increment
+  required: false
+  schema:
+    $ref: '../schemas/TimeSpanType.yaml#/TimeSpanType'

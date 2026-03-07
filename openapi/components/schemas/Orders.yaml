@@ -1,0 +1,113 @@
+BookOrder:
+  type: object
+  required:
+  - status
+  - guid
+  - order
+  properties:
+    guid:
+      type: string
+    status:
+      $ref: '#/OrderStatus'
+    order:
+      $ref: '#/OrderRequest'
+ActionType:
+  type: string
+  enum:
+  - BUY
+  - SELL
+  description: >
+    Action type:
+    * `BUY` - use base currency to buy target currency
+    * `SELL` - sell target currency for base currency
+OrderStatus:
+  type: string
+  enum:
+  - OPEN
+  - PARTIAL
+  - FILLED
+  - CANCELLED
+  description: >
+    Symbol Type:
+    * `OPEN` - incomplete order
+    * `PARTIAL` - partial order
+    * `FILLED` - filled order
+    * `CANCELLED` - cancelled order
+OrderRequestType:
+  oneOf:
+    - $ref: '#/MarketOrderRequest'
+    - $ref: '#/LimitOrderRequest'
+  discriminator:
+    propertyName: name
+OrderType:
+  type: object
+  required:
+  - name
+  properties:
+    name:
+      type: string
+      enum:
+      - MARKET
+      - LIMIT
+      description: >
+        Order type:
+        * `MARKET` - order type used to buy or sell at market value
+        * `LIMIT` - used to set buy or sell limit
+MarketOrderRequest:
+  allOf:
+    - $ref: '#/OrderType'
+    - type: object
+      required:
+      - base
+      - quantity
+      properties:
+        base:
+          $ref: './SymbolType.yaml#/SymbolType'
+        quantity:
+          $ref: './SymbolType.yaml#/CurrencyValue'
+LimitOrderRequest:
+  allOf:
+    - $ref: '#/OrderType'
+    - type: object
+      required:
+      - price
+      - quantity
+      properties:
+        price:
+          $ref: './SymbolType.yaml#/CurrencyValue'
+        quantity:
+          $ref: './SymbolType.yaml#/CurrencyValue'
+OrderRequest:
+  type: object
+  description: Request to create a new order on the order book
+  required:
+  - base
+  - quote
+  - action
+  - type
+  properties:
+    base:
+      $ref: './SymbolType.yaml#/SymbolType'
+    quote:
+      $ref: './SymbolType.yaml#/SymbolType'
+    action:
+      $ref: './Orders.yaml#/ActionType'
+    type:
+      $ref: './Orders.yaml#/OrderRequestType'
+PatchCommandList:
+  type: array
+  items:
+    $ref: '#/PatchCommand'
+PatchCommand:
+  type: object
+  required:
+  - op
+  - path
+  - value
+  properties:
+    op:
+      type: string
+    path:
+      type: string
+    value:
+      type: string

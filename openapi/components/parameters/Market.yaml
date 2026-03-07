@@ -1,0 +1,7 @@
+MarketPathParam:
+  in: path
+  name: market
+  required: true
+  schema:
+    type: string
+  description: The market identifier

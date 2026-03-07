@@ -1,0 +1,7 @@
+TransactionPathParam:
+  in: path
+  name: transactionID
+  required: true
+  schema:
+    type: string
+  description: The uuid transaction identifier

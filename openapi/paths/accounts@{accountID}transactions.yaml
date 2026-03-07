@@ -1,0 +1,43 @@
+paths:
+  /accounts/{accountID}/transactions:
+    parameters:
+      - $ref: '../components/parameters/Account.yaml#/AccountPathParam'
+    get:
+      description: Retrieve account transactions
+      operationId: GetTransactions
+      responses:
+        200:
+          $ref: '../components/responses/DataTransactionList.yaml'
+        404:
+          $ref: '../components/responses/NotFoundError.yaml#/NotFoundError'
+        500:
+          $ref: '../components/responses/InternalServerError.yaml#/InternalServerError'
+    post:
+      description: Publishes a transfer request.
+      operationId: CreateTransaction
+      requestBody: 
+        description: >
+          Transfer request initiates a transfer either to another local Xifer
+          account or to an external account as a withdrawal.
+        required: true
+        content: 
+          'application/json': 
+            schema: 
+              $ref: '../components/schemas/Transaction.yaml#/TransactionRequest'
+      responses: 
+        200: 
+          $ref: '../components/responses/DataTransaction.yaml'
+        400:
+          $ref: '../components/responses/InvalidRequest.yaml#/InvalidRequest'
+        404:
+          $ref: '../components/responses/NotFoundError.yaml#/NotFoundError'
+        409:
+          description: Insufficient account balance
+          content:
+            'application/json':
+              schema:
+                properties:
+                  errors:
+                    $ref: '../components/schemas/ResponseError.yaml#/ResponseErrorList'
+        500:
+          $ref: '../components/responses/InternalServerError.yaml#/InternalServerError'

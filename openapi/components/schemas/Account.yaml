@@ -1,0 +1,45 @@
+Account:
+  type: object
+  description: Balances account
+  required:
+  - id
+  - public_id
+  properties:
+    id:
+      type: string
+    public_id:
+      type: string
+    balances:
+      $ref: '#/BalanceList'
+BalanceList:
+  type: array
+  items:
+    $ref: '#/BalanceItem'
+BalanceItem:
+  type: object
+  required:
+  - symbol
+  - quantity
+  - available
+  - funding_address
+  properties:
+    symbol:
+      $ref: './SymbolType.yaml#/SymbolType'
+    quantity:
+      $ref: './SymbolType.yaml#/CurrencyValue'
+    available:
+      $ref: './SymbolType.yaml#/CurrencyValue'
+    funding_address:
+      type: string
+      description: Address hash for funding this balance
+AddressItem:
+  type: object
+  required:
+  - address
+  - symbol
+  properties:
+    symbol:
+      $ref: './SymbolType.yaml#/SymbolType'
+    address:
+      type: string
+      description: Address hash for funding this balance

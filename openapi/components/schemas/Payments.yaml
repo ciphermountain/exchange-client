@@ -1,0 +1,20 @@
+PaymentOrderChainRequest:
+  type: array
+  description: Request to create a new payment order chain
+  items:
+    $ref: './Orders.yaml#/OrderRequest'
+PaymentOrderChain:
+  type: object
+  required:
+  - status
+  - guid
+  - orders
+  properties:
+    guid:
+      type: string
+    status:
+      $ref: './Orders.yaml#/OrderStatus'
+    orders:
+      type: array
+      items:
+        type: string

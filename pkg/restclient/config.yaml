@@ -1,5 +1,0 @@
-package: restclient
-output: client.gen.go
-generate:
-  models: true
-  client: true

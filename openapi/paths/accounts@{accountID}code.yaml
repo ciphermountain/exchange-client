@@ -1,0 +1,36 @@
+paths:
+  /accounts/{accountID}/code:
+    parameters:
+      - $ref: '../components/parameters/Account.yaml#/AccountPathParam'
+    get:
+      description: >
+        Get a QRCode generated with the public id for receiving funds. If generating a QR code to request funds, both
+        the symbol and amount will need to be provided.
+      operationId: GetAccountQRCode
+      parameters:
+        - name: symbol
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >
+            A valid symbol added to a QR code defines the type of currency a user is requesting.
+        - name: amount
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >
+            Value being requested in decimal format.
+      responses:
+        200:
+          description: OK
+          content:
+            'image/png':
+              schema:
+                type: string
+                format: binary
+        404:
+          $ref: '../components/responses/NotFoundError.yaml#/NotFoundError'
+        500:
+          $ref: '../components/responses/InternalServerError.yaml#/InternalServerError'
