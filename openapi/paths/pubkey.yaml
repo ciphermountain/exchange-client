@@ -15,7 +15,7 @@ paths:
     post:
       description: >
         Verify QR code signature. This endpoint is a convenience method. The public key is also available for offline
-        has verification.
+        hash verification.
       operationId: PostSignature
       parameters:
         - name: checksum

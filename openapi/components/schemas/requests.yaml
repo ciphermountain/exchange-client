@@ -1,5 +1,0 @@
-PaymentOrderChainRequest:
-  type: array
-  description: Request to create a new payment order chain
-  items:
-    $ref: '#/components/schemas/OrderRequest'

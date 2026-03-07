@@ -81,6 +81,10 @@ func (c *RestClient) GetMarketSnapshot(ctx context.Context, market Market, asks,
 		return nil, fmt.Errorf("unexpected status: %d %s", resp.StatusCode(), resp.Status())
 	}
 
+	if resp.JSON200 == nil {
+		return nil, fmt.Errorf("unexpected snapshot output data")
+	}
+
 	list := resp.JSON200.Data
 
 	if list == nil {
@@ -209,7 +213,7 @@ func (c *RestClient) GetAddressForSymbol(ctx context.Context, symbol string, acc
 		}
 
 		if len(accounts) == 0 {
-			return "", fmt.Errorf("expected more than one account")
+			return "", fmt.Errorf("expected at least one account")
 		}
 
 		accountID = &accounts[0].Id

@@ -1,0 +1,120 @@
+# Copilot Agent Instructions — exchange-client
+
+Trust these instructions first. Only search the repo if a detail here is incomplete or incorrect.
+
+## Repository Summary
+
+This is a **Go client library** (`github.com/ciphermountain/exchange-client`) for the Xifer Exchange. It provides REST and WebSocket clients for interacting with the exchange API. There is no `main` package — this is a library consumed by other projects.
+
+- **Language:** Go 1.25.5
+- **Module:** `github.com/ciphermountain/exchange-client`
+- **Package name:** `xifer` (in `pkg/`)
+- **Code generation:** OpenAPI 3.0 spec → Go client via `oapi-codegen`
+- **OpenAPI bundling:** Redocly CLI (Node.js, `@redocly/cli`)
+- **Size:** Small (~15 source files, ~4k lines generated)
+- **No CI/CD workflows** (no `.github/workflows/` directory exists)
+
+## Build & Validation Commands
+
+### Prerequisites
+
+- **Go ≥ 1.25.5** (`go version`)
+- **Node.js ≥ 22** with `@redocly/cli` installed globally (`npm install -g @redocly/cli`)
+- **golangci-lint v2** for linting (`golangci-lint run`)
+
+### Command Reference
+
+| Task | Command | Notes |
+|------|---------|-------|
+| **Build** | `go build ./...` | Always succeeds if `go mod tidy` has been run |
+| **Test** | `go test ./...` | Tests exist only in `pkg/rest/` |
+| **Lint** | `make lint` or `golangci-lint run` | Uses default golangci-lint v2 config (no `.golangci.yml`) |
+| **Tidy modules** | `go mod tidy` | Always run after changing dependencies |
+| **Generate (full)** | `make generate-go` | **This is the correct command.** Runs `scripts/bundle.sh` then `go generate ./...` |
+| **Bundle only** | `./scripts/bundle.sh` | Bundles OpenAPI specs via `redocly bundle` |
+| **Generate only** | `go generate ./...` | Only works if `openapi/v1_bundle.yaml` already exists |
+
+### Critical: Code Generation Order
+
+Always use `make generate-go` to regenerate the Go client. This runs two steps in order:
+
+1. `./scripts/bundle.sh` — bundles OpenAPI YAML files into `openapi/v1_bundle.yaml` using Redocly
+2. `go generate ./...` — runs `oapi-codegen` to generate `pkg/rest/client.gen.go` from the bundled spec
+
+**Do NOT run `go generate ./...` alone** unless `openapi/v1_bundle.yaml` already exists. It will fail with `error loading swagger spec`.
+
+### Known Dependency Issues
+
+The `go.mod` file contains three critical `replace` directives. **Do not remove them:**
+
+```
+replace (
+    github.com/dprotaso/go-yit => github.com/dprotaso/go-yit v0.0.0-20220510233725-9ba8df137936
+    github.com/speakeasy-api/jsonpath => github.com/speakeasy-api/jsonpath v0.6.0
+    github.com/speakeasy-api/openapi-overlay => github.com/speakeasy-api/openapi-overlay v0.10.2
+)
+```
+
+- **`go-yit`**: Pinned to avoid `go.yaml.in/yaml/v4` which causes type conflicts with `gopkg.in/yaml.v3`
+- **`jsonpath`**: Pinned to v0.6.0 because newer versions reference a non-existent `pkg/overlay` package
+- **`openapi-overlay`**: Pinned to v0.10.2 for compatibility with the jsonpath pin
+
+### Lint Note
+
+`make lint` currently reports 1 existing `errcheck` issue in `pkg/ws.go` (unchecked `WriteMessage` return). This is pre-existing; do not introduce new lint issues.
+
+## Project Layout
+
+```
+go.mod                      # Module definition with critical replace directives
+go.sum                      # Dependency checksums
+Makefile                    # Build targets: lint, generate-go
+redocly.yaml                # Redocly CLI config for OpenAPI bundling
+scripts/
+  bundle.sh                 # Bundles OpenAPI specs (installs redocly if missing)
+openapi/
+  root.yaml                 # OpenAPI 3.0 root spec (entry point)
+  v1_bundle.yaml            # Generated bundled spec (output of redocly bundle)
+  paths/                    # Per-endpoint OpenAPI path definitions
+  components/
+    schemas/                # OpenAPI schema definitions
+    parameters/             # OpenAPI parameter definitions
+    responses/              # OpenAPI response definitions
+pkg/
+  generate.go               # go:generate directive for oapi-codegen
+  config.yaml               # oapi-codegen configuration (output: rest/client.gen.go)
+  rest.go                   # RestClient — high-level REST API wrapper
+  ws.go                     # WSClient — WebSocket client with subscriptions
+  mailbox.go                # Generic mailbox (channel-based message queue)
+  symbol.go                 # Symbol/Market type parsing helpers
+  messages/
+    ws.go                   # WebSocket message types (Heartbeat, Order, Trade, etc.)
+  rest/
+    client.gen.go           # GENERATED — do not edit manually (~3300 lines)
+    client_test.go          # Tests for generated client types
+```
+
+### Key Architecture
+
+- **`pkg/rest.go`** (`RestClient`): Wraps the generated `pkg/rest/client.gen.go` client with authentication and response parsing
+- **`pkg/ws.go`** (`WSClient`): WebSocket client with heartbeat, order book, ticker, and trade subscriptions
+- **`pkg/rest/client.gen.go`**: Auto-generated by `oapi-codegen` — never edit this file directly; modify OpenAPI specs and regenerate
+- **`pkg/config.yaml`**: Controls `oapi-codegen` output (package `rest`, generates models + client)
+
+### Adding/Modifying API Endpoints
+
+1. Edit or add YAML files in `openapi/paths/` and `openapi/components/`
+2. Update `openapi/root.yaml` if adding new paths
+3. Run `make generate-go` to regenerate the Go client
+4. Run `go build ./...` and `go test ./...` to validate
+5. Run `make lint` to check for lint issues
+
+### Validation Checklist
+
+After any change, always run these in order:
+
+1. `go mod tidy` (if dependencies changed)
+2. `make generate-go` (if OpenAPI specs changed)
+3. `go build ./...`
+4. `go test ./...`
+5. `make lint`
