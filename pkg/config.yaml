@@ -1,0 +1,5 @@
+package: rest
+output: rest/client.gen.go
+generate:
+  models: true
+  client: true

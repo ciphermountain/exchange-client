@@ -1,0 +1,17 @@
+extends:
+  - recommended
+
+apis:
+  api@v1:
+    root: ./openapi/root.yaml
+    output: ./openapi/v1_bundle.yaml
+    rules:
+      no-unresolved-refs: error
+      spec-strict-refs: error
+      no-unused-components: error
+      path-segment-plural: error
+      operation-2xx-response: error
+
+openapi:
+  schemasExpansionLevel: 2
+  showExtensions: true

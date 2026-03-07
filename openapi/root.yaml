@@ -1,0 +1,30 @@
+openapi: 3.0.3
+info:
+  title: Xifer Exchange REST API
+  version: 0.2.0
+
+paths:
+  /pubkey:
+    $ref: 'paths/pubkey.yaml#/paths/~1pubkey'
+  /accounts:
+    $ref: 'paths/accounts.yaml#/paths/~1accounts'
+  /accounts/{accountID}:
+    $ref: 'paths/accounts@{accountID}.yaml#/paths/~1accounts~1%7BaccountID%7D'
+  /accounts/{accountID}/code:
+    $ref: 'paths/accounts@{accountID}code.yaml#/paths/~1accounts~1%7BaccountID%7D~1code'
+  /accounts/{accountID}/addresses/{symbolName}:
+    $ref: 'paths/accounts@{accountID}addresses@{symbolName}.yaml#/paths/~1accounts~1%7BaccountID%7D~1addresses~1%7BsymbolName%7D'
+  /accounts/{accountID}/transactions:
+    $ref: 'paths/accounts@{accountID}transactions.yaml#/paths/~1accounts~1%7BaccountID%7D~1transactions'
+  /accounts/{accountID}/transactions/{transactionID}:
+    $ref: 'paths/accounts@{accountID}transactions@{transactionID}.yaml#/paths/~1accounts~1%7BaccountID%7D~1transactions~1%7BtransactionID%7D'
+  /accounts/{accountID}/payments:
+    $ref: 'paths/accounts@{accountID}payments.yaml#/paths/~1accounts~1%7BaccountID%7D~1payments'
+  /accounts/{accountID}/orders:
+    $ref: 'paths/accounts@{accountID}orders.yaml#/paths/~1accounts~1%7BaccountID%7D~1orders'
+  /accounts/{accountID}/orders/{orderID}:
+    $ref: 'paths/accounts@{accountID}orders@{orderID}.yaml#/paths/~1accounts~1%7BaccountID%7D~1orders~1%7BorderID%7D'
+  /markets/{market}/history:
+    $ref: 'paths/markets@{market}history.yaml#/paths/~1markets~1%7Bmarket%7D~1history'
+  /markets/{market}/snapshot:
+    $ref: 'paths/markets@{market}snapshot.yaml#/paths/~1markets~1%7Bmarket%7D~1snapshot'

@@ -1,0 +1,42 @@
+paths:
+  /pubkey:
+    get:
+      description: Return the signature public key for signing QR code data
+      operationId: GetPublicKey
+      responses:
+        200:
+          description: OK
+          content:
+            'text/plain':
+              schema:
+                type: string
+        500:
+          $ref: '../components/responses/InternalServerError.yaml#/InternalServerError'
+    post:
+      description: >
+        Verify QR code signature. This endpoint is a convenience method. The public key is also available for offline
+        has verification.
+      operationId: PostSignature
+      parameters:
+        - name: checksum
+          in: query
+          schema:
+            type: string
+          description: >
+            The checksum value to verify. All QR codes should contain botha checksum and signature in the form of 
+            [checksum].[signature]
+        - name: signature
+          in: query
+          schema:
+            type: string
+          description: >
+            The hashed signature to compare.
+      responses:
+        200:
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '../components/responses/SigVerification.yaml'
+        500:
+          $ref: '../components/responses/InternalServerError.yaml#/InternalServerError'

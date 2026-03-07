@@ -1,4 +1,4 @@
-package restclient_test
+package rest_test
 
 import (
 	"encoding/json"
@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/ciphermountain/exchange-client/pkg/restclient"
+	"github.com/ciphermountain/exchange-client/pkg/rest"
 )
 
 func TestOrderRequest(t *testing.T) {
@@ -15,7 +15,7 @@ func TestOrderRequest(t *testing.T) {
 
 	requestJSON := `{"action":"BUY","base":"USDT","quote":"BTC","type":{"name":"MARKET","base":"USDT","quantity":"12345"}}`
 
-	var request restclient.OrderRequest
+	var request rest.OrderRequest
 	require.NoError(t, json.Unmarshal([]byte(requestJSON), &request))
 
 	mOrder, err := request.Type.AsMarketOrderRequest()

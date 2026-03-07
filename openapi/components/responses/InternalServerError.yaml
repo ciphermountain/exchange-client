@@ -1,0 +1,8 @@
+InternalServerError:
+  description: Internal server error
+  content:
+    'application/json':
+      schema:
+        properties:
+          errors:
+            $ref: '../schemas/ResponseError.yaml#/ResponseErrorList'

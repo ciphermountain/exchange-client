@@ -1,0 +1,25 @@
+paths:
+  /markets/{market}/snapshot:
+    parameters:
+      - $ref: '../components/parameters/Market.yaml#/MarketPathParam'
+    get:
+      description: Get order book snapshot for market. Default to asks and bids combined if no parameters provided.
+      operationId: GetMarketSnapshot
+      parameters:
+        - name: asks
+          in: query
+          description: include asks in snapshot
+          schema:
+            type: boolean
+        - name: bids
+          in: query
+          description: include bids in snapshot
+          schema:
+            type: boolean
+      responses:
+        200:
+          $ref: '../components/responses/DataSnapshotItemList.yaml'
+        500:
+          $ref: '../components/responses/Error.yaml'
+        default:
+          $ref: '../components/responses/Error.yaml'

@@ -1,0 +1,894 @@
+openapi: 3.0.3
+info:
+  title: Xifer Exchange REST API
+  version: 0.2.0
+paths:
+  /pubkey:
+    get:
+      description: Return the signature public key for signing QR code data
+      operationId: GetPublicKey
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      description: |
+        Verify QR code signature. This endpoint is a convenience method. The public key is also available for offline has verification.
+      operationId: PostSignature
+      parameters:
+        - name: checksum
+          in: query
+          schema:
+            type: string
+          description: |
+            The checksum value to verify. All QR codes should contain botha checksum and signature in the form of  [checksum].[signature]
+        - name: signature
+          in: query
+          schema:
+            type: string
+          description: |
+            The hashed signature to compare.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SigVerification'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /accounts:
+    get:
+      description: Retrieve all account information
+      operationId: GetAccounts
+      responses:
+        '200':
+          $ref: '#/components/responses/DataAccountList'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /accounts/{accountID}:
+    description: |
+      Return account information for the provided account id. For default account, provide `default` as the account id. This method will allow pulling all account information in one API call.
+    parameters:
+      - $ref: '#/components/parameters/AccountPathParam'
+    get:
+      description: Retrieve account information
+      operationId: GetAccount
+      responses:
+        '200':
+          $ref: '#/components/responses/DataAccount'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /accounts/{accountID}/code:
+    parameters:
+      - $ref: '#/components/parameters/AccountPathParam'
+    get:
+      description: |
+        Get a QRCode generated with the public id for receiving funds. If generating a QR code to request funds, both the symbol and amount will need to be provided.
+      operationId: GetAccountQRCode
+      parameters:
+        - name: symbol
+          in: query
+          required: false
+          schema:
+            type: string
+          description: |
+            A valid symbol added to a QR code defines the type of currency a user is requesting.
+        - name: amount
+          in: query
+          required: false
+          schema:
+            type: string
+          description: |
+            Value being requested in decimal format.
+      responses:
+        '200':
+          description: OK
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /accounts/{accountID}/addresses/{symbolName}:
+    parameters:
+      - $ref: '#/components/parameters/AccountPathParam'
+      - $ref: '#/components/parameters/SymbolPathParam'
+    get:
+      description: Desc
+      operationId: GetAddressForSymbol
+      responses:
+        '200':
+          $ref: '#/components/responses/DataAddressItem'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /accounts/{accountID}/transactions:
+    parameters:
+      - $ref: '#/components/parameters/AccountPathParam'
+    get:
+      description: Retrieve account transactions
+      operationId: GetTransactions
+      responses:
+        '200':
+          $ref: '#/components/responses/DataTransactionList'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      description: Publishes a transfer request.
+      operationId: CreateTransaction
+      requestBody:
+        description: |
+          Transfer request initiates a transfer either to another local Xifer account or to an external account as a withdrawal.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/DataTransaction'
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '409':
+          description: Insufficient account balance
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    $ref: '#/components/schemas/ResponseErrorList'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /accounts/{accountID}/transactions/{transactionID}:
+    parameters:
+      - $ref: '#/components/parameters/AccountPathParam'
+      - $ref: '#/components/parameters/TransactionPathParam'
+    get:
+      description: Get details on a transaction item
+      operationId: GetTransaction
+      security:
+        - OAuth2:
+            - write
+      responses:
+        '200':
+          $ref: '#/components/responses/DataTransaction'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /accounts/{accountID}/payments:
+    parameters:
+      - $ref: '#/components/parameters/AccountPathParam'
+    get:
+      description: Retrieve payment chains
+      operationId: GetPaymentOrderChains
+      parameters:
+        - $ref: '#/components/parameters/OrderStatusQueryParam'
+      responses:
+        '200':
+          $ref: '#/components/responses/DataPaymentOrderChainList'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      description: Publishes multiple orders as a payment operation. Orders must be in a linked chain.
+      operationId: CreatePaymentOrderChain
+      security:
+        - OAuth2:
+            - write
+      requestBody:
+        description: |
+          Payment order chain request Valid chain of orders to complete a payment request Payment order chains are required to be market orders
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentOrderChainRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/DataPaymentOrderChain'
+        '409':
+          description: Insufficient account balance
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    $ref: '#/components/schemas/ResponseErrorList'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /accounts/{accountID}/orders:
+    parameters:
+      - $ref: '#/components/parameters/AccountPathParam'
+    get:
+      description: Retrieve order list
+      parameters:
+        - $ref: '#/components/parameters/OrderStatusQueryParam'
+      responses:
+        '200':
+          $ref: '#/components/responses/DataOrderList'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      description: Publishes a new order to the order book
+      operationId: CreateOrder
+      security:
+        - OAuth2:
+            - write
+      requestBody:
+        description: |
+          Order request Valid order pairs include BTC-ETH
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/DataOrder'
+        '409':
+          description: Insufficient account balance
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    $ref: '#/components/schemas/ResponseErrorList'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /accounts/{accountID}/orders/{orderID}:
+    parameters:
+      - $ref: '#/components/parameters/AccountPathParam'
+      - $ref: '#/components/parameters/OrderPathParam'
+    get:
+      description: Get details on an order item
+      operationId: GetOrder
+      security:
+        - OAuth2:
+            - write
+      responses:
+        '200':
+          $ref: '#/components/responses/DataOrder'
+    patch:
+      description: Cancel an order
+      operationId: UpdateOrder
+      security:
+        - OAuth2:
+            - write
+      requestBody:
+        description: |
+          Adheres to JSON-PATCH RFC-6902 Accepted patch commands on order records:
+            op: replace; path: /status; value: CANCELLED
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchCommandList'
+      responses:
+        '200':
+          $ref: '#/components/responses/DataOrder'
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /markets/{market}/history:
+    parameters:
+      - $ref: '#/components/parameters/MarketPathParam'
+    get:
+      description: Get market history
+      operationId: GetMarketHistory
+      parameters:
+        - $ref: '#/components/parameters/TimeSpanQueryParam'
+        - name: start
+          in: query
+          description: Start time for history items
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Limit for how many history items to retrieve (no more than the default 100)
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/DataPriceHistoryList'
+        '500':
+          $ref: '#/components/responses/Error'
+        default:
+          $ref: '#/components/responses/Error'
+  /markets/{market}/snapshot:
+    parameters:
+      - $ref: '#/components/parameters/MarketPathParam'
+    get:
+      description: Get order book snapshot for market. Default to asks and bids combined if no parameters provided.
+      operationId: GetMarketSnapshot
+      parameters:
+        - name: asks
+          in: query
+          description: include asks in snapshot
+          schema:
+            type: boolean
+        - name: bids
+          in: query
+          description: include bids in snapshot
+          schema:
+            type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/DataSnapshotItemList'
+        '500':
+          $ref: '#/components/responses/Error'
+        default:
+          $ref: '#/components/responses/Error'
+components:
+  schemas:
+    ResponseError:
+      type: object
+      required:
+        - detail
+      properties:
+        detail:
+          type: string
+    ResponseErrorList:
+      type: array
+      items:
+        $ref: '#/components/schemas/ResponseError'
+    SigVerification:
+      type: object
+      properties:
+        data:
+          type: object
+          required:
+            - valid
+          properties:
+            valid:
+              type: boolean
+    SymbolType:
+      type: string
+      enum:
+        - BTC
+        - ETH
+        - USDT
+        - XIFR
+      description: |
+        Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDT` - U.S. Dollar stable coin (Tether) * `XIFR` - cipher mountain currency identifer
+    CurrencyValue:
+      type: string
+    BalanceItem:
+      type: object
+      required:
+        - symbol
+        - quantity
+        - available
+        - funding_address
+      properties:
+        symbol:
+          $ref: '#/components/schemas/SymbolType'
+        quantity:
+          $ref: '#/components/schemas/CurrencyValue'
+        available:
+          $ref: '#/components/schemas/CurrencyValue'
+        funding_address:
+          type: string
+          description: Address hash for funding this balance
+    BalanceList:
+      type: array
+      items:
+        $ref: '#/components/schemas/BalanceItem'
+    Account:
+      type: object
+      description: Balances account
+      required:
+        - id
+        - public_id
+      properties:
+        id:
+          type: string
+        public_id:
+          type: string
+        balances:
+          $ref: '#/components/schemas/BalanceList'
+    AddressItem:
+      type: object
+      required:
+        - address
+        - symbol
+      properties:
+        symbol:
+          $ref: '#/components/schemas/SymbolType'
+        address:
+          type: string
+          description: Address hash for funding this balance
+    TransactionType:
+      type: string
+      enum:
+        - ORDER
+        - DEPOSIT
+        - TRANSFER
+      description: |
+        Transaction Type: * `ORDER` - transaction resulting from a match on the order book * `DEPOSIT` - transaction resulting from a funding deposit * `TRANSFER` - transaction resulting from a funding withdrawal
+    TransactionStatus:
+      type: string
+      enum:
+        - INITIATED
+        - COMPLETED
+        - FAILED
+      description: |
+        Transaction Status: * `INITIATED` - the transaction has been started * `COMPLETED` - the transaction was successful * `FAILED` - the transaction request failed
+    RecipientType:
+      type: string
+      enum:
+        - LOCAL
+        - REMOTE
+      description: |
+        Recipient Type: * `LOCAL` - recipient public id within Xifer system * `REMOTE` - recipient value is an address defined by the provided symbol
+    Transaction:
+      type: object
+      description: Account balance change
+      required:
+        - id
+        - type
+        - status
+        - where
+        - recipient
+        - symbol
+        - quantity
+        - fee
+        - orderid
+        - initiated
+        - completed
+        - receipt
+      properties:
+        id:
+          type: string
+        type:
+          $ref: '#/components/schemas/TransactionType'
+        status:
+          $ref: '#/components/schemas/TransactionStatus'
+        where:
+          $ref: '#/components/schemas/RecipientType'
+        recipient:
+          type: string
+        symbol:
+          $ref: '#/components/schemas/SymbolType'
+        quantity:
+          $ref: '#/components/schemas/CurrencyValue'
+        fee:
+          $ref: '#/components/schemas/CurrencyValue'
+        orderid:
+          type: string
+        initiated:
+          type: string
+          description: time at which the transaction was requested
+        completed:
+          type: string
+          description: |
+            Time at which the transaction was processed. Refer to status for success or failure.
+        receipt:
+          type: string
+    TransactionRequest:
+      type: object
+      description: |
+        Transfer funds locally between Xifer accounts or to an external account as a withdrawal.
+      required:
+        - type
+        - recipient
+        - symbol
+        - quantity
+      properties:
+        type:
+          $ref: '#/components/schemas/RecipientType'
+        recipient:
+          type: string
+          description: |
+            Recipient represents a target identifier for which to send the defined funds. The format for the provided value is determined by the recipient type and symbol.
+        symbol:
+          $ref: '#/components/schemas/SymbolType'
+        quantity:
+          $ref: '#/components/schemas/CurrencyValue'
+    OrderStatus:
+      type: string
+      enum:
+        - OPEN
+        - PARTIAL
+        - FILLED
+        - CANCELLED
+      description: |
+        Symbol Type: * `OPEN` - incomplete order * `PARTIAL` - partial order * `FILLED` - filled order * `CANCELLED` - cancelled order
+    PaymentOrderChain:
+      type: object
+      required:
+        - status
+        - guid
+        - orders
+      properties:
+        guid:
+          type: string
+        status:
+          $ref: '#/components/schemas/OrderStatus'
+        orders:
+          type: array
+          items:
+            type: string
+    ActionType:
+      type: string
+      enum:
+        - BUY
+        - SELL
+      description: |
+        Action type: * `BUY` - use base currency to buy target currency * `SELL` - sell target currency for base currency
+    OrderType:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          enum:
+            - MARKET
+            - LIMIT
+          description: |
+            Order type: * `MARKET` - order type used to buy or sell at market value * `LIMIT` - used to set buy or sell limit
+    MarketOrderRequest:
+      allOf:
+        - $ref: '#/components/schemas/OrderType'
+        - type: object
+          required:
+            - base
+            - quantity
+          properties:
+            base:
+              $ref: '#/components/schemas/SymbolType'
+            quantity:
+              $ref: '#/components/schemas/CurrencyValue'
+    LimitOrderRequest:
+      allOf:
+        - $ref: '#/components/schemas/OrderType'
+        - type: object
+          required:
+            - price
+            - quantity
+          properties:
+            price:
+              $ref: '#/components/schemas/CurrencyValue'
+            quantity:
+              $ref: '#/components/schemas/CurrencyValue'
+    OrderRequestType:
+      oneOf:
+        - $ref: '#/components/schemas/MarketOrderRequest'
+        - $ref: '#/components/schemas/LimitOrderRequest'
+      discriminator:
+        propertyName: name
+    OrderRequest:
+      type: object
+      description: Request to create a new order on the order book
+      required:
+        - base
+        - quote
+        - action
+        - type
+      properties:
+        base:
+          $ref: '#/components/schemas/SymbolType'
+        quote:
+          $ref: '#/components/schemas/SymbolType'
+        action:
+          $ref: '#/components/schemas/ActionType'
+        type:
+          $ref: '#/components/schemas/OrderRequestType'
+    PaymentOrderChainRequest:
+      type: array
+      description: Request to create a new payment order chain
+      items:
+        $ref: '#/components/schemas/OrderRequest'
+    BookOrder:
+      type: object
+      required:
+        - status
+        - guid
+        - order
+      properties:
+        guid:
+          type: string
+        status:
+          $ref: '#/components/schemas/OrderStatus'
+        order:
+          $ref: '#/components/schemas/OrderRequest'
+    PatchCommand:
+      type: object
+      required:
+        - op
+        - path
+        - value
+      properties:
+        op:
+          type: string
+        path:
+          type: string
+        value:
+          type: string
+    PatchCommandList:
+      type: array
+      items:
+        $ref: '#/components/schemas/PatchCommand'
+    TimeSpanType:
+      type: string
+      enum:
+        - 5m
+        - 10m
+        - 15m
+        - 30m
+        - 1h
+        - 2h
+        - 4h
+        - 8h
+        - 12h
+        - 1d
+        - 2d
+        - 7d
+        - 2w
+        - 30d
+        - 90d
+        - 180d
+        - 1y
+      description: |
+        Time Span: * `5m` - 5 minutes
+    PriceHistoryItem:
+      type: object
+      description: Price history item
+      required:
+        - start
+        - span
+        - maximum
+        - minimum
+        - median
+        - average
+        - upperQuartile
+        - lowerQuartile
+        - volume
+        - open
+        - close
+      properties:
+        start:
+          type: string
+        span:
+          $ref: '#/components/schemas/TimeSpanType'
+        maximum:
+          type: string
+        minimum:
+          type: string
+        median:
+          type: string
+        average:
+          type: string
+        upperQuartile:
+          type: string
+        lowerQuartile:
+          type: string
+        volume:
+          type: string
+          description: Total volume during time span
+        open:
+          type: string
+          description: First price in time span
+        close:
+          type: string
+          description: Last price in time span
+    SnapshotItem:
+      type: object
+      description: Order book snapshot item
+      required:
+        - side
+        - price
+        - depth
+      properties:
+        side:
+          type: string
+        price:
+          type: string
+        depth:
+          type: string
+  responses:
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            properties:
+              errors:
+                $ref: '#/components/schemas/ResponseErrorList'
+    DataAccountList:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Account'
+    DataAccount:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '#/components/schemas/Account'
+    NotFoundError:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            properties:
+              errors:
+                $ref: '#/components/schemas/ResponseErrorList'
+    DataAddressItem:
+      description: OK
+      content:
+        application/json:
+          schema:
+            properties:
+              data:
+                $ref: '#/components/schemas/AddressItem'
+    DataTransactionList:
+      description: OK
+      content:
+        application/json:
+          schema:
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transaction'
+    DataTransaction:
+      description: OK
+      content:
+        application/json:
+          schema:
+            properties:
+              data:
+                $ref: '#/components/schemas/Transaction'
+    InvalidRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            properties:
+              errors:
+                $ref: '#/components/schemas/ResponseErrorList'
+    DataPaymentOrderChainList:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PaymentOrderChain'
+    DataPaymentOrderChain:
+      description: OK
+      content:
+        application/json:
+          schema:
+            properties:
+              data:
+                $ref: '#/components/schemas/PaymentOrderChain'
+              errors:
+                $ref: '#/components/schemas/ResponseErrorList'
+    DataOrderList:
+      description: OK
+      content:
+        application/json:
+          schema:
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BookOrder'
+    DataOrder:
+      description: OK
+      content:
+        application/json:
+          schema:
+            properties:
+              data:
+                $ref: '#/components/schemas/BookOrder'
+    Error:
+      description: default error response
+      content:
+        application/json:
+          schema:
+            properties:
+              errors:
+                $ref: '#/components/schemas/ResponseErrorList'
+    DataPriceHistoryList:
+      description: OK
+      content:
+        application/json:
+          schema:
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PriceHistoryItem'
+    DataSnapshotItemList:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SnapshotItem'
+  parameters:
+    AccountPathParam:
+      in: path
+      name: accountID
+      required: true
+      schema:
+        type: string
+      description: The uuid account identifier
+    SymbolPathParam:
+      in: path
+      name: symbolName
+      required: true
+      schema:
+        $ref: '#/components/schemas/SymbolType'
+      description: Currency trade symbol
+    TransactionPathParam:
+      in: path
+      name: transactionID
+      required: true
+      schema:
+        type: string
+      description: The uuid transaction identifier
+    OrderStatusQueryParam:
+      in: query
+      name: status
+      required: false
+      schema:
+        $ref: '#/components/schemas/OrderStatus'
+    OrderPathParam:
+      in: path
+      name: orderID
+      required: true
+      schema:
+        type: string
+      description: The uuid order identifier
+    MarketPathParam:
+      in: path
+      name: market
+      required: true
+      schema:
+        type: string
+      description: The market identifier
+    TimeSpanQueryParam:
+      in: query
+      name: increment
+      required: false
+      schema:
+        $ref: '#/components/schemas/TimeSpanType'

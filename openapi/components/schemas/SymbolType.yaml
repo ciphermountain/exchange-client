@@ -1,0 +1,15 @@
+SymbolType:
+  type: string
+  enum:
+  - BTC
+  - ETH
+  - USDT
+  - XIFR
+  description: >
+    Symbol Type:
+    * `BTC` - bitcoin currency identifier
+    * `ETH` - ethereum currency identifier
+    * `USDT` - U.S. Dollar stable coin (Tether)
+    * `XIFR` - cipher mountain currency identifer
+CurrencyValue:
+  type: string

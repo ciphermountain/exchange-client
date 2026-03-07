@@ -1,0 +1,7 @@
+SymbolPathParam:
+  in: path
+  name: symbolName
+  required: true
+  schema:
+    $ref: '../schemas/SymbolType.yaml#/SymbolType'
+  description: Currency trade symbol

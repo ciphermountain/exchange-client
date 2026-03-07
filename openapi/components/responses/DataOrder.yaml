@@ -1,0 +1,7 @@
+description: OK
+content: 
+  'application/json': 
+    schema: 
+      properties:
+        data:
+          $ref: '../schemas/Orders.yaml#/BookOrder'

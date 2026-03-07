@@ -1,0 +1,9 @@
+type: object
+properties:
+  data:
+    type: object
+    required:
+    - valid
+    properties:
+      valid:
+        type: boolean

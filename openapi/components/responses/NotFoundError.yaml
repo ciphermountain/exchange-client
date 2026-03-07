@@ -1,0 +1,8 @@
+NotFoundError:
+  description: Resource not found
+  content:
+    'application/json':
+      schema:
+        properties:
+          errors:
+            $ref: '../schemas/ResponseError.yaml#/ResponseErrorList'

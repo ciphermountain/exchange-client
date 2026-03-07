@@ -1,0 +1,8 @@
+InvalidRequest:
+  description: Invalid request
+  content:
+    'application/json':
+      schema:
+        properties:
+          errors:
+            $ref: '../schemas/ResponseError.yaml#/ResponseErrorList'

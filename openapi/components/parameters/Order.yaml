@@ -1,0 +1,7 @@
+OrderPathParam:
+  in: path
+  name: orderID
+  required: true
+  schema:
+    type: string
+  description: The uuid order identifier

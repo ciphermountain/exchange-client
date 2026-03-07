@@ -1,0 +1,9 @@
+description: OK
+content:
+  'application/json':
+    schema:
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '../schemas/Transaction.yaml#/Transaction'

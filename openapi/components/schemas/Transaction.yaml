@@ -1,0 +1,99 @@
+TransactionType:
+  type: string
+  enum:
+  - ORDER
+  - DEPOSIT
+  - TRANSFER
+  description: >
+    Transaction Type:
+    * `ORDER` - transaction resulting from a match on the order book
+    * `DEPOSIT` - transaction resulting from a funding deposit
+    * `TRANSFER` - transaction resulting from a funding withdrawal
+TransactionStatus:
+  type: string
+  enum:
+  - INITIATED
+  - COMPLETED
+  - FAILED
+  description: >
+    Transaction Status:
+    * `INITIATED` - the transaction has been started
+    * `COMPLETED` - the transaction was successful
+    * `FAILED` - the transaction request failed
+RecipientType:
+  type: string
+  enum:
+  - LOCAL
+  - REMOTE
+  description: >
+    Recipient Type:
+    * `LOCAL` - recipient public id within Xifer system
+    * `REMOTE` - recipient value is an address defined by the provided symbol
+Transaction:
+  type: object
+  description: Account balance change
+  required:
+  - id
+  - type
+  - status
+  - where
+  - recipient
+  - symbol
+  - quantity
+  - fee
+  - orderid
+  - initiated
+  - completed
+  - receipt
+  properties:
+    id:
+      type: string
+    type:
+      $ref: '#/TransactionType'
+    status:
+      $ref: '#/TransactionStatus'
+    where:
+      $ref: '#/RecipientType'
+    recipient:
+      type: string
+    symbol:
+      $ref: './SymbolType.yaml#/SymbolType'
+    quantity:
+      $ref: './SymbolType.yaml#/CurrencyValue'
+    fee:
+      $ref: './SymbolType.yaml#/CurrencyValue'
+    orderid:
+      type: string
+    initiated:
+      type: string
+      description: time at which the transaction was requested
+    completed:
+      type: string
+      description: >
+        Time at which the transaction was processed. Refer to status
+        for success or failure.
+    receipt:
+      type: string
+TransactionRequest:
+  type: object
+  description: >
+    Transfer funds locally between Xifer accounts or to an external account as
+    a withdrawal.
+  required:
+  - type
+  - recipient
+  - symbol
+  - quantity
+  properties:
+    type:
+      $ref: '#/RecipientType'
+    recipient:
+      type: string
+      description: >
+        Recipient represents a target identifier for which to send
+        the defined funds. The format for the provided value is determined
+        by the recipient type and symbol.
+    symbol:
+      $ref: './SymbolType.yaml#/SymbolType'
+    quantity:
+      $ref: './SymbolType.yaml#/CurrencyValue'

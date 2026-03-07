@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	client "github.com/ciphermountain/exchange-client/pkg/restclient"
+	client "github.com/ciphermountain/exchange-client/pkg/rest"
 )
 
 var (
@@ -57,22 +57,22 @@ func NewRestClient(url, token string, opts ...ClientOption) (*RestClient, error)
 	}, nil
 }
 
-func (c *RestClient) GetMarketSnapshot(ctx context.Context, market Market, asks, bids bool) (client.SnapshotItemList, error) {
+func (c *RestClient) GetMarketSnapshot(ctx context.Context, market Market, asks, bids bool) ([]client.SnapshotItem, error) {
 	if !asks && !bids {
 		return nil, errors.New("select either asks or bids or both to return data")
 	}
 
-	params := &client.GetV1MarketsMarketSnapshotParams{
+	params := &client.GetMarketSnapshotParams{
 		Asks: &asks,
 		Bids: &bids,
 	}
 
-	rawResp, err := c.client.GetV1MarketsMarketSnapshot(ctx, client.MarketParam(market), params)
+	rawResp, err := c.client.GetMarketSnapshot(ctx, client.MarketPathParam(market), params)
 	if err != nil {
 		return nil, err
 	}
 
-	resp, err := client.ParseGetV1MarketsMarketSnapshotResponse(rawResp)
+	resp, err := client.ParseGetMarketSnapshotResponse(rawResp)
 	if err != nil {
 		return nil, err
 	}
@@ -95,12 +95,12 @@ func (c *RestClient) CreateOrder(
 	accountID string,
 	request client.OrderRequest,
 ) (client.BookOrder, error) {
-	resp, err := c.client.PostV1AccountsAccountIDOrders(ctx, accountID, request)
+	resp, err := c.client.CreateOrder(ctx, accountID, request)
 	if err != nil {
 		return client.BookOrder{}, fmt.Errorf("%w: order post failure: %w", ErrConnection, err)
 	}
 
-	odr, err := client.ParsePostV1AccountsAccountIDOrdersResponse(resp)
+	odr, err := client.ParseCreateOrderResponse(resp)
 	if err != nil {
 		return client.BookOrder{}, fmt.Errorf("%w: failed to parse order post response: %w", ErrEncoding, err)
 	}
@@ -127,13 +127,13 @@ func (c *RestClient) CreateOrder(
 	return *odr.JSON200.Data, nil
 }
 
-func (c *RestClient) GetOrderDetail(ctx context.Context, accountID, orderID string) (client.BookOrder, error) {
-	resp, err := c.client.GetV1AccountsAccountIDOrdersOrderID(ctx, accountID, orderID)
+func (c *RestClient) GetOrder(ctx context.Context, accountID, orderID string) (client.BookOrder, error) {
+	resp, err := c.client.GetOrder(ctx, accountID, orderID)
 	if err != nil {
 		return client.BookOrder{}, err
 	}
 
-	data, err := client.ParseGetV1AccountsAccountIDOrdersOrderIDResponse(resp)
+	data, err := client.ParseGetOrderResponse(resp)
 	if err != nil {
 		return client.BookOrder{}, err
 	}
@@ -148,12 +148,12 @@ func (c *RestClient) GetOrderDetail(ctx context.Context, accountID, orderID stri
 func (c *RestClient) GetTransaction(ctx context.Context, accountID, transactionID string) (client.Transaction, error) {
 	trxn := client.Transaction{}
 
-	resp, err := c.client.GetV1AccountsAccountIDTransactionsTransactionID(ctx, accountID, transactionID)
+	resp, err := c.client.GetTransaction(ctx, accountID, transactionID)
 	if err != nil {
 		return trxn, err
 	}
 
-	data, err := client.ParseGetV1AccountsAccountIDTransactionsTransactionIDResponse(resp)
+	data, err := client.ParseGetTransactionResponse(resp)
 	if err != nil {
 		return trxn, err
 	}
@@ -166,12 +166,12 @@ func (c *RestClient) GetTransaction(ctx context.Context, accountID, transactionI
 }
 
 func (c *RestClient) GetAccounts(ctx context.Context) ([]client.Account, error) {
-	resp, err := c.client.GetV1Accounts(ctx)
+	resp, err := c.client.GetAccounts(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	data, err := client.ParseGetV1AccountsResponse(resp)
+	data, err := client.ParseGetAccountsResponse(resp)
 	if err != nil {
 		return nil, err
 	}
@@ -184,12 +184,12 @@ func (c *RestClient) GetAccounts(ctx context.Context) ([]client.Account, error) 
 }
 
 func (c *RestClient) GetAccount(ctx context.Context, accountID string) (client.Account, error) {
-	resp, err := c.client.GetV1AccountsAccountID(ctx, accountID)
+	resp, err := c.client.GetAccount(ctx, accountID)
 	if err != nil {
 		return client.Account{}, err
 	}
 
-	data, err := client.ParseGetV1AccountsAccountIDResponse(resp)
+	data, err := client.ParseGetAccountResponse(resp)
 	if err != nil {
 		return client.Account{}, err
 	}
@@ -201,7 +201,7 @@ func (c *RestClient) GetAccount(ctx context.Context, accountID string) (client.A
 	return *data.JSON200.Data, nil
 }
 
-func (c *RestClient) GetAddress(ctx context.Context, symbol string, accountID *string) (string, error) {
+func (c *RestClient) GetAddressForSymbol(ctx context.Context, symbol string, accountID *string) (string, error) {
 	if accountID == nil {
 		accounts, err := c.GetAccounts(ctx)
 		if err != nil {
@@ -215,14 +215,14 @@ func (c *RestClient) GetAddress(ctx context.Context, symbol string, accountID *s
 		accountID = &accounts[0].Id
 	}
 
-	resp, err := c.client.GetV1AccountsAccountIDAddressesSymbolName(ctx, *accountID, client.SymbolType(symbol))
+	resp, err := c.client.GetAddressForSymbol(ctx, *accountID, client.SymbolType(symbol))
 	if err != nil {
 		return "", err
 	}
 
-	data, err := client.ParseGetV1AccountsAccountIDAddressesSymbolNameResponse(resp)
+	data, err := client.ParseGetAddressForSymbolResponse(resp)
 	if err != nil {
-		return "", fmt.Errorf("GetV1Addresses: %s", err)
+		return "", fmt.Errorf("GetAddressForSymbol: %s", err)
 	}
 
 	if data.StatusCode() != http.StatusOK {

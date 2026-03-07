@@ -1,0 +1,7 @@
+description: default error response
+content:
+  'application/json':
+    schema:
+      properties:
+        errors:
+          $ref: '../schemas/ResponseError.yaml#/ResponseErrorList'

@@ -4,3 +4,7 @@ all: lint
 
 lint:
 	golangci-lint run
+
+generate-go:
+	./scripts/bundle.sh && \
+	go generate ./...
