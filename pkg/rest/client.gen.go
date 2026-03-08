@@ -279,7 +279,7 @@ type AddressItem struct {
 	// Address Address hash for funding this balance
 	Address string `json:"address"`
 
-	// Symbol Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDT` - U.S. Dollar stable coin (Tether) * `XIFR` - cipher mountain currency identifer
+	// Symbol Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDT` - U.S. Dollar stable coin (Tether) * `XIFR` - cipher mountain currency identifier
 	Symbol SymbolType `json:"symbol"`
 }
 
@@ -291,7 +291,7 @@ type BalanceItem struct {
 	FundingAddress string        `json:"funding_address"`
 	Quantity       CurrencyValue `json:"quantity"`
 
-	// Symbol Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDT` - U.S. Dollar stable coin (Tether) * `XIFR` - cipher mountain currency identifer
+	// Symbol Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDT` - U.S. Dollar stable coin (Tether) * `XIFR` - cipher mountain currency identifier
 	Symbol SymbolType `json:"symbol"`
 }
 
@@ -325,7 +325,7 @@ type LimitOrderRequestName string
 
 // MarketOrderRequest defines model for MarketOrderRequest.
 type MarketOrderRequest struct {
-	// Base Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDT` - U.S. Dollar stable coin (Tether) * `XIFR` - cipher mountain currency identifer
+	// Base Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDT` - U.S. Dollar stable coin (Tether) * `XIFR` - cipher mountain currency identifier
 	Base SymbolType `json:"base"`
 
 	// Name Order type: * `MARKET` - order type used to buy or sell at market value * `LIMIT` - used to set buy or sell limit
@@ -341,10 +341,10 @@ type OrderRequest struct {
 	// Action Action type: * `BUY` - use base currency to buy target currency * `SELL` - sell target currency for base currency
 	Action ActionType `json:"action"`
 
-	// Base Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDT` - U.S. Dollar stable coin (Tether) * `XIFR` - cipher mountain currency identifer
+	// Base Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDT` - U.S. Dollar stable coin (Tether) * `XIFR` - cipher mountain currency identifier
 	Base SymbolType `json:"base"`
 
-	// Quote Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDT` - U.S. Dollar stable coin (Tether) * `XIFR` - cipher mountain currency identifer
+	// Quote Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDT` - U.S. Dollar stable coin (Tether) * `XIFR` - cipher mountain currency identifier
 	Quote SymbolType       `json:"quote"`
 	Type  OrderRequestType `json:"type"`
 }
@@ -436,7 +436,7 @@ type SnapshotItem struct {
 	Side  string `json:"side"`
 }
 
-// SymbolType Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDT` - U.S. Dollar stable coin (Tether) * `XIFR` - cipher mountain currency identifer
+// SymbolType Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDT` - U.S. Dollar stable coin (Tether) * `XIFR` - cipher mountain currency identifier
 type SymbolType string
 
 // TimeSpanType Time Span: * `5m` - 5 minutes
@@ -459,7 +459,7 @@ type Transaction struct {
 	// Status Transaction Status: * `INITIATED` - the transaction has been started * `COMPLETED` - the transaction was successful * `FAILED` - the transaction request failed
 	Status TransactionStatus `json:"status"`
 
-	// Symbol Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDT` - U.S. Dollar stable coin (Tether) * `XIFR` - cipher mountain currency identifer
+	// Symbol Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDT` - U.S. Dollar stable coin (Tether) * `XIFR` - cipher mountain currency identifier
 	Symbol SymbolType `json:"symbol"`
 
 	// Type Transaction Type: * `ORDER` - transaction resulting from a match on the order book * `DEPOSIT` - transaction resulting from a funding deposit * `TRANSFER` - transaction resulting from a funding withdrawal
@@ -476,7 +476,7 @@ type TransactionRequest struct {
 	// Recipient Recipient represents a target identifier for which to send the defined funds. The format for the provided value is determined by the recipient type and symbol.
 	Recipient string `json:"recipient"`
 
-	// Symbol Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDT` - U.S. Dollar stable coin (Tether) * `XIFR` - cipher mountain currency identifer
+	// Symbol Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDT` - U.S. Dollar stable coin (Tether) * `XIFR` - cipher mountain currency identifier
 	Symbol SymbolType `json:"symbol"`
 
 	// Type Recipient Type: * `LOCAL` - recipient public id within Xifer system * `REMOTE` - recipient value is an address defined by the provided symbol
@@ -501,7 +501,7 @@ type OrderPathParam = string
 // OrderStatusQueryParam Symbol Type: * `OPEN` - incomplete order * `PARTIAL` - partial order * `FILLED` - filled order * `CANCELLED` - cancelled order
 type OrderStatusQueryParam = OrderStatus
 
-// SymbolPathParam Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDT` - U.S. Dollar stable coin (Tether) * `XIFR` - cipher mountain currency identifer
+// SymbolPathParam Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDT` - U.S. Dollar stable coin (Tether) * `XIFR` - cipher mountain currency identifier
 type SymbolPathParam = SymbolType
 
 // TimeSpanQueryParam Time Span: * `5m` - 5 minutes
@@ -657,7 +657,7 @@ func (t OrderRequestType) AsMarketOrderRequest() (MarketOrderRequest, error) {
 
 // FromMarketOrderRequest overwrites any union data inside the OrderRequestType as the provided MarketOrderRequest
 func (t *OrderRequestType) FromMarketOrderRequest(v MarketOrderRequest) error {
-	v.Name = "MarketOrderRequest"
+	v.Name = "MARKET"
 	b, err := json.Marshal(v)
 	t.union = b
 	return err
@@ -665,7 +665,7 @@ func (t *OrderRequestType) FromMarketOrderRequest(v MarketOrderRequest) error {
 
 // MergeMarketOrderRequest performs a merge with any union data inside the OrderRequestType, using the provided MarketOrderRequest
 func (t *OrderRequestType) MergeMarketOrderRequest(v MarketOrderRequest) error {
-	v.Name = "MarketOrderRequest"
+	v.Name = "MARKET"
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -685,7 +685,7 @@ func (t OrderRequestType) AsLimitOrderRequest() (LimitOrderRequest, error) {
 
 // FromLimitOrderRequest overwrites any union data inside the OrderRequestType as the provided LimitOrderRequest
 func (t *OrderRequestType) FromLimitOrderRequest(v LimitOrderRequest) error {
-	v.Name = "LimitOrderRequest"
+	v.Name = "LIMIT"
 	b, err := json.Marshal(v)
 	t.union = b
 	return err
@@ -693,7 +693,7 @@ func (t *OrderRequestType) FromLimitOrderRequest(v LimitOrderRequest) error {
 
 // MergeLimitOrderRequest performs a merge with any union data inside the OrderRequestType, using the provided LimitOrderRequest
 func (t *OrderRequestType) MergeLimitOrderRequest(v LimitOrderRequest) error {
-	v.Name = "LimitOrderRequest"
+	v.Name = "LIMIT"
 	b, err := json.Marshal(v)
 	if err != nil {
 		return err
@@ -718,9 +718,9 @@ func (t OrderRequestType) ValueByDiscriminator() (interface{}, error) {
 		return nil, err
 	}
 	switch discriminator {
-	case "LimitOrderRequest":
+	case "LIMIT":
 		return t.AsLimitOrderRequest()
-	case "MarketOrderRequest":
+	case "MARKET":
 		return t.AsMarketOrderRequest()
 	default:
 		return nil, errors.New("unknown discriminator value: " + discriminator)

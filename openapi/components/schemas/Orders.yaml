@@ -39,6 +39,9 @@ OrderRequestType:
     - $ref: '#/LimitOrderRequest'
   discriminator:
     propertyName: name
+    mapping:
+      MARKET: '#/MarketOrderRequest'
+      LIMIT: '#/LimitOrderRequest'
 OrderType:
   type: object
   required:
