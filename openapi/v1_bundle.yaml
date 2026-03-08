@@ -18,7 +18,7 @@ paths:
           $ref: '#/components/responses/InternalServerError'
     post:
       description: |
-        Verify QR code signature. This endpoint is a convenience method. The public key is also available for offline has verification.
+        Verify QR code signature. This endpoint is a convenience method. The public key is also available for offline hash verification.
       operationId: PostSignature
       parameters:
         - name: checksum
@@ -368,7 +368,7 @@ components:
         - USDT
         - XIFR
       description: |
-        Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDT` - U.S. Dollar stable coin (Tether) * `XIFR` - cipher mountain currency identifer
+        Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDT` - U.S. Dollar stable coin (Tether) * `XIFR` - cipher mountain currency identifier
     CurrencyValue:
       type: string
     BalanceItem:
@@ -576,6 +576,9 @@ components:
         - $ref: '#/components/schemas/LimitOrderRequest'
       discriminator:
         propertyName: name
+        mapping:
+          MARKET: '#/components/schemas/MarketOrderRequest'
+          LIMIT: '#/components/schemas/LimitOrderRequest'
     OrderRequest:
       type: object
       description: Request to create a new order on the order book
