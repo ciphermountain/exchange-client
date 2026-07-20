@@ -217,6 +217,7 @@ paths:
       - $ref: '#/components/parameters/AccountPathParam'
     get:
       description: Retrieve order list
+      operationId: GetOrderList
       parameters:
         - $ref: '#/components/parameters/OrderStatusQueryParam'
       responses:
