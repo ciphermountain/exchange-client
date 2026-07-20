@@ -8,3 +8,6 @@ lint:
 generate-go:
 	./scripts/bundle.sh && \
 	go generate ./...
+
+check-generate:
+	./scripts/check-generate.sh

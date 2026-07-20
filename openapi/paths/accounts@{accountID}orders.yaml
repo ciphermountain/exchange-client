@@ -4,6 +4,7 @@ paths:
       - $ref: '../components/parameters/Account.yaml#/AccountPathParam'
     get:
       description: Retrieve order list
+      operationId: GetOrderList
       parameters:
         - $ref: '../components/parameters/OrderStatus.yaml#/OrderStatusQueryParam'
       responses:
