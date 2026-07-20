@@ -405,7 +405,7 @@ func (sc *WSClient) Close() {
 	}
 
 	sc.stopping.Store(true)
-	sc.conn.WriteMessage(websocket.CloseMessage, []byte{})
+	_ = sc.conn.WriteMessage(websocket.CloseMessage, []byte{})
 
 	_ = sc.conn.Close()
 	close(sc.chStopSignal)
