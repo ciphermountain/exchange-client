@@ -97,3 +97,9 @@ TransactionRequest:
       $ref: './SymbolType.yaml#/SymbolType'
     quantity:
       $ref: './SymbolType.yaml#/CurrencyValue'
+    reference:
+      type: string
+      description: >
+        Optional reference for the transaction. This value connects a request
+        to a transaction and can be used to identify the transaction and notify
+        the recipient of the transfer.
