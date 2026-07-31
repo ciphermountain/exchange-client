@@ -504,6 +504,10 @@ components:
           $ref: '#/components/schemas/SymbolType'
         quantity:
           $ref: '#/components/schemas/CurrencyValue'
+        reference:
+          type: string
+          description: |
+            Optional reference for the transaction. This value connects a request to a transaction and can be used to identify the transaction and notify the recipient of the transfer.
     OrderStatus:
       type: string
       enum:

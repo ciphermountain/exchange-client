@@ -478,6 +478,9 @@ type TransactionRequest struct {
 	// Recipient Recipient represents a target identifier for which to send the defined funds. The format for the provided value is determined by the recipient type and symbol.
 	Recipient string `json:"recipient"`
 
+	// Reference Optional reference for the transaction. This value connects a request to a transaction and can be used to identify the transaction and notify the recipient of the transfer.
+	Reference *string `json:"reference,omitempty"`
+
 	// Symbol Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDT` - U.S. Dollar stable coin (Tether) * `XIFR` - cipher mountain currency identifier
 	Symbol SymbolType `json:"symbol"`
 
