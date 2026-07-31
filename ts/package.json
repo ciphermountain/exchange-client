@@ -1,0 +1,38 @@
+{
+  "name": "@xiferexchange/exchange-client",
+  "version": "0.2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "TypeScript client and types for the Xifer Exchange API",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "generate": "openapi-typescript ../openapi/v1_bundle.yaml -o src/generated/schema.ts",
+    "build": "tsc",
+    "prepublishOnly": "npm run generate && npm run build"
+  },
+  "dependencies": {
+    "openapi-fetch": "^0.13.0"
+  },
+  "devDependencies": {
+    "openapi-typescript": "^7.6.0",
+    "typescript": "^5.8.0"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ciphermountain/exchange-client.git",
+    "directory": "ts"
+  }
+}

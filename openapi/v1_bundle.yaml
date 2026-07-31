@@ -528,6 +528,8 @@ components:
           type: array
           items:
             type: string
+        transferID:
+          type: string
     ActionType:
       type: string
       enum:
@@ -598,10 +600,17 @@ components:
         type:
           $ref: '#/components/schemas/OrderRequestType'
     PaymentOrderChainRequest:
-      type: array
-      description: Request to create a new payment order chain
-      items:
-        $ref: '#/components/schemas/OrderRequest'
+      description: Request to create a new payment order chain. Transfer is optional and can be used to transfer funds from the last order in the chain. The transfer request symbol and amount must match the last order in the chain.
+      type: object
+      required:
+        - orders
+      properties:
+        orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderRequest'
+        transfer:
+          $ref: '#/components/schemas/TransactionRequest'
     BookOrder:
       type: object
       required:

@@ -1,4 +1,4 @@
-module github.com/ciphermountain/exchange-client
+module github.com/ciphermountain/exchange-client/go
 
 go 1.26.4
 

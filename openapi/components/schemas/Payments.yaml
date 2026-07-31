@@ -1,8 +1,15 @@
 PaymentOrderChainRequest:
-  type: array
-  description: Request to create a new payment order chain
-  items:
-    $ref: './Orders.yaml#/OrderRequest'
+  description: Request to create a new payment order chain. Transfer is optional and can be used to transfer funds from the last order in the chain. The transfer request symbol and amount must match the last order in the chain.
+  type: object
+  required:
+  - orders
+  properties:
+    orders:
+      type: array
+      items:
+        $ref: './Orders.yaml#/OrderRequest'
+    transfer:
+      $ref: './Transaction.yaml#/TransactionRequest'
 PaymentOrderChain:
   type: object
   required:
@@ -18,3 +25,5 @@ PaymentOrderChain:
       type: array
       items:
         type: string
+    transferID:
+      type: string

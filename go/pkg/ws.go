@@ -16,7 +16,7 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/shopspring/decimal"
 
-	"github.com/ciphermountain/exchange-client/pkg/messages"
+	"github.com/ciphermountain/exchange-client/go/pkg/messages"
 )
 
 var (

@@ -1,13 +1,23 @@
-GOPACKAGES = $(shell go list ./...)
-
 all: lint
 
 lint:
-	golangci-lint run
+	cd go && golangci-lint run
+
+test:
+	cd go && go test ./...
 
 generate-go:
 	./scripts/bundle.sh && \
-	go generate ./...
+	cd go && go generate ./...
+
+generate-ts:
+	./scripts/bundle.sh && \
+	cd ts && npm run generate
+
+generate-all:
+	./scripts/bundle.sh && \
+	cd go && go generate ./... && \
+	cd ../ts && npm run generate
 
 check-generate:
 	./scripts/check-generate.sh

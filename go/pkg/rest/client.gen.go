@@ -378,11 +378,17 @@ type PaymentOrderChain struct {
 	Orders []string `json:"orders"`
 
 	// Status Symbol Type: * `OPEN` - incomplete order * `PARTIAL` - partial order * `FILLED` - filled order * `CANCELLED` - cancelled order
-	Status OrderStatus `json:"status"`
+	Status     OrderStatus `json:"status"`
+	TransferID *string     `json:"transferID,omitempty"`
 }
 
-// PaymentOrderChainRequest Request to create a new payment order chain
-type PaymentOrderChainRequest = []OrderRequest
+// PaymentOrderChainRequest Request to create a new payment order chain. Transfer is optional and can be used to transfer funds from the last order in the chain. The transfer request symbol and amount must match the last order in the chain.
+type PaymentOrderChainRequest struct {
+	Orders []OrderRequest `json:"orders"`
+
+	// Transfer Transfer funds locally between Xifer accounts or to an external account as a withdrawal.
+	Transfer *TransactionRequest `json:"transfer,omitempty"`
+}
 
 // PriceHistoryItem Price history item
 type PriceHistoryItem struct {

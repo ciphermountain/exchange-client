@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/ciphermountain/exchange-client/pkg/rest"
+	"github.com/ciphermountain/exchange-client/go/pkg/rest"
 )
 
 func TestOrderRequest(t *testing.T) {

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/ciphermountain/exchange-client/pkg/rest"
+	"github.com/ciphermountain/exchange-client/go/pkg/rest"
 )
 
 type Symbol string
