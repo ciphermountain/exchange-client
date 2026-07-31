@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	client "github.com/ciphermountain/exchange-client/pkg/rest"
+	client "github.com/ciphermountain/exchange-client/go/pkg/rest"
 )
 
 var (

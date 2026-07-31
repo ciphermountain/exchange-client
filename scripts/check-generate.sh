@@ -8,7 +8,7 @@ REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$REPO_ROOT"
 
 ./scripts/bundle.sh
-go generate ./...
+cd go && go generate ./...
 
 if [ -n "$(git diff --name-only)" ]; then
     echo "ERROR: generated files are out of date. Please run 'make generate-go' and commit the changes."
