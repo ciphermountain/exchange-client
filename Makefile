@@ -3,6 +3,9 @@ all: lint
 lint:
 	cd go && golangci-lint run
 
+test:
+	cd go && go test ./...
+
 generate-go:
 	./scripts/bundle.sh && \
 	cd go && go generate ./...

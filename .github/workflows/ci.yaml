@@ -44,7 +44,9 @@ jobs:
           go-version-file: ./go/go.mod
 
       - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v8
+        uses: golangci/golangci-lint-action@v9
+        with:
+          working-directory: ./go
 
   test:
     name: Test
@@ -57,4 +59,4 @@ jobs:
           go-version-file: ./go/go.mod
 
       - name: Run tests
-        run: go test ./go/...
+        run: make test
