@@ -18,7 +18,7 @@ jobs:
 
       - uses: actions/setup-go@v7
         with:
-          go-version-file: go.mod
+          go-version-file: ./go/go.mod
 
       - uses: actions/setup-node@v7
         with:
@@ -41,7 +41,7 @@ jobs:
 
       - uses: actions/setup-go@v7
         with:
-          go-version-file: go.mod
+          go-version-file: ./go/go.mod
 
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v8
@@ -54,7 +54,7 @@ jobs:
 
       - uses: actions/setup-go@v7
         with:
-          go-version-file: go.mod
+          go-version-file: ./go/go.mod
 
       - name: Run tests
-        run: go test ./...
+        run: go test ./go/...
