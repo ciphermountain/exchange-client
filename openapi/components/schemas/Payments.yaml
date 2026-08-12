@@ -10,6 +10,47 @@ PaymentOrderChainRequest:
         $ref: './Orders.yaml#/OrderRequest'
     transfer:
       $ref: './Transaction.yaml#/TransactionRequest'
+LegStatus:
+  type: string
+  enum:
+  - CHAIN_LEG_PENDING
+  - CHAIN_LEG_QUEUED
+  - CHAIN_LEG_FILLED
+  - CHAIN_LEG_PARTIAL
+  - CHAIN_LEG_CANCELLED
+  - CHAIN_LEG_REJECTED
+  - CHAIN_LEG_SKIPPED
+PaymentOrderChainLegExecutionDetails:
+  type: object
+  required:
+  - index
+  - order_id
+  - executed_avg_price
+  - executed_quantity
+  - executed_notional
+  - slippage_bps_from_reference
+  - status
+  - completed_at
+  properties:
+    index:
+      type: integer
+      format: int32
+    order_id:
+      type: string
+    executed_avg_price:
+      type: string
+    executed_quantity:
+      type: string
+    executed_notional:
+      type: string
+    slippage_bps_from_reference:
+      type: string
+    status:
+      $ref: '#/LegStatus'
+    completed_at:
+      type: string
+    rejection_reason:
+      type: string
 PaymentOrderChain:
   type: object
   required:
@@ -24,6 +65,6 @@ PaymentOrderChain:
     orders:
       type: array
       items:
-        type: string
+        $ref: '#/PaymentOrderChainLegExecutionDetails'
     transferID:
       type: string
