@@ -111,7 +111,7 @@ func (c *RestClient) CreateOrder(
 
 	switch odr.StatusCode() {
 	case http.StatusConflict:
-		if odr.JSON409.Errors != nil {
+		if odr.JSON409 != nil && odr.JSON409.Errors != nil {
 			if errs := *odr.JSON409.Errors; len(errs) > 0 {
 				return client.BookOrder{}, fmt.Errorf("%w: post order failure: %s", ErrValidation, errs[0].Detail)
 			}
@@ -119,16 +119,22 @@ func (c *RestClient) CreateOrder(
 
 		return client.BookOrder{}, fmt.Errorf("api returned with code %d; %s", odr.StatusCode(), odr.Status())
 	case http.StatusInternalServerError:
-		if odr.JSON500.Errors != nil {
+		if odr.JSON500 != nil && odr.JSON500.Errors != nil {
 			if errs := *odr.JSON500.Errors; len(errs) > 0 {
 				return client.BookOrder{}, fmt.Errorf("%w: post order failure: %s", ErrValidation, errs[0].Detail)
 			}
 		}
 
 		return client.BookOrder{}, fmt.Errorf("%w: api returned with code %d; %s", ErrValidation, odr.StatusCode(), odr.Status())
-	}
+	case http.StatusOK:
+		if odr.JSON200 == nil || odr.JSON200.Data == nil {
+			return client.BookOrder{}, fmt.Errorf("unexpected 200 response with empty payload")
+		}
 
-	return *odr.JSON200.Data, nil
+		return *odr.JSON200.Data, nil
+	default:
+		return client.BookOrder{}, fmt.Errorf("unexpected status: %d %s", odr.StatusCode(), odr.Status())
+	}
 }
 
 func (c *RestClient) GetOrder(ctx context.Context, accountID, orderID string) (client.BookOrder, error) {

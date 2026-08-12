@@ -2,6 +2,7 @@ package messages
 
 import (
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/shopspring/decimal"
@@ -21,14 +22,18 @@ const (
 )
 
 func ParseOrderStatus(status string) (OrderStatus, error) {
-	switch status {
+	normalized := strings.ToLower(strings.TrimSpace(status))
+	normalized = strings.ReplaceAll(normalized, "-", "_")
+	normalized = strings.ReplaceAll(normalized, " ", "_")
+
+	switch normalized {
 	case "open":
 		return Open, nil
-	case "partial":
+	case "partial", "partially_filled", "partiallyfilled":
 		return Partial, nil
-	case "filled":
+	case "filled", "complete", "completed", "closed":
 		return Filled, nil
-	case "cancelled":
+	case "cancelled", "canceled", "cancelled_partial", "canceled_partial", "expired":
 		return Cancelled, nil
 	default:
 		return "", errors.New("unknown order status")

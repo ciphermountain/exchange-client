@@ -35,6 +35,39 @@ func (e ActionType) Valid() bool {
 	}
 }
 
+// Defines values for LegStatus.
+const (
+	CHAINLEGCANCELLED LegStatus = "CHAIN_LEG_CANCELLED"
+	CHAINLEGFILLED    LegStatus = "CHAIN_LEG_FILLED"
+	CHAINLEGPARTIAL   LegStatus = "CHAIN_LEG_PARTIAL"
+	CHAINLEGPENDING   LegStatus = "CHAIN_LEG_PENDING"
+	CHAINLEGQUEUED    LegStatus = "CHAIN_LEG_QUEUED"
+	CHAINLEGREJECTED  LegStatus = "CHAIN_LEG_REJECTED"
+	CHAINLEGSKIPPED   LegStatus = "CHAIN_LEG_SKIPPED"
+)
+
+// Valid indicates whether the value is a known member of the LegStatus enum.
+func (e LegStatus) Valid() bool {
+	switch e {
+	case CHAINLEGCANCELLED:
+		return true
+	case CHAINLEGFILLED:
+		return true
+	case CHAINLEGPARTIAL:
+		return true
+	case CHAINLEGPENDING:
+		return true
+	case CHAINLEGQUEUED:
+		return true
+	case CHAINLEGREJECTED:
+		return true
+	case CHAINLEGSKIPPED:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for LimitOrderRequestName.
 const (
 	LimitOrderRequestNameLIMIT  LimitOrderRequestName = "LIMIT"
@@ -308,6 +341,9 @@ type BookOrder struct {
 // CurrencyValue defines model for CurrencyValue.
 type CurrencyValue = string
 
+// LegStatus defines model for LegStatus.
+type LegStatus string
+
 // LimitOrderRequest defines model for LimitOrderRequest.
 type LimitOrderRequest struct {
 	// Name Order type: * `MARKET` - order type used to buy or sell at market value * `LIMIT` - used to set buy or sell limit
@@ -374,12 +410,25 @@ type PatchCommandList = []PatchCommand
 
 // PaymentOrderChain defines model for PaymentOrderChain.
 type PaymentOrderChain struct {
-	Guid   string   `json:"guid"`
-	Orders []string `json:"orders"`
+	Guid   string                                 `json:"guid"`
+	Orders []PaymentOrderChainLegExecutionDetails `json:"orders"`
 
 	// Status Symbol Type: * `OPEN` - incomplete order * `PARTIAL` - partial order * `FILLED` - filled order * `CANCELLED` - cancelled order
 	Status     OrderStatus `json:"status"`
 	TransferID *string     `json:"transferID,omitempty"`
+}
+
+// PaymentOrderChainLegExecutionDetails defines model for PaymentOrderChainLegExecutionDetails.
+type PaymentOrderChainLegExecutionDetails struct {
+	CompletedAt              string    `json:"completed_at"`
+	ExecutedAvgPrice         string    `json:"executed_avg_price"`
+	ExecutedNotional         string    `json:"executed_notional"`
+	ExecutedQuantity         string    `json:"executed_quantity"`
+	Index                    int32     `json:"index"`
+	OrderId                  string    `json:"order_id"`
+	RejectionReason          *string   `json:"rejection_reason,omitempty"`
+	SlippageBpsFromReference string    `json:"slippage_bps_from_reference"`
+	Status                   LegStatus `json:"status"`
 }
 
 // PaymentOrderChainRequest Request to create a new payment order chain. Transfer is optional and can be used to transfer funds from the last order in the chain. The transfer request symbol and amount must match the last order in the chain.

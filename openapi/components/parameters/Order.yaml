@@ -5,3 +5,10 @@ OrderPathParam:
   schema:
     type: string
   description: The uuid order identifier
+PaymentPathParam:
+  in: path
+  name: paymentID
+  required: true
+  schema:
+    type: string
+  description: The uuid payment identifier

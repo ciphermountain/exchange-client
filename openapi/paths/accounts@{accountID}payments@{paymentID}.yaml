@@ -1,0 +1,15 @@
+paths:
+  /accounts/{accountID}/payments/{paymentID}:
+    parameters:
+      - $ref: '../components/parameters/Account.yaml#/AccountPathParam'
+      - $ref: '../components/parameters/Order.yaml#/PaymentPathParam'
+    get:
+      description: Retrieve payment chain by id.
+      operationId: GetPaymentOrderChain
+      responses:
+        200:
+          $ref: '../components/responses/DataPaymentOrderChain.yaml'
+        404:
+          $ref: '../components/responses/NotFoundError.yaml#/NotFoundError'
+        500:
+          $ref: '../components/responses/InternalServerError.yaml#/InternalServerError'
