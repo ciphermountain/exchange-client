@@ -361,6 +361,16 @@ components:
           properties:
             valid:
               type: boolean
+    AccountConfig:
+      type: object
+      description: Account configuration
+      required:
+        - active_symbols
+      properties:
+        active_symbols:
+          type: array
+          items:
+            type: string
     SymbolType:
       type: string
       enum:
@@ -399,11 +409,14 @@ components:
       required:
         - id
         - public_id
+        - config
       properties:
         id:
           type: string
         public_id:
           type: string
+        config:
+          $ref: '#/components/schemas/AccountConfig'
         balances:
           $ref: '#/components/schemas/BalanceList'
     AddressItem:

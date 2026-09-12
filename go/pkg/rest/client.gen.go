@@ -296,8 +296,16 @@ func (e TransactionType) Valid() bool {
 // Account Balances account
 type Account struct {
 	Balances *BalanceList `json:"balances,omitempty"`
-	Id       string       `json:"id"`
-	PublicId string       `json:"public_id"`
+
+	// Config Account configuration
+	Config   AccountConfig `json:"config"`
+	Id       string        `json:"id"`
+	PublicId string        `json:"public_id"`
+}
+
+// AccountConfig Account configuration
+type AccountConfig struct {
+	ActiveSymbols []string `json:"active_symbols"`
 }
 
 // ActionType Action type: * `BUY` - use base currency to buy target currency * `SELL` - sell target currency for base currency
