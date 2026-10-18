@@ -1,11 +1,11 @@
 module github.com/ciphermountain/exchange-client/go
 
-go 1.27
+go 1.27.0
 
 require (
 	github.com/gorilla/websocket v1.5.3
 	github.com/oapi-codegen/runtime v1.7.0
-	github.com/shopspring/decimal v1.4.0
+	github.com/shopspring/decimal v1.5.0
 	github.com/stretchr/testify v1.12.1
 )
 

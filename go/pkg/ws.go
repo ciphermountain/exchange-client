@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
+	"io"
 	"log/slog"
 	"net/http"
 	"strings"
@@ -154,6 +154,10 @@ type WSClient struct {
 }
 
 func NewWSClient(uri string, logger *slog.Logger) *WSClient {
+	if logger == nil {
+		logger = slog.New(slog.NewTextHandler(io.Discard, nil))
+	}
+
 	return &WSClient{
 		Errors:         newMailBox[string](5),
 		Heartbeats:     newMailBox[messages.Heartbeat](5),
@@ -225,9 +229,9 @@ func (sc *WSClient) ConnectAndReadEvents(ctx context.Context, opts ...SubscribeO
 		default:
 			_, rawMsg, err := sc.conn.ReadMessage()
 			if err != nil {
-				sc.logger.Debug(fmt.Sprintf("read error: %s", err))
+				sc.logger.Debug("read error", "error", err)
 				if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
-					log.Printf("error: %v", err)
+					sc.logger.Error("websocket read failed", "error", err)
 				}
 
 				return nil
@@ -421,7 +425,7 @@ func (sc *WSClient) write(msg any) error {
 		return fmt.Errorf("%w: failed to encode message: %w", ErrEncoding, err)
 	}
 
-	log.Println(string(bMsg))
+	sc.logger.Debug("ws send", "message", redactMessage(bMsg))
 
 	if err := sc.conn.WriteMessage(websocket.TextMessage, bMsg); err != nil {
 		return fmt.Errorf("%w: failed to send message for connection: %w", ErrConnection, err)
