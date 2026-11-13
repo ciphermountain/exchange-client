@@ -13,3 +13,27 @@ paths:
           $ref: '../components/responses/NotFoundError.yaml#/NotFoundError'
         500:
           $ref: '../components/responses/InternalServerError.yaml#/InternalServerError'
+    patch:
+      description: Cancel a payment chain
+      operationId: UpdatePaymentOrderChain
+      security:
+        - OAuth2: [write]
+      requestBody:
+        description: >
+          Adheres to JSON-PATCH RFC-6902
+          Accepted patch commands on payment chain records:
+            op: replace; path: /status; value: CANCELLED
+        required: true
+        content:
+          'application/json':
+            schema:
+              $ref: '../components/schemas/Orders.yaml#/PatchCommandList'
+      responses:
+        200:
+          $ref: '../components/responses/DataPaymentOrderChain.yaml'
+        400:
+          $ref: '../components/responses/InvalidRequest.yaml#/InvalidRequest'
+        404:
+          $ref: '../components/responses/NotFoundError.yaml#/NotFoundError'
+        500:
+          $ref: '../components/responses/InternalServerError.yaml#/InternalServerError'
