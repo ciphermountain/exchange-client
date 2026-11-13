@@ -563,6 +563,9 @@ type OrderPathParam = string
 // OrderStatusQueryParam Symbol Type: * `OPEN` - incomplete order * `PARTIAL` - partial order * `FILLED` - filled order * `CANCELLED` - cancelled order
 type OrderStatusQueryParam = OrderStatus
 
+// PaymentPathParam defines model for PaymentPathParam.
+type PaymentPathParam = string
+
 // SymbolPathParam Symbol Type: * `BTC` - bitcoin currency identifier * `ETH` - ethereum currency identifier * `USDT` - U.S. Dollar stable coin (Tether) * `XIFR` - cipher mountain currency identifier
 type SymbolPathParam = SymbolType
 
@@ -706,6 +709,9 @@ type UpdateOrderJSONRequestBody = PatchCommandList
 
 // CreatePaymentOrderChainJSONRequestBody defines body for CreatePaymentOrderChain for application/json ContentType.
 type CreatePaymentOrderChainJSONRequestBody = PaymentOrderChainRequest
+
+// UpdatePaymentOrderChainJSONRequestBody defines body for UpdatePaymentOrderChain for application/json ContentType.
+type UpdatePaymentOrderChainJSONRequestBody = PatchCommandList
 
 // CreateTransactionJSONRequestBody defines body for CreateTransaction for application/json ContentType.
 type CreateTransactionJSONRequestBody = TransactionRequest
@@ -956,6 +962,23 @@ type ClientInterface interface {
 	// Publishes multiple orders as a payment operation. Orders must be in a linked chain.
 	CreatePaymentOrderChain(ctx context.Context, accountID AccountPathParam, body CreatePaymentOrderChainJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetPaymentOrderChain performs a GET /accounts/{accountID}/payments/{paymentID} (the `GetPaymentOrderChain` operationId) request.
+	//
+	// Retrieve payment chain by id.
+	GetPaymentOrderChain(ctx context.Context, accountID AccountPathParam, paymentID PaymentPathParam, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdatePaymentOrderChainWithBody performs a PATCH /accounts/{accountID}/payments/{paymentID} (the `UpdatePaymentOrderChain` operationId) request,
+	// with any type of body and a specified content type.
+	//
+	// Cancel a payment chain.
+	UpdatePaymentOrderChainWithBody(ctx context.Context, accountID AccountPathParam, paymentID PaymentPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdatePaymentOrderChain performs a PATCH /accounts/{accountID}/payments/{paymentID} (the `UpdatePaymentOrderChain` operationId) request.
+	// Takes a body of the `application/json` content type.
+	//
+	// Cancel a payment chain.
+	UpdatePaymentOrderChain(ctx context.Context, accountID AccountPathParam, paymentID PaymentPathParam, body UpdatePaymentOrderChainJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetTransactions performs a GET /accounts/{accountID}/transactions (the `GetTransactions` operationId) request.
 	//
 	// Retrieve account transactions.
@@ -1190,6 +1213,53 @@ func (c *Client) CreatePaymentOrderChainWithBody(ctx context.Context, accountID 
 // Publishes multiple orders as a payment operation. Orders must be in a linked chain.
 func (c *Client) CreatePaymentOrderChain(ctx context.Context, accountID AccountPathParam, body CreatePaymentOrderChainJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreatePaymentOrderChainRequest(c.Server, accountID, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetPaymentOrderChain performs a GET /accounts/{accountID}/payments/{paymentID} (the `GetPaymentOrderChain` operationId) request.
+//
+// Retrieve payment chain by id.
+func (c *Client) GetPaymentOrderChain(ctx context.Context, accountID AccountPathParam, paymentID PaymentPathParam, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetPaymentOrderChainRequest(c.Server, accountID, paymentID)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdatePaymentOrderChainWithBody performs a PATCH /accounts/{accountID}/payments/{paymentID} (the `UpdatePaymentOrderChain` operationId) request,
+// with any type of body and a specified content type.
+//
+// Cancel a payment chain.
+func (c *Client) UpdatePaymentOrderChainWithBody(ctx context.Context, accountID AccountPathParam, paymentID PaymentPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdatePaymentOrderChainRequestWithBody(c.Server, accountID, paymentID, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdatePaymentOrderChain performs a PATCH /accounts/{accountID}/payments/{paymentID} (the `UpdatePaymentOrderChain` operationId) request.
+// Takes a body of the `application/json` content type.
+//
+// Cancel a payment chain.
+func (c *Client) UpdatePaymentOrderChain(ctx context.Context, accountID AccountPathParam, paymentID PaymentPathParam, body UpdatePaymentOrderChainJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdatePaymentOrderChainRequest(c.Server, accountID, paymentID, body)
 	if err != nil {
 		return nil, err
 	}
@@ -1808,6 +1878,101 @@ func NewCreatePaymentOrderChainRequestWithBody(server string, accountID AccountP
 	return req, nil
 }
 
+// NewGetPaymentOrderChainRequest constructs an http.Request for the GetPaymentOrderChain method
+func NewGetPaymentOrderChainRequest(server string, accountID AccountPathParam, paymentID PaymentPathParam) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountID", accountID, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "paymentID", paymentID, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/accounts/%s/payments/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdatePaymentOrderChainRequest calls the generic UpdatePaymentOrderChain builder with application/json body
+func NewUpdatePaymentOrderChainRequest(server string, accountID AccountPathParam, paymentID PaymentPathParam, body UpdatePaymentOrderChainJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdatePaymentOrderChainRequestWithBody(server, accountID, paymentID, "application/json", bodyReader)
+}
+
+// NewUpdatePaymentOrderChainRequestWithBody constructs an http.Request for the UpdatePaymentOrderChain method, with any body, and a specified content type
+func NewUpdatePaymentOrderChainRequestWithBody(server string, accountID AccountPathParam, paymentID PaymentPathParam, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "accountID", accountID, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "paymentID", paymentID, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/accounts/%s/payments/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPatch, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewGetTransactionsRequest constructs an http.Request for the GetTransactions method
 func NewGetTransactionsRequest(server string, accountID AccountPathParam) (*http.Request, error) {
 	var err error
@@ -2315,6 +2480,27 @@ type ClientWithResponsesInterface interface {
 	//
 	// Publishes multiple orders as a payment operation. Orders must be in a linked chain.
 	CreatePaymentOrderChainWithResponse(ctx context.Context, accountID AccountPathParam, body CreatePaymentOrderChainJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePaymentOrderChainResponse, error)
+
+	// GetPaymentOrderChainWithResponse performs a GET /accounts/{accountID}/payments/{paymentID} (the `GetPaymentOrderChain` operationId) request.
+	//
+	// Retrieve payment chain by id.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	GetPaymentOrderChainWithResponse(ctx context.Context, accountID AccountPathParam, paymentID PaymentPathParam, reqEditors ...RequestEditorFn) (*GetPaymentOrderChainResponse, error)
+
+	// UpdatePaymentOrderChainWithBodyWithResponse performs a PATCH /accounts/{accountID}/payments/{paymentID} (the `UpdatePaymentOrderChain` operationId) request,
+	// with any type of body and a specified content type.
+	//
+	// Cancel a payment chain.
+	//
+	// Returns a wrapper object for the known response body format(s).
+	UpdatePaymentOrderChainWithBodyWithResponse(ctx context.Context, accountID AccountPathParam, paymentID PaymentPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdatePaymentOrderChainResponse, error)
+
+	// UpdatePaymentOrderChainWithResponse performs a PATCH /accounts/{accountID}/payments/{paymentID} (the `UpdatePaymentOrderChain` operationId) request.
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Cancel a payment chain.
+	UpdatePaymentOrderChainWithResponse(ctx context.Context, accountID AccountPathParam, paymentID PaymentPathParam, body UpdatePaymentOrderChainJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdatePaymentOrderChainResponse, error)
 
 	// GetTransactionsWithResponse performs a GET /accounts/{accountID}/transactions (the `GetTransactions` operationId) request.
 	//
@@ -2896,6 +3082,123 @@ func (r CreatePaymentOrderChainResponse) ContentType() string {
 	return ""
 }
 
+type GetPaymentOrderChainResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *DataPaymentOrderChain
+	// JSON404 the response for an HTTP 404 `application/json` response
+	JSON404 *NotFoundError
+	// JSON500 the response for an HTTP 500 `application/json` response
+	JSON500 *InternalServerError
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetPaymentOrderChainResponse) GetJSON200() *DataPaymentOrderChain {
+	return r.JSON200
+}
+
+// GetJSON404 returns the response for an HTTP 404 `application/json` response
+func (r GetPaymentOrderChainResponse) GetJSON404() *NotFoundError {
+	return r.JSON404
+}
+
+// GetJSON500 returns the response for an HTTP 500 `application/json` response
+func (r GetPaymentOrderChainResponse) GetJSON500() *InternalServerError {
+	return r.JSON500
+}
+
+// GetBody returns the raw response body bytes
+func (r GetPaymentOrderChainResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetPaymentOrderChainResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetPaymentOrderChainResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetPaymentOrderChainResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type UpdatePaymentOrderChainResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *DataPaymentOrderChain
+	// JSON400 the response for an HTTP 400 `application/json` response
+	JSON400 *InvalidRequest
+	// JSON404 the response for an HTTP 404 `application/json` response
+	JSON404 *NotFoundError
+	// JSON500 the response for an HTTP 500 `application/json` response
+	JSON500 *InternalServerError
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r UpdatePaymentOrderChainResponse) GetJSON200() *DataPaymentOrderChain {
+	return r.JSON200
+}
+
+// GetJSON400 returns the response for an HTTP 400 `application/json` response
+func (r UpdatePaymentOrderChainResponse) GetJSON400() *InvalidRequest {
+	return r.JSON400
+}
+
+// GetJSON404 returns the response for an HTTP 404 `application/json` response
+func (r UpdatePaymentOrderChainResponse) GetJSON404() *NotFoundError {
+	return r.JSON404
+}
+
+// GetJSON500 returns the response for an HTTP 500 `application/json` response
+func (r UpdatePaymentOrderChainResponse) GetJSON500() *InternalServerError {
+	return r.JSON500
+}
+
+// GetBody returns the raw response body bytes
+func (r UpdatePaymentOrderChainResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdatePaymentOrderChainResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdatePaymentOrderChainResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UpdatePaymentOrderChainResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type GetTransactionsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -3447,6 +3750,45 @@ func (c *ClientWithResponses) CreatePaymentOrderChainWithResponse(ctx context.Co
 	return ParseCreatePaymentOrderChainResponse(rsp)
 }
 
+// GetPaymentOrderChainWithResponse performs a GET /accounts/{accountID}/payments/{paymentID} (the `GetPaymentOrderChain` operationId) request.
+//
+// Retrieve payment chain by id.
+//
+// Returns a wrapper object for the known response body format(s).
+func (c *ClientWithResponses) GetPaymentOrderChainWithResponse(ctx context.Context, accountID AccountPathParam, paymentID PaymentPathParam, reqEditors ...RequestEditorFn) (*GetPaymentOrderChainResponse, error) {
+	rsp, err := c.GetPaymentOrderChain(ctx, accountID, paymentID, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetPaymentOrderChainResponse(rsp)
+}
+
+// UpdatePaymentOrderChainWithBodyWithResponse performs a PATCH /accounts/{accountID}/payments/{paymentID} (the `UpdatePaymentOrderChain` operationId) request,
+// with any type of body and a specified content type.
+//
+// Cancel a payment chain.
+//
+// Returns a wrapper object for the known response body format(s).
+func (c *ClientWithResponses) UpdatePaymentOrderChainWithBodyWithResponse(ctx context.Context, accountID AccountPathParam, paymentID PaymentPathParam, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdatePaymentOrderChainResponse, error) {
+	rsp, err := c.UpdatePaymentOrderChainWithBody(ctx, accountID, paymentID, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdatePaymentOrderChainResponse(rsp)
+}
+
+// UpdatePaymentOrderChainWithResponse performs a PATCH /accounts/{accountID}/payments/{paymentID} (the `UpdatePaymentOrderChain` operationId) request.
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Cancel a payment chain.
+func (c *ClientWithResponses) UpdatePaymentOrderChainWithResponse(ctx context.Context, accountID AccountPathParam, paymentID PaymentPathParam, body UpdatePaymentOrderChainJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdatePaymentOrderChainResponse, error) {
+	rsp, err := c.UpdatePaymentOrderChain(ctx, accountID, paymentID, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdatePaymentOrderChainResponse(rsp)
+}
+
 // GetTransactionsWithResponse performs a GET /accounts/{accountID}/transactions (the `GetTransactions` operationId) request.
 //
 // Retrieve account transactions.
@@ -3907,6 +4249,93 @@ func ParseCreatePaymentOrderChainResponse(rsp *http.Response) (*CreatePaymentOrd
 			return nil, err
 		}
 		response.JSON409 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetPaymentOrderChainResponse parses an HTTP response from a GetPaymentOrderChainWithResponse call
+func ParseGetPaymentOrderChainResponse(rsp *http.Response) (*GetPaymentOrderChainResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetPaymentOrderChainResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DataPaymentOrderChain
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFoundError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
+		var dest InternalServerError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON500 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdatePaymentOrderChainResponse parses an HTTP response from a UpdatePaymentOrderChainWithResponse call
+func ParseUpdatePaymentOrderChainResponse(rsp *http.Response) (*UpdatePaymentOrderChainResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdatePaymentOrderChainResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DataPaymentOrderChain
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 400:
+		var dest InvalidRequest
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON400 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 404:
+		var dest NotFoundError
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON404 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 500:
 		var dest InternalServerError

@@ -212,6 +212,44 @@ paths:
                     $ref: '#/components/schemas/ResponseErrorList'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /accounts/{accountID}/payments/{paymentID}:
+    parameters:
+      - $ref: '#/components/parameters/AccountPathParam'
+      - $ref: '#/components/parameters/PaymentPathParam'
+    get:
+      description: Retrieve payment chain by id.
+      operationId: GetPaymentOrderChain
+      responses:
+        '200':
+          $ref: '#/components/responses/DataPaymentOrderChain'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    patch:
+      description: Cancel a payment chain
+      operationId: UpdatePaymentOrderChain
+      security:
+        - OAuth2:
+            - write
+      requestBody:
+        description: |
+          Adheres to JSON-PATCH RFC-6902 Accepted patch commands on payment chain records:
+            op: replace; path: /status; value: CANCELLED
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchCommandList'
+      responses:
+        '200':
+          $ref: '#/components/responses/DataPaymentOrderChain'
+        '400':
+          $ref: '#/components/responses/InvalidRequest'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /accounts/{accountID}/orders:
     parameters:
       - $ref: '#/components/parameters/AccountPathParam'
@@ -669,19 +707,6 @@ components:
             $ref: '#/components/schemas/OrderRequest'
         transfer:
           $ref: '#/components/schemas/TransactionRequest'
-    BookOrder:
-      type: object
-      required:
-        - status
-        - guid
-        - order
-      properties:
-        guid:
-          type: string
-        status:
-          $ref: '#/components/schemas/OrderStatus'
-        order:
-          $ref: '#/components/schemas/OrderRequest'
     PatchCommand:
       type: object
       required:
@@ -699,6 +724,19 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/PatchCommand'
+    BookOrder:
+      type: object
+      required:
+        - status
+        - guid
+        - order
+      properties:
+        guid:
+          type: string
+        status:
+          $ref: '#/components/schemas/OrderStatus'
+        order:
+          $ref: '#/components/schemas/OrderRequest'
     TimeSpanType:
       type: string
       enum:
@@ -943,6 +981,13 @@ components:
       required: false
       schema:
         $ref: '#/components/schemas/OrderStatus'
+    PaymentPathParam:
+      in: path
+      name: paymentID
+      required: true
+      schema:
+        type: string
+      description: The uuid payment identifier
     OrderPathParam:
       in: path
       name: orderID
